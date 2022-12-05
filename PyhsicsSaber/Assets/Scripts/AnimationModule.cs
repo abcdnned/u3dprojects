@@ -32,7 +32,7 @@ namespace TY {
         /// <summary> Makes the physical bones match the rotation of the animated ones </summary>
         private void UpdateJointTargets() {
             for (int i = 0; i < _joints.Length; i++) {
-                Debug.Log(this.GetType().Name + "update _joints" + i);
+                // Debug.Log(this.GetType().Name + "update _joints" + i);
                 ConfigurableJointExtensions.SetTargetRotationLocal(_joints[i], _animatedBones[i + 1].localRotation, _initialJointsRotation[i]);
             }
         }

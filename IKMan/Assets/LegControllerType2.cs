@@ -36,6 +36,7 @@ public class LegControllerType2 : MonoBehaviour
     [SerializeField]float stage1 = 0.2f;
     [SerializeField]float stage2 = 0.85f;
     [SerializeField]float isRightFoot = 1;
+    [SerializeField] Transform hint;
 
     private CameraModule cameraModule;
 
@@ -51,6 +52,18 @@ public class LegControllerType2 : MonoBehaviour
 
     private void Awake() {
         cameraModule = owner.GetComponent<CameraModule>();
+    }
+    private void Update() {
+        Vector3 d = transform.forward;
+        Vector3 r = transform.right;
+        r.y = 0;
+        r.Normalize();
+        d.y = 0;
+        d.Normalize();
+        Vector3 target = owner.transform.position + d * 0.5f;
+        target += r * Mathf.Abs(feetBetween) * isRightFoot;
+        target.y = 0.7f;
+        hint.position = target;
     }
     IEnumerator MoveToHome(float pairProjectDis)
     {

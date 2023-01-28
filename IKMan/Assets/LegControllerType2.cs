@@ -10,6 +10,7 @@ public class LegControllerType2 : MonoBehaviour
     [SerializeField] Transform pair;
     [SerializeField] LegControllerType2 pairComponent;
     [SerializeField] Transform toe;
+    [SerializeField] Transform foot;
     [SerializeField] Rigidbody owner;
     // Stay within this distance of home
     [SerializeField] float halfStepDistance = 0.2f;
@@ -38,7 +39,7 @@ public class LegControllerType2 : MonoBehaviour
     [SerializeField]float isRightFoot = 1;
     [SerializeField] Transform hint;
 
-    private CameraModule cameraModule;
+    [SerializeField] CameraModule cameraModule;
 
     //state variable
     public bool Moving;
@@ -60,7 +61,7 @@ public class LegControllerType2 : MonoBehaviour
         r.Normalize();
         d.y = 0;
         d.Normalize();
-        Vector3 target = owner.transform.position + d * 0.5f;
+        Vector3 target = owner.transform.position + d * 1f;
         target += r * Mathf.Abs(feetBetween) * isRightFoot;
         target.y = 0.7f;
         hint.position = target;
@@ -116,18 +117,35 @@ public class LegControllerType2 : MonoBehaviour
                 Vector3 forward = owner.transform.forward;
                 Vector3 right = owner.transform.right;
                 Vector3 up = owner.transform.up;
+        Vector3 footDir = cameraModule.Camera.transform.forward;
+        footDir.y = 0;
+        footDir.Normalize();
+        Vector3 curDir = transform.forward;
+        curDir.y = 0;
+        curDir.Normalize();
+        bool followup = false;
+        float deg = Vector3.Angle(curDir, footDir) * isRightFoot;
                 Vector3 overshootVector = forward * (pairProjectDis + halfStepDistance);
+        if (deg > 45) {
+                overshootVector = forward * (pairProjectDis + halfStepDistance / 4);
+        } else if (deg < -15) {
+                overshootVector = transform.forward * (pairProjectDis + halfStepDistance / 6);
+                footDir = curDir;
+            followup = true;
+        }
                 overshootVector = Vector3.ProjectOnPlane(overshootVector, plane);
                 // Vector3 centerStartPoint = Vector3.Project(transform.position, owner.transform.position);
                 // Vector3 centerStartPoint = owner.transform.position;
                 // Vector3 endPoint = centerStartPoint + overshootVector;
                 // Vector3 endPoint = centerStartPoint + overshootVector + right * isRightFoot * feetBetween;
                 Vector3 endPoint = transform.position + overshootVector;
-                float curFeetBetween = calculateFeetBetween(owner.transform.position, forward, transform.position);
-                if (curFeetBetween < feetBetween) {
-                    endPoint += right * Mathf.Abs(feetBetween - curFeetBetween) * isRightFoot;
-                } else if (curFeetBetween > feetBetween) {
-                    endPoint -= right * Mathf.Abs(feetBetween - curFeetBetween) * isRightFoot;
+                if (!followup) {
+                    float curFeetBetween = calculateFeetBetween(owner.transform.position, forward, transform.position);
+                    if (curFeetBetween < feetBetween) {
+                        endPoint += right * Mathf.Abs(feetBetween - curFeetBetween) * isRightFoot;
+                    } else if (curFeetBetween > feetBetween) {
+                        endPoint -= right * Mathf.Abs(feetBetween - curFeetBetween) * isRightFoot;
+                    }
                 }
                 Vector3 forward2 = (endPoint - transform.position).normalized;
                 float walkDis = Vector3.ProjectOnPlane((endPoint - transform.position), plane).magnitude;
@@ -135,6 +153,7 @@ public class LegControllerType2 : MonoBehaviour
                 Vector3 wp2 = transform.position + (up * -swingDownDistance) + forward2 * (walkDis / 2);
                 Vector3 wp3 = transform.position + (up * postLiftDistance) + forward2 * (5 * walkDis / 6);
                 Vector3 wp4 = endPoint;
+
         bool forwardDampingStarted = false;
         bool walkPoseStarted = false;
         if (!walkPoseStarted) {
@@ -168,6 +187,7 @@ public class LegControllerType2 : MonoBehaviour
                 Vector3 curAngel = transform.localEulerAngles;
                 float walkAngel = Mathf.Lerp(walkFeetAngel, walkFeetAngel2, poc);
                 transform.localEulerAngles = new Vector3(walkAngel, curAngel.y, curAngel.z);
+                syncFootDirection(footDir, normalizedTime);
             } else {
                 if (!forwardDampingStarted) {
                     walkBalance.startForwardDamping(dampingDuration);
@@ -201,6 +221,12 @@ public class LegControllerType2 : MonoBehaviour
         if (transferStand.read()) {
             TryTransferStand();
         }
+    }
+
+    private void syncFootDirection(Vector3 footDir, float normalizedTime) {
+        float poc = Mathf.Lerp(0, 1, (normalizedTime - stage1) / (stage2 - stage1));
+        Quaternion tr = Quaternion.LookRotation(footDir);       
+        transform.rotation = Quaternion.Slerp(transform.rotation, tr, poc);
     }
 
     private float calculateFeetBetween(Vector3 position1, Vector3 forward, Vector3 position2)

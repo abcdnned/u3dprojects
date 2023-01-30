@@ -71,6 +71,8 @@ public class LegControllerType2 : MonoBehaviour
         sync();
         Moving = true;
 
+        float preMoveOvershootFix = 0.1f;
+
         Vector3 startPoint = transform.position;
         Quaternion startRot = transform.rotation;
 
@@ -123,15 +125,23 @@ public class LegControllerType2 : MonoBehaviour
         Vector3 curDir = transform.forward;
         curDir.y = 0;
         curDir.Normalize();
+        Vector3 pairDir = pair.transform.forward;
+        pairDir.y = 0;
+        pairDir.Normalize();
         bool followup = false;
         float deg = Vector3.Angle(curDir, footDir) * isRightFoot;
                 Vector3 overshootVector = forward * (pairProjectDis + halfStepDistance);
+        float pairDeg = Math.Abs(Vector3.Angle(pairDir, curDir));
         if (deg > 45) {
-                overshootVector = forward * (pairProjectDis + halfStepDistance / 4);
-        } else if (deg < -15) {
-                overshootVector = transform.forward * (pairProjectDis + halfStepDistance / 6);
+            Debug.Log(this.GetType().Name + " >45 ");
+                overshootVector = footDir * (pairProjectDis + halfStepDistance / 2);
+        } else if (deg < -15 && pairDeg < 15) {
+            Debug.Log(this.GetType().Name + " <-15 && > 15 ");
+                overshootVector = curDir * (pairProjectDis + halfStepDistance / 4 + preMoveOvershootFix);
                 footDir = curDir;
-            followup = true;
+                // followup = true;
+        } else {
+            Debug.Log(this.GetType().Name + " normalMode ");
         }
                 overshootVector = Vector3.ProjectOnPlane(overshootVector, plane);
                 // Vector3 centerStartPoint = Vector3.Project(transform.position, owner.transform.position);
@@ -277,10 +287,12 @@ public class LegControllerType2 : MonoBehaviour
         if (!checkPairStatusAndDecideToMove()) return;
 
         // Vector3 direction = cameraModule.Camera.transform.forward;
-        Vector3 direction = owner.gameObject.transform.forward;
+        // Vector3 direction = owner.gameObject.transform.forward;
+        Vector3 direction = pair.transform.forward;
         float pairDirProject = Vector3.Dot(pair.transform.position, direction);
         float dirProject = Vector3.Dot(transform.position, direction);
         if (pairDirProject >= dirProject)
+            // || Math.Abs(Vector3.Angle(transform.forward, direction)) > Math.Abs(Vector3.Angle(pair.transform.forward, direction)))
         {
             float pairProjectDis = pairDirProject - dirProject;
             // Start the step coroutine

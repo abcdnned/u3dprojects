@@ -52,6 +52,8 @@ public class CameraModule : MonoBehaviour {
     [Tooltip("How far to reposition the camera from an obstacle.")]
     public float cameraRepositionOffset = 0.15f;
 
+    public WalkPointer walkPointer;
+
     void Start() {
         Camera = new GameObject("Active Ragdoll Camera", typeof(UnityEngine.Camera));
         Camera.transform.parent = transform;
@@ -62,6 +64,10 @@ public class CameraModule : MonoBehaviour {
         CameraFollower cameraFollower = GetComponent<CameraFollower>();
         if (cameraFollower != null) {
             cameraFollower.camera = Camera.transform;
+        }
+        if (walkPointer != null) {
+            walkPointer.camera = Camera.transform;
+            walkPointer.cameraModule = this;
         }
     }
 

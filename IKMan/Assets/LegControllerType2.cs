@@ -11,7 +11,9 @@ public class LegControllerType2 : MonoBehaviour
     [SerializeField] LegControllerType2 pairComponent;
     [SerializeField] Transform toe;
     [SerializeField] Transform foot;
-    [SerializeField] Rigidbody owner;
+    // [SerializeField] Rigidbody owner;
+    [SerializeField] WalkPointer owner;
+    [SerializeField] Rigidbody body;
     // Stay within this distance of home
     [SerializeField] float halfStepDistance = 0.2f;
     // How long a step takes to complete
@@ -40,8 +42,8 @@ public class LegControllerType2 : MonoBehaviour
 
     [SerializeField]float preMoveOvershootFix = 0.3f;
     [SerializeField] Transform hint;
-
     [SerializeField] CameraModule cameraModule;
+    [SerializeField] float maxFootBodyAngel = 30;
 
     //state variable
     public bool Moving;
@@ -51,10 +53,11 @@ public class LegControllerType2 : MonoBehaviour
     private ReadTrigger walkingStop = new ReadTrigger(false);
     private ReadTrigger transferStand = new ReadTrigger(false);
     private ReadTrigger lastStep = new ReadTrigger(false);
+
     // Is the leg moving?
 
     private void Awake() {
-        cameraModule = owner.GetComponent<CameraModule>();
+        cameraModule = owner.cameraModule;
     }
     private void Update() {
         Vector3 d = transform.forward;
@@ -241,6 +244,8 @@ public class LegControllerType2 : MonoBehaviour
                 float walkAngel = Mathf.Lerp(walkFeetAngel2, 0, poc);
                 transform.localEulerAngles = new Vector3(walkAngel, curAngel.y, curAngel.z);
             }
+
+            syncPairFootDir();
             
             if (timeElapsed >= duration) {
                 break;
@@ -257,6 +262,16 @@ public class LegControllerType2 : MonoBehaviour
         Moving = false;
         if (transferStand.read()) {
             TryTransferStand();
+        }
+    }
+
+    private void syncPairFootDir()
+    {
+        Vector3 bf = Utils.forward(body.transform);
+        Vector3 tf = Utils.forward(pair);
+        float deg = Vector3.Angle(bf, tf);
+        if (deg > maxFootBodyAngel) {
+            pair.rotation = Utils.dampTrack(pair, bf, 5);
         }
     }
 
@@ -300,6 +315,7 @@ public class LegControllerType2 : MonoBehaviour
             feetBetween = pairComponent.feetBetween;
             isRightFoot = -pairComponent.isRightFoot;
             preMoveOvershootFix = pairComponent.preMoveOvershootFix;
+            maxFootBodyAngel = pairComponent.maxFootBodyAngel;
         }
     }
 
@@ -353,7 +369,7 @@ public class LegControllerType2 : MonoBehaviour
             StartCoroutine(MoveToHome(pairProjectDis));
         } else {
             // Debug.Log(this.GetType().Name + " tfProjectDis " + tfProjectDis);
-            if (Math.Abs(tfProjectDis) < 0.1) {
+            if (Math.Abs(tfProjectDis) < 0.2) {
                 twoFootAlign = true;
             } else {
                 twoFootAlign  = false;

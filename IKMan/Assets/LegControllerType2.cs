@@ -37,6 +37,8 @@ public class LegControllerType2 : MonoBehaviour
     [SerializeField]float stage1 = 0.2f;
     [SerializeField]float stage2 = 0.85f;
     [SerializeField]float isRightFoot = 1;
+
+    [SerializeField]float preMoveOvershootFix = 0.3f;
     [SerializeField] Transform hint;
 
     [SerializeField] CameraModule cameraModule;
@@ -66,106 +68,121 @@ public class LegControllerType2 : MonoBehaviour
         target.y = 0.7f;
         hint.position = target;
     }
-    IEnumerator MoveToHome(float pairProjectDis)
-    {
-        sync();
-        Moving = true;
 
-        float preMoveOvershootFix = 0.1f;
-
-        Vector3 startPoint = transform.position;
-        Quaternion startRot = transform.rotation;
-
-        Quaternion endRot = homeTransform.rotation;
-
-        // Directional vector from the foot to the home position
-        // Vector3 towardHome = (homeTransform.position - transform.position);
-        // Total distnace to overshoot by   
-        // float overshootDistance = wantStepAtDistance * stepOvershootFraction;
-        // Vector3 overshootVector = towardHome * overshootDistance;
-        // Vector3 overshootVector = towardHome;
-        // Since we don't ground the point in this simplified implementation,
-        // we restrict the overshoot vector to be level with the ground
-        // by projecting it on the world XZ plane.
-        // Vector3 overshootVector = (homeTransform.position - transform.position) * wantStepAtDistance * 20;
-
-
-        // float legAngle = calculateLegAngle(Vector3.up);
-        // bool firstStepHalf = false;
-        // if (legAngle > 10 || legAngle < -10) {
-        //     firstStepHalf = true;
-        // }
-
-        float timeElapsed = 0;
-        // float duration = Mathf.Min((wantStepAtDistance * 3) / (owner.velocity.magnitude * 2), moveDuration);
-        float duration = moveDuration;
-        // Apply the overshoot
-        // Vector3 endPoint = homeTransform.position + overshootVector;
-        // Vector3 endPoint = homeTransform.position;
-
-        // We want to pass through the center point
-        // Vector3 centerPoint = (startPoint + endPoint) / 2;
-        // But also lift off, so we move it up by half the step distance (arbitrarily)
-        // centerPoint += homeTransform.up * liftDistance;
-                //calculage walk distance
-                Vector3 plane = Vector3.up;
-                // Vector3 forward = Vector3.ProjectOnPlane(cameraModule.Camera.transform.forward, plane).normalized;
-                // forward.y = 0;
-                // forward = forward.normalized;
-                // Vector3 right = cameraModule.Camera.transform.right;
-                // right.y = 0;
-                // right = right.normalized;
-                // Vector3 up = plane;
-                Vector3 forward = owner.transform.forward;
-                Vector3 right = owner.transform.right;
-                Vector3 up = owner.transform.up;
-        Vector3 footDir = cameraModule.Camera.transform.forward;
-        footDir.y = 0;
-        footDir.Normalize();
+    private Vector3[] getEndPoint(Transform target, float pairProjectDis, Vector3 plane) {
+        Vector3 forward = owner.transform.forward;
+        forward.y = 0;
+        forward.Normalize();
+        Vector3 footDir = forward;
+        Vector3 right = owner.transform.right;
+        right.y = 0;
+        right.Normalize();
         Vector3 curDir = transform.forward;
         curDir.y = 0;
         curDir.Normalize();
         Vector3 pairDir = pair.transform.forward;
         pairDir.y = 0;
         pairDir.Normalize();
+        Vector3 pairRight = pair.transform.right;
+        pairRight.y = 0;
+        pairRight.Normalize();
         bool followup = false;
-        float deg = Vector3.Angle(curDir, footDir) * isRightFoot;
-                Vector3 overshootVector = forward * (pairProjectDis + halfStepDistance);
+        bool frontFollowup = false;
+        float deg = Vector3.SignedAngle(curDir, forward, Vector3.up) * isRightFoot;
+        Vector3 overshootVector = forward * (pairProjectDis + halfStepDistance);
+        // Vector3 overshootVector = forward * halfStepDistance;
         float pairDeg = Math.Abs(Vector3.Angle(pairDir, curDir));
-        if (deg > 45) {
-            Debug.Log(this.GetType().Name + " >45 ");
-                overshootVector = footDir * (pairProjectDis + halfStepDistance / 2);
+        if (deg > 20) {
+                // if (deg < 30) {
+                //     overshootVector = Utils.halfTowards(pairDir, forward, 0) * halfStepDistance * 0.90f;
+                // } else {
+                //     overshootVector = Utils.customTowards(pairDir, forward, 0.1f, 0) * halfStepDistance * 0.90f;
+                // }
+                overshootVector = forward * halfStepDistance * 0.90f;
+                frontFollowup = true;
         } else if (deg < -15 && pairDeg < 15) {
-            Debug.Log(this.GetType().Name + " <-15 && > 15 ");
-                overshootVector = curDir * (pairProjectDis + halfStepDistance / 4 + preMoveOvershootFix);
-                footDir = curDir;
-                // followup = true;
+                overshootVector =  Utils.halfTowards(pairDir, forward, 0) * halfStepDistance * 0.80f;
+                Vector3 footHalfDir = Utils.customTowards(curDir, footDir, 0.3f, 0);
+                footDir = footHalfDir;
+                followup = true;
         } else {
-            Debug.Log(this.GetType().Name + " normalMode ");
         }
-                overshootVector = Vector3.ProjectOnPlane(overshootVector, plane);
-                // Vector3 centerStartPoint = Vector3.Project(transform.position, owner.transform.position);
-                // Vector3 centerStartPoint = owner.transform.position;
-                // Vector3 endPoint = centerStartPoint + overshootVector;
-                // Vector3 endPoint = centerStartPoint + overshootVector + right * isRightFoot * feetBetween;
-                Vector3 endPoint = transform.position + overshootVector;
-                if (!followup) {
-                    float curFeetBetween = calculateFeetBetween(owner.transform.position, forward, transform.position);
-                    if (curFeetBetween < feetBetween) {
-                        endPoint += right * Mathf.Abs(feetBetween - curFeetBetween) * isRightFoot;
-                    } else if (curFeetBetween > feetBetween) {
-                        endPoint -= right * Mathf.Abs(feetBetween - curFeetBetween) * isRightFoot;
-                    }
+        overshootVector = Vector3.ProjectOnPlane(overshootVector, plane);
+        Vector3 endPoint = transform.position + overshootVector;
+        // Vector3 endPoint = pair.position + overshootVector;
+        if (followup) {
+            endPoint = pair.position + overshootVector;
+        } else if (frontFollowup) {
+            endPoint = pair.position + overshootVector;
+        }
+        if (!followup && !frontFollowup) {
+            Debug.Log(this.GetType().Name + " stright ");
+            float curFeetBetween = calculateFeetBetween(endPoint, forward, pair.position) / 2;
+            int corss = crossDir(transform.position, pair.position, forward);
+            if (curFeetBetween < feetBetween) {
+                Debug.Log(this.GetType().Name + " < ");
+                if (corss * isRightFoot < 0) {
+                    endPoint += right * feetBetween * isRightFoot * 3;
+                } else {
+                    endPoint += right * Mathf.Abs(feetBetween - curFeetBetween) * isRightFoot * 3;
                 }
-                Vector3 forward2 = (endPoint - transform.position).normalized;
-                float walkDis = Vector3.ProjectOnPlane((endPoint - transform.position), plane).magnitude;
-                Vector3 wp1 = transform.position + (up * preLiftDistance) + forward2 * (walkDis / 6);
-                Vector3 wp2 = transform.position + (up * -swingDownDistance) + forward2 * (walkDis / 2);
-                Vector3 wp3 = transform.position + (up * postLiftDistance) + forward2 * (5 * walkDis / 6);
-                Vector3 wp4 = endPoint;
+            } else if (curFeetBetween > feetBetween) {
+                Debug.Log(this.GetType().Name + " > ");
+                if (corss * isRightFoot < 0) {
+                    endPoint += right * feetBetween * isRightFoot * 3;
+                } else {
+                    endPoint -= right * Mathf.Abs(feetBetween - curFeetBetween) * isRightFoot * 3;
+                }
+            }
+            Debug.Log(this.GetType().Name + " isRightFoot " + isRightFoot);
+            Debug.Log(this.GetType().Name + " corss " + corss);
+        } else {
+            Debug.Log(this.GetType().Name + " followup ");
+            endPoint += pairRight * 2 * feetBetween * isRightFoot;
+        }
+         endPoint.y = 0;
+        return new Vector3[] { endPoint, footDir };
+    }
+
+    private int crossDir(Vector3 d1, Vector3 d2, Vector3 forward) {
+        Vector3 center = (d1 + d2) / 2;
+        Vector3 cross = Vector3.Cross(forward, d1 - center);
+        if (cross.y > 0) {
+            return 1;
+        } else if (cross.y < 0) {
+            return -1;
+        }
+        return 0;
+    }
+    IEnumerator MoveToHome(float pairProjectDis)
+    {
+        sync();
+        Moving = true;
+
+        Vector3 startPoint = transform.position;
+        Quaternion startRot = transform.rotation;
+        Quaternion endRot = homeTransform.rotation;
+
+        float timeElapsed = 0;
+        float duration = moveDuration;
+        Vector3 plane = Vector3.up;
+        Vector3 forward = owner.transform.forward;
+        forward.y = 0;
+        forward.Normalize();
+        Vector3 up = owner.transform.up;
+        Vector3[] Points = getEndPoint(owner.transform, pairProjectDis, plane);
+        Vector3 endPoint = Points[0];
+        Vector3 footDir = Points[1];
+        Vector3 forward2 = (endPoint - transform.position).normalized;
+        float walkDis = Vector3.ProjectOnPlane((endPoint - transform.position), plane).magnitude;
+        Vector3 wp1 = transform.position + (up * preLiftDistance) + forward2 * (walkDis / 6);
+        Vector3 wp2 = transform.position + (up * -swingDownDistance) + forward2 * (walkDis / 2);
+        Vector3 wp3 = transform.position + (up * postLiftDistance) + forward2 * (5 * walkDis / 6);
+        Vector3 wp4 = endPoint;
 
         bool forwardDampingStarted = false;
         bool walkPoseStarted = false;
+        // bool stage2Started = false;
         if (!walkPoseStarted) {
             walkBalance.startWalk();
             walkPoseStarted = true;
@@ -187,6 +204,16 @@ public class LegControllerType2 : MonoBehaviour
                 transform.localEulerAngles = new Vector3(walkAngel, curAngel.y, curAngel.z);
             } else if (normalizedTime >= stage1 && normalizedTime <= stage2) {
                 //start stage2
+                // if (!stage2Started) {
+                //     endPoint = getEndPoint(owner.transform, pairProjectDis, plane, footDir);
+                //     Debug.Log(this.GetType().Name + "reclate endPoint " + endPoint);
+                //     forward2 = (endPoint - transform.position).normalized;
+                //     walkDis = Vector3.ProjectOnPlane((endPoint - transform.position), plane).magnitude;
+                //     wp2 = transform.position + (up * -swingDownDistance) + forward2 * (walkDis / 2);
+                //     wp3 = transform.position + (up * postLiftDistance) + forward2 * (5 * walkDis / 6);
+                //     wp4 = endPoint;
+                //     stage2Started = true;
+                // }
                 float poc = Mathf.Lerp(0, 1, (normalizedTime - stage1) / (stage2 - stage1));
                 transform.position =
                 Vector3.Lerp(
@@ -249,6 +276,12 @@ public class LegControllerType2 : MonoBehaviour
         return b;
     }
 
+    private float calculateFeetDistance(Vector3 position1, Vector3 position2)
+    {
+        float c = Vector3.Distance(position1, position2);
+        return c / 2;
+    }
+
     private void sync()
     {
         if (syncPair) {
@@ -266,6 +299,7 @@ public class LegControllerType2 : MonoBehaviour
             enable = pairComponent.enable;
             feetBetween = pairComponent.feetBetween;
             isRightFoot = -pairComponent.isRightFoot;
+            preMoveOvershootFix = pairComponent.preMoveOvershootFix;
         }
     }
 
@@ -278,6 +312,7 @@ public class LegControllerType2 : MonoBehaviour
         return AngleDeg;
     }
 
+
     public void TryMove()
     {
         if (!enable) return;
@@ -287,16 +322,69 @@ public class LegControllerType2 : MonoBehaviour
         if (!checkPairStatusAndDecideToMove()) return;
 
         // Vector3 direction = cameraModule.Camera.transform.forward;
-        // Vector3 direction = owner.gameObject.transform.forward;
-        Vector3 direction = pair.transform.forward;
+        Vector3 direction = owner.gameObject.transform.forward;
+        // Vector3 direction = pair.transform.forward;
+        // int walkStright = 0;
+        Vector3 curDir = transform.forward;
+        curDir.y = 0;
+        curDir.Normalize();
+        Vector3 pairDir = pair.transform.forward;
+        pairDir.y = 0;
+        pairDir.Normalize();
+        float angel = Vector3.Angle(curDir, direction);
+        Vector3 twoFootForward = Vector3.RotateTowards(curDir, pairDir, Mathf.Deg2Rad * (angel / 2), 0);
+        // float pairAngel = Vector3.Angle(pairDir, direction);
+        // float avgAngel = (angel + pairAngel) / 2;
+        // if (avgAngel < 10) {
+        //     walkStright = 1;
+        // } else if (avgAngel < 90) {
+        //     walkStright = 0;
+        // }
+        float tfpairProject = Vector3.Dot(pair.transform.position, twoFootForward);
+        float tfProject = Vector3.Dot(transform.position, twoFootForward);
+        float tfProjectDis = tfpairProject - tfProject;
+        
         float pairDirProject = Vector3.Dot(pair.transform.position, direction);
         float dirProject = Vector3.Dot(transform.position, direction);
-        if (pairDirProject >= dirProject)
-            // || Math.Abs(Vector3.Angle(transform.forward, direction)) > Math.Abs(Vector3.Angle(pair.transform.forward, direction)))
-        {
-            float pairProjectDis = pairDirProject - dirProject;
-            // Start the step coroutine
+        float pairProjectDis = pairDirProject - dirProject;
+        bool twoFootAlign = false;
+        if (pairComponent.Moving) {
+            // Debug.Log(this.GetType().Name + " continue moving ");
             StartCoroutine(MoveToHome(pairProjectDis));
+        } else {
+            // Debug.Log(this.GetType().Name + " tfProjectDis " + tfProjectDis);
+            if (Math.Abs(tfProjectDis) < 0.1) {
+                twoFootAlign = true;
+            } else {
+                twoFootAlign  = false;
+            }
+            if (twoFootAlign) {
+                Vector3 standVector =
+                        isRightFoot > 0
+                        ? (pair.transform.position - transform.position)
+                        : (transform.position - pair.transform.position);
+                float startAngel = Vector3.SignedAngle(standVector, direction, Vector3.up);
+                bool startRight = false;
+                if (startAngel >= 90 && startAngel < 180) {
+                    startRight = true;
+                } else if (startAngel > 0 && startAngel < 90) {
+                    startRight = false;
+                }
+                // Debug.Log(this.GetType().Name + " startRight " + startRight);
+                // Debug.Log(this.GetType().Name + " isRightFoot " + isRightFoot);
+                if (!pairComponent.Moving
+                    && ((startRight && isRightFoot > 0)
+                    || (!startRight && isRightFoot < 0)))
+                {
+                    // Start the step coroutine
+                    // Debug.Log(this.GetType().Name + " start ");
+                    StartCoroutine(MoveToHome(pairProjectDis));
+                }
+            } else {
+                if (pairDirProject >= dirProject) {
+                    StartCoroutine(MoveToHome(pairProjectDis));
+                }
+            }
         }
     }
 

@@ -18,13 +18,17 @@ public class HumanIKController : MonoBehaviour
     inputModule.OnMoveDelegates += MovementInput;
     
   }
+
+  public Vector3 getMovement() {
+    return _movement;
+  }
   private void MovementInput(Vector2 movement) {
       _movement = movement;
   }
   private void Update() {
     // Run continuously
     bool tmp = walking;
-    walking = _movement.y > 0;
+    walking = _movement.y > 0 || Mathf.Abs(_movement.x) > 0;
     if (tmp && !walking) {
       frontLeftLegStepper.handleEvent(EVENT_STOP_WALKING);
       frontRightLegStepper.handleEvent(EVENT_STOP_WALKING);

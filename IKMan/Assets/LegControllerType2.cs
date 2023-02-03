@@ -44,6 +44,7 @@ public class LegControllerType2 : MonoBehaviour
     [SerializeField] Transform hint;
     [SerializeField] CameraModule cameraModule;
     [SerializeField] float maxFootBodyAngel = 30;
+    [SerializeField] float detourFac = 3;
 
     //state variable
     public bool Moving;
@@ -77,6 +78,7 @@ public class LegControllerType2 : MonoBehaviour
         forward.y = 0;
         forward.Normalize();
         Vector3 footDir = forward;
+        Vector3 detour = Vector3.zero;
         Vector3 right = owner.transform.right;
         right.y = 0;
         right.Normalize();
@@ -95,6 +97,10 @@ public class LegControllerType2 : MonoBehaviour
         Vector3 overshootVector = forward * (pairProjectDis + halfStepDistance);
         // Vector3 overshootVector = forward * halfStepDistance;
         float pairDeg = Math.Abs(Vector3.Angle(pairDir, curDir));
+        int corss = crossDir(transform.position, pair.position, forward);
+        if (corss * isRightFoot < 0) {
+            Debug.Log(this.GetType().Name + " cross ");
+        }
         if (deg > 20) {
                 // if (deg < 30) {
                 //     overshootVector = Utils.halfTowards(pairDir, forward, 0) * halfStepDistance * 0.90f;
@@ -103,48 +109,59 @@ public class LegControllerType2 : MonoBehaviour
                 // }
                 overshootVector = forward * halfStepDistance * 0.90f;
                 frontFollowup = true;
-        } else if (deg < -15 && pairDeg < 15) {
+        } else if ((deg < -15 && pairDeg < 15) || (corss  * isRightFoot < 0)) {
                 overshootVector =  Utils.halfTowards(pairDir, forward, 0) * halfStepDistance * 0.80f;
-                Vector3 footHalfDir = Utils.customTowards(curDir, footDir, 0.3f, 0);
+                Vector3 footHalfDir = Utils.customTowards(curDir, footDir, 0.75f, 0);
                 footDir = footHalfDir;
                 followup = true;
         } else {
         }
         overshootVector = Vector3.ProjectOnPlane(overshootVector, plane);
         Vector3 endPoint = transform.position + overshootVector;
-        // Vector3 endPoint = pair.position + overshootVector;
         if (followup) {
             endPoint = pair.position + overshootVector;
         } else if (frontFollowup) {
             endPoint = pair.position + overshootVector;
         }
         if (!followup && !frontFollowup) {
-            Debug.Log(this.GetType().Name + " stright ");
+            Debug.Log(this.GetType().Name + " straight " + isRightFoot);
             float curFeetBetween = calculateFeetBetween(endPoint, forward, pair.position) / 2;
-            int corss = crossDir(transform.position, pair.position, forward);
             if (curFeetBetween < feetBetween) {
-                Debug.Log(this.GetType().Name + " < ");
                 if (corss * isRightFoot < 0) {
                     endPoint += right * feetBetween * isRightFoot * 3;
                 } else {
                     endPoint += right * Mathf.Abs(feetBetween - curFeetBetween) * isRightFoot * 3;
                 }
             } else if (curFeetBetween > feetBetween) {
-                Debug.Log(this.GetType().Name + " > ");
                 if (corss * isRightFoot < 0) {
                     endPoint += right * feetBetween * isRightFoot * 3;
                 } else {
                     endPoint -= right * Mathf.Abs(feetBetween - curFeetBetween) * isRightFoot * 3;
                 }
             }
-            Debug.Log(this.GetType().Name + " isRightFoot " + isRightFoot);
-            Debug.Log(this.GetType().Name + " corss " + corss);
         } else {
-            Debug.Log(this.GetType().Name + " followup ");
             endPoint += pairRight * 2 * feetBetween * isRightFoot;
         }
+        //check detour
+        int rc = routConflict(endPoint - transform.position, pair.position - transform.position);
+        bool takeDetour = rc * isRightFoot > 0;
+        if (corss * isRightFoot < 0 || takeDetour) {
+            Debug.Log(this.GetType().Name + " rc * isRightFoot " + (rc * isRightFoot) + isRightFoot);
+            detour = Utils.right(transform) * detourFac * feetBetween * isRightFoot;
+            detour.y = 0;
+        }
          endPoint.y = 0;
-        return new Vector3[] { endPoint, footDir };
+        return new Vector3[] { endPoint, footDir, detour};
+    }
+
+    private int routConflict(Vector3 route, Vector3 pairFoot) {
+        Vector3 cross = Vector3.Cross(route, pairFoot);
+        if (cross.y > 0) {
+            return 1;
+        } else if (cross.y < 0) {
+            return -1;
+        }
+        return 0;
     }
 
     private int crossDir(Vector3 d1, Vector3 d2, Vector3 forward) {
@@ -176,10 +193,15 @@ public class LegControllerType2 : MonoBehaviour
         Vector3[] Points = getEndPoint(owner.transform, pairProjectDis, plane);
         Vector3 endPoint = Points[0];
         Vector3 footDir = Points[1];
+        Vector3 detour = Points[2];
         Vector3 forward2 = (endPoint - transform.position).normalized;
         float walkDis = Vector3.ProjectOnPlane((endPoint - transform.position), plane).magnitude;
         Vector3 wp1 = transform.position + (up * preLiftDistance) + forward2 * (walkDis / 6);
         Vector3 wp2 = transform.position + (up * -swingDownDistance) + forward2 * (walkDis / 2);
+        if (detour.magnitude > 0) {
+            Debug.Log(this.GetType().Name + " take detour ");
+            wp2 += detour;
+        }
         Vector3 wp3 = transform.position + (up * postLiftDistance) + forward2 * (5 * walkDis / 6);
         Vector3 wp4 = endPoint;
 
@@ -218,6 +240,7 @@ public class LegControllerType2 : MonoBehaviour
                 //     stage2Started = true;
                 // }
                 float poc = Mathf.Lerp(0, 1, (normalizedTime - stage1) / (stage2 - stage1));
+                // poc = EasingFunction.EaseInOutCubic(0, 1, poc);
                 transform.position =
                 Vector3.Lerp(
                     Vector3.Lerp(wp1, wp2, poc),
@@ -267,11 +290,13 @@ public class LegControllerType2 : MonoBehaviour
 
     private void syncPairFootDir()
     {
-        Vector3 bf = Utils.forward(body.transform);
-        Vector3 tf = Utils.forward(pair);
-        float deg = Vector3.Angle(bf, tf);
-        if (deg > maxFootBodyAngel) {
-            pair.rotation = Utils.dampTrack(pair, bf, 5);
+        if (!pairComponent.Moving) {
+            Vector3 bf = Utils.forward(body.transform);
+            Vector3 tf = Utils.forward(pair);
+            float deg = Vector3.Angle(bf, tf);
+            if (deg > maxFootBodyAngel) {
+                pair.rotation = Utils.dampTrack(pair, bf, 5);
+            }
         }
     }
 
@@ -316,6 +341,7 @@ public class LegControllerType2 : MonoBehaviour
             isRightFoot = -pairComponent.isRightFoot;
             preMoveOvershootFix = pairComponent.preMoveOvershootFix;
             maxFootBodyAngel = pairComponent.maxFootBodyAngel;
+            detourFac = pairComponent.detourFac;
         }
     }
 

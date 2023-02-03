@@ -25,7 +25,6 @@ public class CameraFollower : MonoBehaviour
         Vector2 m = humanIKController.getMovement();
         if (humanIKController.walking) {
             Vector3 targetDir = Utils.forward(camera) * m.y + Utils.right(camera) * m.x;
-            Debug.Log(this.GetType().Name + " targetDir " + targetDir);
             Quaternion tr = Quaternion.LookRotation(targetDir);       
             Quaternion r = Quaternion.Slerp(
                 follower.rotation,

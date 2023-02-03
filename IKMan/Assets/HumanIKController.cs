@@ -28,7 +28,7 @@ public class HumanIKController : MonoBehaviour
   private void Update() {
     // Run continuously
     bool tmp = walking;
-    walking = _movement.y > 0 || Mathf.Abs(_movement.x) > 0;
+    walking = _movement.y > 0 || Mathf.Abs(_movement.x) > 0 || _movement.y < 0;
     if (tmp && !walking) {
       frontLeftLegStepper.handleEvent(EVENT_STOP_WALKING);
       frontRightLegStepper.handleEvent(EVENT_STOP_WALKING);

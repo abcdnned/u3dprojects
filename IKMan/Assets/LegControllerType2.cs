@@ -47,6 +47,9 @@ public class LegControllerType2 : MonoBehaviour
     [SerializeField] float maxFootBodyAngel = 30;
     [SerializeField] float detourFac = 3;
 
+    [SerializeField] bool cgFoot = true;
+
+
     //state variable
     public bool Moving;
 
@@ -58,8 +61,21 @@ public class LegControllerType2 : MonoBehaviour
 
     // Is the leg moving?
 
+    private void setPairCGFoot(bool v) {
+        cgFoot = v;
+        pairComponent.cgFoot = !v;
+    }
+
+    private void setCGFoot(bool v) {
+        cgFoot = v;
+    }
+
     private void Awake() {
         stepCount = 0;
+    }
+
+    public bool isStandGravity() {
+        return transform.position.y < 0.1f;
     }
     private void Update() {
         Vector3 d = transform.forward;
@@ -209,7 +225,7 @@ public class LegControllerType2 : MonoBehaviour
         Moving = true;
         Vector2 m = humanIKController.getMovement();
         Vector3 targetDir = Utils.forward(cameraModule.Camera.transform) * m.y + Utils.right(cameraModule.Camera.transform) * m.x;
-        Debug.Log(this.GetType().Name + " td " + targetDir);
+        // Debug.Log(this.GetType().Name + " td " + targetDir);
         cameraFollower.setDir(targetDir);
         stepCount++;
 
@@ -246,68 +262,110 @@ public class LegControllerType2 : MonoBehaviour
             walkBalance.startWalk();
             walkPoseStarted = true;
         }
+        bool init1 = false;
+        bool init2 = false;
+        bool init3 = false;
+        Vector3 lastPosition = Vector3.zero;
         do
         {
+            Vector3 forward3 = Utils.forward(body.transform);
+            Vector3 right3 = Utils.right(body.transform);
             timeElapsed += Time.deltaTime;
             normalizedTime = timeElapsed / duration;
-            bool init1 = false;
-            bool init2 = false;
-            Vector3 lastPosition = Vector3.zero;
             if (normalizedTime >= 0 && normalizedTime <= stage1) {
                 if (!init1) {
                     lastPosition = startPoint;
                     init1 = true;
                 }
                 float poc = Mathf.Lerp(0, 1, normalizedTime / stage1);
-                Vector3 targetPosition = Vector3.Lerp(
+                Vector3 targetPosition =
+                Vector3.Lerp(
                     startPoint,
                     wp1,
                     poc
                 );
                 Vector3 delta = targetPosition - lastPosition;
-                transform.position += forward * delta.z
-                                      + right * delta.x
-                                      + plane * delta.y;
+                transform.position += forward3 * Vector3.Dot(delta, forward)
+                                      + right3 * Vector3.Dot(delta, right)
+                                      + plane * Vector3.Dot(delta, plane);
+                // transform.position += delta;
                 lastPosition = targetPosition;
+                // transform.position = 
+                // Vector3.Lerp(
+                //     startPoint,
+                //     wp1,
+                //     poc
+                // );
                 Vector3 curAngel = transform.localEulerAngles;
                 float walkAngel = Mathf.Lerp(0, walkFeetAngel, poc);
                 transform.localEulerAngles = new Vector3(walkAngel, curAngel.y, curAngel.z);
             } else if (normalizedTime >= stage1 && normalizedTime <= stage2) {
-                //start stage2
-                // if (!stage2Started) {
-                //     endPoint = getEndPoint(owner.transform, pairProjectDis, plane, footDir);
-                //     Debug.Log(this.GetType().Name + "reclate endPoint " + endPoint);
-                //     forward2 = (endPoint - transform.position).normalized;
-                //     walkDis = Vector3.ProjectOnPlane((endPoint - transform.position), plane).magnitude;
-                //     wp2 = transform.position + (up * -swingDownDistance) + forward2 * (walkDis / 2);
-                //     wp3 = transform.position + (up * postLiftDistance) + forward2 * (5 * walkDis / 6);
-                //     wp4 = endPoint;
-                //     stage2Started = true;
-                // }
+                if (!init2) {
+                    lastPosition = wp1;
+                    init2 = true;
+                }
                 float poc = Mathf.Lerp(0, 1, (normalizedTime - stage1) / (stage2 - stage1));
-                // poc = EasingFunction.EaseInOutCubic(0, 1, poc);
-                transform.position =
+                // Vector3.Lerp(wp1, wp3, poc);
+                Vector3 targetPosition =
                 Vector3.Lerp(
                     Vector3.Lerp(wp1, wp2, poc),
                     Vector3.Lerp(wp2, wp3, poc),
                     poc
                 );
+                Vector3 delta = targetPosition - lastPosition;
+                // Debug.Log(this.GetType().Name + " targetPosition " + targetPosition);
+                // Debug.Log(this.GetType().Name + " lastPosition " + lastPosition);
+                // Debug.Log(this.GetType().Name + " delta " + delta);
+                // transform.position += forward * delta.z;
+                                    //   + right * delta.z
+                                    //   + plane * delta.y;
+                // transform.position += delta;
+                transform.position += forward3 * Vector3.Dot(delta, forward)
+                                      + right3 * Vector3.Dot(delta, right)
+                                      + plane * Vector3.Dot(delta, plane);
+                lastPosition = targetPosition;
+
+                // transform.position = 
+                // Vector3.Lerp(
+                //     Vector3.Lerp(wp1, wp2, poc),
+                //     Vector3.Lerp(wp2, wp3, poc),
+                //     poc
+                // );
                 Vector3 curAngel = transform.localEulerAngles;
                 float walkAngel = Mathf.Lerp(walkFeetAngel, walkFeetAngel2, poc);
                 transform.localEulerAngles = new Vector3(walkAngel, curAngel.y, curAngel.z);
                 // syncFootDirection(footDir, normalizedTime);
             } else {
+                if (!init3) {
+                    lastPosition = wp3;
+                    init3 = true;
+                }
                 if (!forwardDampingStarted) {
                     walkBalance.startForwardDamping(dampingDuration);
                     forwardDampingStarted = true;
                 }
                 float poc = Mathf.Lerp(0, 1, (normalizedTime - stage2) / (1 - stage2));
-                transform.position =
+                Vector3 targetPosition =
                 Vector3.Lerp(
                     wp3,
                     wp4,
                     poc
                 );
+                Vector3 delta = targetPosition - lastPosition;
+                transform.position += forward3 * Vector3.Dot(delta, forward)
+                                      + right3 * Vector3.Dot(delta, right)
+                                      + plane * Vector3.Dot(delta, plane);
+                // transform.position += forward * delta.z
+                //                       + right * delta.x
+                //                       + plane * delta.y;
+                // transform.position += delta;
+                lastPosition = targetPosition;
+                // transform.position = 
+                // Vector3.Lerp(
+                //     wp3,
+                //     wp4,
+                //     poc
+                // );
                 Vector3 curAngel = transform.localEulerAngles;
                 float walkAngel = Mathf.Lerp(walkFeetAngel2, 0, poc);
                 transform.localEulerAngles = new Vector3(walkAngel, curAngel.y, curAngel.z);
@@ -415,7 +473,8 @@ public class LegControllerType2 : MonoBehaviour
         if (!checkPairStatusAndDecideToMove()) return;
 
         // Vector3 direction = cameraModule.Camera.transform.forward;
-        Vector3 direction = owner.gameObject.transform.forward;
+        // Vector3 direction = owner.gameObject.transform.forward;
+        Vector3 direction = Utils.forward(body.transform);
         // Vector3 direction = pair.transform.forward;
         // int walkStright = 0;
         Vector3 curDir = transform.forward;

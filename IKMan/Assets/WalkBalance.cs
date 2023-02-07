@@ -6,6 +6,8 @@ public class WalkBalance : MonoBehaviour
 {
     [SerializeField] Transform left;
     [SerializeField] Transform right;
+    public LegControllerType2 leftLeg;
+    public LegControllerType2 rightLeg;
 
     [SerializeField] Transform target;
 
@@ -36,8 +38,42 @@ public class WalkBalance : MonoBehaviour
     void Update()
     {
         Vector3 center = (left.transform.position + right.transform.position) / 2;
-
+        Vector3 ov = Vector3.zero;
+        // if (humanIKController.walking) {
+            ov = Utils.forward(transform) * overshoot;
+        // }
         Vector3 dist = new Vector3(center.x, target.position.y, center.z);
+        // dist += ov;
+        // dist1 = Vector3.Lerp(
+        //                                 target.position,
+        //                                 dist,
+        //                                 1 - Mathf.Exp(-dampSpeed * Time.deltaTime)
+        //                             );
+        target.position = new Vector3(dist.x, target.position.y, dist.z);
+
+        // Debug.Log(this.GetType().Name + " left " + leftLeg.isStandGravity());
+        // Debug.Log(this.GetType().Name + " right " + rightLeg.isStandGravity());
+        // if ((!leftLeg.isStandGravity() && rightLeg.isStandGravity())
+        //     || (leftLeg.isStandGravity() && !rightLeg.isStandGravity())) {
+        //     Vector3 dist = leftLeg.isStandGravity() ? leftLeg.transform.position : rightLeg.transform.position;
+        //     dist1 = Vector3.Lerp(
+        //                                     target.position,
+        //                                     dist,
+        //                                     1 - Mathf.Exp(-dampSpeed * Time.deltaTime)
+        //                                 );
+        //     target.position = new Vector3(dist1.x, target.position.y, dist1.z);
+        // } else {
+        //     Debug.Log(this.GetType().Name + " center ");
+        //     Vector3 center = (left.transform.position + right.transform.position) / 2;
+        //     Vector3 dist = new Vector3(center.x, target.position.y, center.z);
+        //     dist1 = Vector3.Lerp(
+        //                                     target.position,
+        //                                     dist,
+        //                                     1 - Mathf.Exp(-dampSpeed * Time.deltaTime)
+        //                                 );
+        //     target.position = new Vector3(dist1.x, target.position.y, dist1.z);
+        // }
+
         // dist += target.forward * overshoot;
         // target.position = dist;
         // if (humanIKController.walking && forwardDamping) {
@@ -70,7 +106,6 @@ public class WalkBalance : MonoBehaviour
         //         }
         //     }
         // }
-        target.position = dist;
 
         // Vector3 direction = target.forward;
         // float lp = Vector3.Dot(left.position, direction);

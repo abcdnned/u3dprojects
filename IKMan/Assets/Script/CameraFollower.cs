@@ -8,7 +8,7 @@ public class CameraFollower : MonoBehaviour
     public LegControllerType2 rightLeg;
     public Transform follower;
     public Transform camera;
-    
+
     public bool lockdir = false;
     [SerializeField] float trackSpeed = 5;
 
@@ -76,7 +76,7 @@ public class CameraFollower : MonoBehaviour
     // }
 
     public void setDir(Vector3 v) {
-        Debug.Log(this.GetType().Name + " set dir " + v);
+        // Debug.Log(this.GetType().Name + " set dir " + v);
         targetDir = v;
     }
 
@@ -91,13 +91,18 @@ public class CameraFollower : MonoBehaviour
         // if (targetDir.magnitude == 0) return; 
         Vector2 m = humanIKController.getMovement();
         Vector3 dir = Utils.forward(camera) * m.y + Utils.right(camera) * m.x;
+        // Vector3 dir = Utils.forward(camera);
         Quaternion tr = Quaternion.LookRotation(dir);       
         Quaternion r = Quaternion.Slerp(
             follower.rotation,
             tr, 
             1 - Mathf.Exp(-trackSpeed * Time.deltaTime)
         );
+        leftLeg.transform.SetParent(follower);
+        rightLeg.transform.SetParent(follower);
         follower.rotation = r;
+        leftLeg.transform.SetParent(null);
+        rightLeg.transform.SetParent(null);
         // if (mainFoot != null) {
         //     float angel = Vector3.Angle(targetDir, f);
         //     if (angel > maxBodyAngel) {

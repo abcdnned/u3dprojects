@@ -8,6 +8,7 @@ public class HumanIKController : MonoBehaviour
   public LegControllerType2 frontRightLegStepper;
   private Vector2 _movement;
   internal bool walking;
+
   // Only allow diagonal leg pairs to step together
 
   private InputModule inputModule;

@@ -29,7 +29,7 @@ public class LegControllerType2 : MonoBehaviour
     [SerializeField] float walkFeetAngel = 50f;
     [SerializeField] float walkFeetAngel2 = 15f;
     [SerializeField] float feetBetween = 0.2f;
-
+    public int stepCount;
 
     [SerializeField] bool enable;
     [SerializeField] bool syncPair;
@@ -43,6 +43,7 @@ public class LegControllerType2 : MonoBehaviour
     [SerializeField]float preMoveOvershootFix = 0.3f;
     [SerializeField] Transform hint;
     [SerializeField] CameraModule cameraModule;
+    [SerializeField] CameraFollower cameraFollower;
     [SerializeField] float maxFootBodyAngel = 30;
     [SerializeField] float detourFac = 3;
 
@@ -58,7 +59,7 @@ public class LegControllerType2 : MonoBehaviour
     // Is the leg moving?
 
     private void Awake() {
-        cameraModule = owner.cameraModule;
+        stepCount = 0;
     }
     private void Update() {
         Vector3 d = transform.forward;
@@ -99,7 +100,7 @@ public class LegControllerType2 : MonoBehaviour
         float pairDeg = Math.Abs(Vector3.Angle(pairDir, curDir));
         int corss = crossDir(transform.position, pair.position, forward);
         if (corss * isRightFoot < 0) {
-            Debug.Log(this.GetType().Name + " cross ");
+            // Debug.Log(this.GetType().Name + " cross ");
         }
         if (deg > 20) {
                 // if (deg < 30) {
@@ -124,7 +125,7 @@ public class LegControllerType2 : MonoBehaviour
             endPoint = pair.position + overshootVector;
         }
         if (!followup && !frontFollowup) {
-            Debug.Log(this.GetType().Name + " straight " + isRightFoot);
+            // Debug.Log(this.GetType().Name + " straight " + isRightFoot);
             float curFeetBetween = calculateFeetBetween(endPoint, forward, pair.position) / 2;
             if (curFeetBetween < feetBetween) {
                 if (corss * isRightFoot < 0) {
@@ -146,12 +147,40 @@ public class LegControllerType2 : MonoBehaviour
         int rc = routConflict(endPoint - transform.position, pair.position - transform.position);
         bool takeDetour = rc * isRightFoot > 0;
         if (corss * isRightFoot < 0 || takeDetour) {
-            Debug.Log(this.GetType().Name + " rc * isRightFoot " + (rc * isRightFoot) + isRightFoot);
+            // Debug.Log(this.GetType().Name + " rc * isRightFoot " + (rc * isRightFoot) + isRightFoot);
             detour = Utils.right(transform) * detourFac * feetBetween * isRightFoot;
             detour.y = 0;
         }
          endPoint.y = 0;
         return new Vector3[] { endPoint, footDir, detour};
+    }
+
+    private Vector3[] getEndPoint2(Transform target, float pairProjectDis, Vector3 plane) {
+        Vector3 forward = Utils.forward(body.transform);
+        Vector3 right = Utils.right(body.transform);
+        Vector3 curDir = Utils.forward(transform);
+        Vector3 pairDir = Utils.forward(pair);
+        Vector3 pairRight = Utils.right(pair);
+        Vector3 overshootVector = forward * (pairProjectDis + halfStepDistance);
+        overshootVector = Vector3.ProjectOnPlane(overshootVector, plane);
+        Vector3 endPoint = transform.position + overshootVector;
+        int corss = crossDir(transform.position, pair.position, forward);
+        float curFeetBetween = calculateFeetBetween(endPoint, forward, pair.position) / 2;
+        if (curFeetBetween < feetBetween) {
+            if (corss * isRightFoot < 0) {
+                endPoint += right * feetBetween * isRightFoot * 3;
+            } else {
+                endPoint += right * Mathf.Abs(feetBetween - curFeetBetween) * isRightFoot * 3;
+            }
+        } else if (curFeetBetween > feetBetween) {
+            if (corss * isRightFoot < 0) {
+                endPoint += right * feetBetween * isRightFoot * 3;
+            } else {
+                endPoint -= right * Mathf.Abs(feetBetween - curFeetBetween) * isRightFoot * 3;
+            }
+        }
+        endPoint.y = 0;
+        return new Vector3[] { endPoint };
     }
 
     private int routConflict(Vector3 route, Vector3 pairFoot) {
@@ -178,6 +207,11 @@ public class LegControllerType2 : MonoBehaviour
     {
         sync();
         Moving = true;
+        Vector2 m = humanIKController.getMovement();
+        Vector3 targetDir = Utils.forward(cameraModule.Camera.transform) * m.y + Utils.right(cameraModule.Camera.transform) * m.x;
+        Debug.Log(this.GetType().Name + " td " + targetDir);
+        cameraFollower.setDir(targetDir);
+        stepCount++;
 
         Vector3 startPoint = transform.position;
         Quaternion startRot = transform.rotation;
@@ -186,22 +220,22 @@ public class LegControllerType2 : MonoBehaviour
         float timeElapsed = 0;
         float duration = moveDuration;
         Vector3 plane = Vector3.up;
-        Vector3 forward = owner.transform.forward;
-        forward.y = 0;
-        forward.Normalize();
+        Vector3 forward = Utils.forward(body.transform);
+        Vector3 right = Utils.right(body.transform);
         Vector3 up = owner.transform.up;
-        Vector3[] Points = getEndPoint(owner.transform, pairProjectDis, plane);
+        Vector3[] Points = getEndPoint2(owner.transform, pairProjectDis, plane);
         Vector3 endPoint = Points[0];
-        Vector3 footDir = Points[1];
-        Vector3 detour = Points[2];
+        // Vector3 footDir = Points[1];
+        // Vector3 detour = Points[2];
+
         Vector3 forward2 = (endPoint - transform.position).normalized;
         float walkDis = Vector3.ProjectOnPlane((endPoint - transform.position), plane).magnitude;
         Vector3 wp1 = transform.position + (up * preLiftDistance) + forward2 * (walkDis / 6);
         Vector3 wp2 = transform.position + (up * -swingDownDistance) + forward2 * (walkDis / 2);
-        if (detour.magnitude > 0) {
-            Debug.Log(this.GetType().Name + " take detour ");
-            wp2 += detour;
-        }
+        // if (detour.magnitude > 0) {
+        //     // Debug.Log(this.GetType().Name + " take detour ");
+        //     wp2 += detour;
+        // }
         Vector3 wp3 = transform.position + (up * postLiftDistance) + forward2 * (5 * walkDis / 6);
         Vector3 wp4 = endPoint;
 
@@ -216,14 +250,25 @@ public class LegControllerType2 : MonoBehaviour
         {
             timeElapsed += Time.deltaTime;
             normalizedTime = timeElapsed / duration;
+            bool init1 = false;
+            bool init2 = false;
+            Vector3 lastPosition = Vector3.zero;
             if (normalizedTime >= 0 && normalizedTime <= stage1) {
+                if (!init1) {
+                    lastPosition = startPoint;
+                    init1 = true;
+                }
                 float poc = Mathf.Lerp(0, 1, normalizedTime / stage1);
-                transform.position =
-                Vector3.Lerp(
+                Vector3 targetPosition = Vector3.Lerp(
                     startPoint,
                     wp1,
                     poc
                 );
+                Vector3 delta = targetPosition - lastPosition;
+                transform.position += forward * delta.z
+                                      + right * delta.x
+                                      + plane * delta.y;
+                lastPosition = targetPosition;
                 Vector3 curAngel = transform.localEulerAngles;
                 float walkAngel = Mathf.Lerp(0, walkFeetAngel, poc);
                 transform.localEulerAngles = new Vector3(walkAngel, curAngel.y, curAngel.z);
@@ -250,7 +295,7 @@ public class LegControllerType2 : MonoBehaviour
                 Vector3 curAngel = transform.localEulerAngles;
                 float walkAngel = Mathf.Lerp(walkFeetAngel, walkFeetAngel2, poc);
                 transform.localEulerAngles = new Vector3(walkAngel, curAngel.y, curAngel.z);
-                syncFootDirection(footDir, normalizedTime);
+                // syncFootDirection(footDir, normalizedTime);
             } else {
                 if (!forwardDampingStarted) {
                     walkBalance.startForwardDamping(dampingDuration);
@@ -269,6 +314,7 @@ public class LegControllerType2 : MonoBehaviour
             }
 
             syncPairFootDir();
+            syncFootBodyRotation();
             
             if (timeElapsed >= duration) {
                 break;
@@ -286,6 +332,11 @@ public class LegControllerType2 : MonoBehaviour
         if (transferStand.read()) {
             TryTransferStand();
         }
+    }
+
+    private void syncFootBodyRotation() {
+        Vector3 bf = Utils.forward(body.transform);
+        transform.rotation = Utils.dampTrack(transform, bf, 5);
     }
 
     private void syncPairFootDir()
@@ -407,9 +458,9 @@ public class LegControllerType2 : MonoBehaviour
                         : (transform.position - pair.transform.position);
                 float startAngel = Vector3.SignedAngle(standVector, direction, Vector3.up);
                 bool startRight = false;
-                if (startAngel >= 90 && startAngel < 180) {
+                if (startAngel >= 90 && startAngel <= 180) {
                     startRight = true;
-                } else if (startAngel > 0 && startAngel < 90) {
+                } else if (startAngel >= 0 && startAngel < 90) {
                     startRight = false;
                 }
                 // Debug.Log(this.GetType().Name + " startRight " + startRight);
@@ -463,17 +514,31 @@ public class LegControllerType2 : MonoBehaviour
 
         float timeElapsed = 0;
         Vector3 wp1 = transform.position;
-        Vector3 wp2 = homeTransform.position;
+        // Vector3 wp2 = homeTransform.position;
+        // Vector3 direction = owner.gameObject.transform.forward;
         Vector3 direction = owner.gameObject.transform.forward;
+        // Vector3 wp2 = homeTransform.position;
+
+        // Vector3 wp2 = pair.position + Utils.right(owner.transform) * 2 * feetBetween * isRightFoot;
+        Vector3 wp2 = pair.position + Utils.right(body.transform) * 2 * feetBetween * isRightFoot;
         float homeDot = Vector3.Dot(homeTransform.position, direction);
         float thisDot = Vector3.Dot(transform.position, direction);
         float pairDot = Vector3.Dot(pairComponent.transform.position, direction);
-        if (pairDot > homeDot) {
-            wp2 = transform.position + direction * (pairDot - thisDot);
+        if (pairDot > thisDot) {
+            // wp2 = transform.position + direction * (pairDot - thisDot);
         }
         else if (homeDot < thisDot) {
             wp2 = wp1;
         }
+        // float homeDot = Vector3.Dot(homeTransform.position, direction);
+        // float thisDot = Vector3.Dot(transform.position, direction);
+        // float pairDot = Vector3.Dot(pairComponent.transform.position, direction);
+        // if (pairDot > homeDot) {
+        //     wp2 = transform.position + direction * (pairDot - thisDot);
+        // }
+        // else if (homeDot < thisDot) {
+        //     wp2 = wp1;
+        // }
         float duration = (wp2 - wp1).magnitude * 0.5f;
         // Debug.Log(this.GetType().Name + " duration " + duration);
         wp2.y = 0.01f;

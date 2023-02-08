@@ -466,6 +466,7 @@ public class LegControllerType2 : MonoBehaviour
 
     public void TryMove()
     {
+        Debug.Log(this.GetType().Name + " trymove enter ");
         if (!enable) return;
         // If we are already moving, don't start another move
         if (Moving) return;

@@ -53,6 +53,7 @@ public class CameraModule : MonoBehaviour {
     public float cameraRepositionOffset = 0.15f;
 
     public WalkPointer walkPointer;
+    public CameraFollower cameraFollower;
 
     void Start() {
         Camera = new GameObject("Active Ragdoll Camera", typeof(UnityEngine.Camera));
@@ -61,7 +62,6 @@ public class CameraModule : MonoBehaviour {
         _currentDistance = initialDistance;
         _startDirection = _lookPoint.forward;
 
-        CameraFollower cameraFollower = GetComponent<CameraFollower>();
         if (cameraFollower != null) {
             cameraFollower.camera = Camera.transform;
         }

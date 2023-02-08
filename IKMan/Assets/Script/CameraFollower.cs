@@ -38,7 +38,7 @@ public class CameraFollower : MonoBehaviour
     }
 
     // Update is called once per frame
-    void LateUpdate()
+    void Update()
     {
         if (!humanIKController.walking) return;
         // updateMovementChange();

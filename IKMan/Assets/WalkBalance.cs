@@ -43,7 +43,7 @@ public class WalkBalance : MonoBehaviour
             ov = Utils.forward(transform) * overshoot;
         // }
         Vector3 dist = new Vector3(center.x, target.position.y, center.z);
-        // dist += ov;
+        dist += ov;
         // dist1 = Vector3.Lerp(
         //                                 target.position,
         //                                 dist,

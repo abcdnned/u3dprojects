@@ -23,10 +23,25 @@ public class HumanIKController : MonoBehaviour
   public Vector3 getMovement() {
     return _movement;
   }
+
+  private int count = 10;
+  private bool f = false;
   private void MovementInput(Vector2 movement) {
       _movement = movement;
   }
   private void Update() {
+      // if (count > 0) {
+      //   count--;
+      // } else {
+      //   count = 10;
+      //   f = !f;
+      // }
+      // if (f) {
+      //   _movement = new Vector2(1,0);
+      // } else {
+      //   _movement = new Vector2(0,1);
+      // }
+      // Debug.Log(this.GetType().Name + " count " + count);
     // Run continuously
     bool tmp = walking;
     walking = _movement.y > 0 || Mathf.Abs(_movement.x) > 0 || _movement.y < 0;
@@ -34,6 +49,8 @@ public class HumanIKController : MonoBehaviour
       frontLeftLegStepper.handleEvent(EVENT_STOP_WALKING);
       frontRightLegStepper.handleEvent(EVENT_STOP_WALKING);
     }
+    // walking = true;
+    // Debug.Log(this.GetType().Name + " walking " + walking);
     if (walking)
     {
       // Try moving one diagonal pair of legs

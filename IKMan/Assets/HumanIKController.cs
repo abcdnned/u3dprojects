@@ -9,10 +9,13 @@ public class HumanIKController : MonoBehaviour
   private Vector2 _movement;
   internal bool walking;
 
+  [SerializeField] WalkBalance walkBalance;
+
   // Only allow diagonal leg pairs to step together
 
   private InputModule inputModule;
     public static string EVENT_STOP_WALKING = "stopWalking";
+    public static string EVENT_KEEP_WALKING = "keepWalking";
 
     private void Start() {
     inputModule = GetComponent<InputModule>();
@@ -24,7 +27,7 @@ public class HumanIKController : MonoBehaviour
     return _movement;
   }
 
-  private int count = 10;
+  private int count = 500;
   private bool f = false;
   private void MovementInput(Vector2 movement) {
       _movement = movement;
@@ -33,13 +36,13 @@ public class HumanIKController : MonoBehaviour
       // if (count > 0) {
       //   count--;
       // } else {
-      //   count = 10;
+      //   count = 500;
       //   f = !f;
       // }
       // if (f) {
-      //   _movement = new Vector2(1,0);
-      // } else {
       //   _movement = new Vector2(0,1);
+      // } else {
+      //   _movement = new Vector2(0,-1);
       // }
       // Debug.Log(this.GetType().Name + " count " + count);
     // Run continuously
@@ -48,6 +51,9 @@ public class HumanIKController : MonoBehaviour
     if (tmp && !walking) {
       frontLeftLegStepper.handleEvent(EVENT_STOP_WALKING);
       frontRightLegStepper.handleEvent(EVENT_STOP_WALKING);
+    }
+    if (!tmp && walking && walkBalance != null) {
+      walkBalance.setDampDist(0.5f);
     }
     // walking = true;
     // Debug.Log(this.GetType().Name + " walking " + walking);
@@ -72,6 +78,7 @@ public class HumanIKController : MonoBehaviour
       //   if (!frontRightLegStepper.Moving) break;
       //   yield return null;
       // } while (frontRightLegStepper.Moving);
+      frontRightLegStepper.handleEvent(EVENT_KEEP_WALKING);
       frontLeftLegStepper.TryMove();
       frontRightLegStepper.TryMove();
     } else {

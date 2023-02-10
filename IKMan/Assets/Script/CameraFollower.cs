@@ -9,6 +9,8 @@ public class CameraFollower : MonoBehaviour
     public Transform follower;
     public Transform camera;
 
+    public WalkBalance walkBalance;
+
     public bool lockdir = false;
     [SerializeField] float trackSpeed = 5;
 
@@ -89,6 +91,8 @@ public class CameraFollower : MonoBehaviour
         // Debug.Log(this.GetType().Name + " targetDir " + targetDir);
 
         // if (targetDir.magnitude == 0) return; 
+        Vector3 forward = Utils.forward(follower);
+        Vector3 right = Utils.right(follower);
         Vector2 m = humanIKController.getMovement();
         Vector3 dir = Utils.forward(camera) * m.y + Utils.right(camera) * m.x;
         // Vector3 dir = Utils.forward(camera);
@@ -103,6 +107,9 @@ public class CameraFollower : MonoBehaviour
         follower.rotation = r;
         leftLeg.transform.SetParent(null);
         rightLeg.transform.SetParent(null);
+        if (walkBalance != null) {
+            walkBalance.rotateCurrentDampDist(forward, right);
+        }
         // if (mainFoot != null) {
         //     float angel = Vector3.Angle(targetDir, f);
         //     if (angel > maxBodyAngel) {

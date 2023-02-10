@@ -13,6 +13,9 @@ public class WalkBalance : MonoBehaviour
 
     [SerializeField] float overshoot = 0.2f;
     [SerializeField] float dampSpeed = 2f;
+    [SerializeField] float returnCenterSpeed = 6f;
+
+    private float finalDampSpeed = 2f;
     [SerializeField] float dampDis = 0.1f;
     [SerializeField] float afterDampingSpeed = 1f;
 
@@ -34,22 +37,59 @@ public class WalkBalance : MonoBehaviour
 
     private Vector3 dist1, dist2 = new Vector3(0,0,0);
 
+    private float centerForward = 0;
+    public float centerForwardSpeed = 0.05f;
+    public float centerFowardDownSpeed = 0.03f;
+
+    public float centerForwardMax = 0.15f;
+
+    public bool centerForwardFalg = false;
+
+    public Vector3 dampDist = new Vector3(0,0,0);
+
+    public void centerForwardIncrease() {
+        centerForwardFalg = true;
+    }
 
     void Update()
     {
-        Vector3 center = (left.transform.position + right.transform.position) / 2;
-        Vector3 ov = Vector3.zero;
+        // Vector3 ov = Vector3.zero;
         // if (humanIKController.walking) {
-            ov = Utils.forward(transform) * overshoot;
         // }
-        Vector3 dist = new Vector3(center.x, target.position.y, center.z);
-        dist += ov;
+        // if (centerForwardFalg) {
+        //     if (centerForward < centerForwardMax) {
+        //         centerForward += centerForwardSpeed;
+        //     } else {
+        //         centerForward -= centerFowardDownSpeed;
+        //         centerForwardFalg = false;
+        //     }
+        // } else {
+        //     centerForward -= centerFowardDownSpeed;
+        // }
+        // centerForward = Mathf.Clamp(centerForward, 0, centerForwardMax);
+        // if (centerForward != 0) {
+        //     Debug.Log(this.GetType().Name + " centerForward " + centerForward);
+        // }
+        // ov = Utils.forward(transform) * centerForward;
+        if (!humanIKController.walking || leftLeg.Recover || rightLeg.Recover) {
+            Vector3 center = (left.transform.position + right.transform.position) / 2;
+            Vector3 dist = new Vector3(center.x, target.position.y, center.z);
+            dist += Utils.forward(transform) * overshoot;
+            dist = new Vector3(dist.x, target.position.y, dist.z);
+            target.position = Vector3.Lerp(
+                                        target.position,
+                                        dist,
+                                        1 - Mathf.Exp(-returnCenterSpeed * Time.deltaTime)
+                                    );
+        } else {
+            keepBalanceWhenWalking();
+        }
+        // dist += ov;
         // dist1 = Vector3.Lerp(
         //                                 target.position,
         //                                 dist,
         //                                 1 - Mathf.Exp(-dampSpeed * Time.deltaTime)
         //                             );
-        target.position = new Vector3(dist.x, target.position.y, dist.z);
 
         // Debug.Log(this.GetType().Name + " left " + leftLeg.isStandGravity());
         // Debug.Log(this.GetType().Name + " right " + rightLeg.isStandGravity());
@@ -122,6 +162,30 @@ public class WalkBalance : MonoBehaviour
         // target.position = new Vector3(target.position.x, target.position.y, dist.z);
     }
 
+    private void keepBalanceWhenWalking() {
+        target.position = Vector3.Lerp(
+                                        target.position,
+                                        dampDist,
+                                        1 - Mathf.Exp(-finalDampSpeed * Time.deltaTime)
+                                    );
+    }
+
+    public void rotateCurrentDampDist(Vector3 forward, Vector3 right) {
+        Vector3 offset =  dampDist - transform.position;
+        float z = Vector3.Dot(offset, forward);
+        float x = Vector3.Dot(offset, right);
+        Vector3 new_offset = transform.position + Utils.forward(transform) * z + Utils.right(transform) * x;
+        dampDist = new_offset;
+    }
+
+    public void setDampDist(float fac) {
+        Vector3 center = (left.transform.position + right.transform.position) / 2;
+        Vector3 dist = new Vector3(center.x, target.position.y, center.z);
+        dist += Utils.forward(transform) * dampDis * fac;
+        finalDampSpeed = dampSpeed * fac;
+        dampDist = dist;
+    }
+
     public void startForwardDamping(float duration) {
         forwardDampingDuration = duration;
         forwardDampingTimeElapse = 0f;
@@ -136,11 +200,11 @@ public class WalkBalance : MonoBehaviour
         // Debug.Log(this.GetType().Name + " stop damp ");
     }
 
-    IEnumerator walkPose()
+    IEnumerator walkPose(float moveDuration)
     {
         walkPosing = true;
         float timeElapsed = 0;
-        float duration = walkPoseDuration;
+        float duration = moveDuration;
         timeElapsed += Time.deltaTime;
         Vector2 startPoint = new Vector2(0, 0);
         Vector2 endPoint = new Vector2(2, 0);
@@ -172,9 +236,14 @@ public class WalkBalance : MonoBehaviour
         while (timeElapsed < duration);
         walkPosing = false;
     }
-    public void startWalk() {
-        if (walkPosing) return;
-        StartCoroutine(walkPose());
+    public void startWalk(float moveDuration) {
+        if (walkPosing) {
+            // Debug.Log(this.GetType().Name + " still walk pose ");
+            return;
+        } else {
+            // Debug.Log(this.GetType().Name + " walkPose ");
+        }
+        StartCoroutine(walkPose(moveDuration));
         // Debug.Log(this.GetType().Name + " startWalk ");
     }
 

@@ -17,6 +17,10 @@ public class ReadTrigger {
         return value;
     }
 
+    public void clear() {
+        value = false;
+    }
+
     public bool read() {
         // Debug.Log(this.GetType().Name + " read " + value);
         bool result = value;

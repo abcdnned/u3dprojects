@@ -105,11 +105,11 @@ public class CameraFollower : MonoBehaviour
         leftLeg.transform.SetParent(follower);
         rightLeg.transform.SetParent(follower);
         follower.rotation = r;
-        leftLeg.transform.SetParent(null);
-        rightLeg.transform.SetParent(null);
         if (walkBalance != null) {
             walkBalance.rotateCurrentDampDist(forward, right);
         }
+        leftLeg.transform.SetParent(null);
+        rightLeg.transform.SetParent(null);
         // if (mainFoot != null) {
         //     float angel = Vector3.Angle(targetDir, f);
         //     if (angel > maxBodyAngel) {

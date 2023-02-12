@@ -376,7 +376,7 @@ public class LegControllerType2 : MonoBehaviour
             } 
             walkingStopTime.countDown(Time.deltaTime);
             if (normalizedTime >= stage1 && walkingStopTime.check()) {
-                Debug.Log(this.GetType().Name + " transferStand.set() ");
+                // Debug.Log(this.GetType().Name + " transferStand.set() ");
                 transferStand.set();
                 break;
             }

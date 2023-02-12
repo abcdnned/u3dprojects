@@ -24,6 +24,14 @@ public class WalkBalance : MonoBehaviour
     [SerializeField] float walkPoseLift = 0.1f;
     [SerializeField] bool walkPosing = false;
     [SerializeField] HumanIKController humanIKController;
+    [SerializeField] Transform direction;
+
+    private Vector3 lastDampStart;
+
+    private float dampSum;
+
+    private int dampCount;
+
 
 
     private bool afterDamping = false;
@@ -71,7 +79,12 @@ public class WalkBalance : MonoBehaviour
         //     Debug.Log(this.GetType().Name + " centerForward " + centerForward);
         // }
         // ov = Utils.forward(transform) * centerForward;
-        if (!humanIKController.walking || leftLeg.Recover || rightLeg.Recover) {
+        // if (!humanIKController.walking || leftLeg.Recover || rightLeg.Recover) {
+        // Debug.Log(this.GetType().Name + "wu");
+        if ((leftLeg.Moving && !leftLeg.Recover) || (rightLeg.Moving && !rightLeg.Recover)) {
+            keepBalanceWhenWalking();
+        } else {
+            // Debug.Log(this.GetType().Name + " center ");
             Vector3 center = (left.transform.position + right.transform.position) / 2;
             Vector3 dist = new Vector3(center.x, target.position.y, center.z);
             dist += Utils.forward(transform) * overshoot;
@@ -81,8 +94,6 @@ public class WalkBalance : MonoBehaviour
                                         dist,
                                         1 - Mathf.Exp(-returnCenterSpeed * Time.deltaTime)
                                     );
-        } else {
-            keepBalanceWhenWalking();
         }
         // dist += ov;
         // dist1 = Vector3.Lerp(
@@ -163,25 +174,49 @@ public class WalkBalance : MonoBehaviour
     }
 
     private void keepBalanceWhenWalking() {
-        target.position = Vector3.Lerp(
+        Vector3 forward2 = Utils.forward(target);
+        Vector3 right2 = Utils.right(target);
+        Vector3 plane = Vector3.up;
+        Vector3 tp = Vector3.Lerp(
+        // transform.position = Vector3.Lerp(
                                         target.position,
                                         dampDist,
                                         1 - Mathf.Exp(-finalDampSpeed * Time.deltaTime)
                                     );
+        Vector3 delta = tp - lastDampStart;
+        dampSum += delta.magnitude;
+        dampCount++;
+        // Debug.Log(this.GetType().Name + " dc " + dampCount);
+        // Debug.Log(this.GetType().Name + " delta " + delta);
+        // transform.position += delta;
+        transform.position += forward2 * Vector3.Dot(delta, forward2)
+                                + right2 * Vector3.Dot(delta, right2)
+                                + Vector3.zero * Vector3.Dot(delta, plane);
+        lastDampStart = target.position;
+        Debug.DrawLine(target.position, dampDist, Color.red, Time.deltaTime);
+        Debug.DrawLine(target.position, left.position, Color.blue, Time.deltaTime);
+        Debug.DrawLine(target.position, right.position, Color.green, Time.deltaTime);
     }
 
     public void rotateCurrentDampDist(Vector3 forward, Vector3 right) {
-        Vector3 offset =  dampDist - transform.position;
+        Vector3 offset =  dampDist - target.position;
         float z = Vector3.Dot(offset, forward);
         float x = Vector3.Dot(offset, right);
-        Vector3 new_offset = transform.position + Utils.forward(transform) * z + Utils.right(transform) * x;
+        Vector3 forward2 = Utils.forward(target);
+        Vector3 right2 = Utils.right(target);
+        Vector3 new_offset = transform.position + forward2 * z + right2 * x;
         dampDist = new_offset;
     }
 
     public void setDampDist(float fac) {
         Vector3 center = (left.transform.position + right.transform.position) / 2;
         Vector3 dist = new Vector3(center.x, target.position.y, center.z);
-        dist += Utils.forward(transform) * dampDis * fac;
+        lastDampStart = target.position;
+        // Debug.Log(this.GetType().Name + " dampSum " + dampSum);
+        // Debug.Log(this.GetType().Name + " dampCount " + dampCount);
+        dampSum = 0;
+        dampCount = 0;
+        dist += Utils.forward(target) * dampDis * fac;
         finalDampSpeed = dampSpeed * fac;
         dampDist = dist;
     }

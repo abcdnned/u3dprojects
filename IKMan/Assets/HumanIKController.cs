@@ -52,9 +52,9 @@ public class HumanIKController : MonoBehaviour
       frontLeftLegStepper.handleEvent(EVENT_STOP_WALKING);
       frontRightLegStepper.handleEvent(EVENT_STOP_WALKING);
     }
-    if (!tmp && walking && walkBalance != null) {
-      walkBalance.setDampDist(0.5f);
-    }
+    // if (!tmp && walking && walkBalance != null) {
+    //   walkBalance.setDampDist(0.5f);
+    // }
     // walking = true;
     // Debug.Log(this.GetType().Name + " walking " + walking);
     if (walking)

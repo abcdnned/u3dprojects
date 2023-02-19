@@ -38,30 +38,30 @@ public class WalkBalance : MonoBehaviour
 
 
 
-    private bool afterDamping = false;
-    private bool forwardDamping = false;
+    // private bool afterDamping = false;
+    // private bool forwardDamping = false;
 
-    private float forwardDampingDuration = 0f;
+    // private float forwardDampingDuration = 0f;
 
-    private float forwardDampingTimeElapse = 0f;
+    // private float forwardDampingTimeElapse = 0f;
 
-    private Vector3 moveAcc = new Vector3(0,0,0);
+    // private Vector3 moveAcc = new Vector3(0,0,0);
 
-    private Vector3 dist1, dist2 = new Vector3(0,0,0);
+    // private Vector3 dist1, dist2 = new Vector3(0,0,0);
 
-    private float centerForward = 0;
-    public float centerForwardSpeed = 0.05f;
-    public float centerFowardDownSpeed = 0.03f;
+    // private float centerForward = 0;
+    // public float centerForwardSpeed = 0.05f;
+    // public float centerFowardDownSpeed = 0.03f;
 
-    public float centerForwardMax = 0.15f;
+    // public float centerForwardMax = 0.15f;
 
-    public bool centerForwardFalg = false;
+    // public bool centerForwardFalg = false;
 
     public Vector3 dampDist = new Vector3(0,0,0);
 
-    public void centerForwardIncrease() {
-        centerForwardFalg = true;
-    }
+    // public void centerForwardIncrease() {
+    //     centerForwardFalg = true;
+    // }
 
     void Update()
     {
@@ -230,19 +230,18 @@ public class WalkBalance : MonoBehaviour
         dampDist = dist;
     }
 
-    public void startForwardDamping(float duration) {
-        forwardDampingDuration = duration;
-        forwardDampingTimeElapse = 0f;
-        forwardDamping = true;
-        // Debug.Log(this.GetType().Name + " start damp ");
-    }
+    // public void startForwardDamping(float duration) {
+    //     forwardDampingDuration = duration;
+    //     forwardDampingTimeElapse = 0f;
+    //     forwardDamping = true;
+    // }
 
-    public void stopForwardDamping() {
-        forwardDampingDuration = 0f;
-        forwardDampingTimeElapse = 0f;
-        forwardDamping = false;
-        // Debug.Log(this.GetType().Name + " stop damp ");
-    }
+    // public void stopForwardDamping() {
+    //     forwardDampingDuration = 0f;
+    //     forwardDampingTimeElapse = 0f;
+    //     forwardDamping = false;
+    //     // Debug.Log(this.GetType().Name + " stop damp ");
+    // }
 
     IEnumerator walkPose(float moveDuration)
     {

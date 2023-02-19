@@ -284,7 +284,7 @@ public class LegControllerType2 : MonoBehaviour
         bool init3 = false;
         Vector3 lastPosition = Vector3.zero;
         bool walkPoseStarted = false;
-        bool centerForward = false;
+        // bool centerForward = false;
         do
         {
             Vector3 forward3 = Utils.forward(body.transform);
@@ -295,14 +295,17 @@ public class LegControllerType2 : MonoBehaviour
                 walkBalance.startWalk(moveDuration - (moveDuration * preStartMovingDistance));
                 walkPoseStarted = true;
             }
-            if (normalizedTime > 0.1 && !centerForward) {
-                walkBalance.centerForwardIncrease();
-                centerForward = true;
-            }
+            // if (normalizedTime > 0.1 && !centerForward) {
+            //     walkBalance.centerForwardIncrease();
+            //     centerForward = true;
+            // }
             if (normalizedTime >= 0 && normalizedTime <= stage1) {
                 if (!init1) {
                     lastPosition = startPoint;
                     init1 = true;
+                    float handDuration = moveDuration - (moveDuration * preStartMovingDistance);
+                    humanIKController.leftHand.TryMove(handDuration, isRightFoot);
+                    humanIKController.rightHand.TryMove(handDuration, isRightFoot);
                 }
                 float poc = Mathf.Lerp(0, 1, normalizedTime / stage1);
                 Vector3 targetPosition =
@@ -371,7 +374,7 @@ public class LegControllerType2 : MonoBehaviour
             
             if (timeElapsed >= duration) {
                 if (!forwardDampingStarted) {
-                    walkBalance.startForwardDamping(dampingDuration);
+                    // walkBalance.startForwardDamping(dampingDuration);
                     walkBalance.setDampDist(1f);
                     forwardDampingStarted = true;
                 }

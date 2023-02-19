@@ -104,12 +104,14 @@ public class CameraFollower : MonoBehaviour
         );
         leftLeg.transform.SetParent(follower);
         rightLeg.transform.SetParent(follower);
+        humanIKController.logHomeOffset();
         follower.rotation = r;
         if (walkBalance != null) {
             walkBalance.rotateCurrentDampDist(forward, right);
         }
         leftLeg.transform.SetParent(null);
         rightLeg.transform.SetParent(null);
+        humanIKController.postUpdateTowHandPosition();
         // if (mainFoot != null) {
         //     float angel = Vector3.Angle(targetDir, f);
         //     if (angel > maxBodyAngel) {

@@ -10,7 +10,7 @@ using UnityEngine.InputSystem;
 public class Event {
     // ---------- EXTERNAL INPUT ----------
 
-    private string eventId {get; set;}
+    internal string eventId;
 
 
 }

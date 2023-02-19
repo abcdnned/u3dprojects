@@ -6,8 +6,19 @@ public class HumanIKController : MonoBehaviour
 {
   public LegControllerType2 frontLeftLegStepper;
   public LegControllerType2 frontRightLegStepper;
+
+  public HandController leftHand;
+
+  public HandController rightHand;
+
   private Vector2 _movement;
   internal bool walking;
+
+  public string status;
+  public const string STATUS_MOVING = "STATUS_MOVING";
+  public const string STATUS_BATTLE_IDLE = "STATUS_BATTLE_IDLE";
+
+  private ActionStateMachine currentStatus;
 
   [SerializeField] WalkBalance walkBalance;
 
@@ -17,10 +28,18 @@ public class HumanIKController : MonoBehaviour
     public static string EVENT_STOP_WALKING = "stopWalking";
     public static string EVENT_KEEP_WALKING = "keepWalking";
 
+    public static string EVENT_IDLE = "idle";
+
     private void Start() {
     inputModule = GetComponent<InputModule>();
     inputModule.OnMoveDelegates += MovementInput;
+    inputModule.OnButtonRDelegates += ButtonR;
+    initStatus();
     
+  }
+
+  public void initStatus() {
+    currentStatus = new LocomotionState(this);
   }
 
   public Vector3 getMovement() {
@@ -31,6 +50,8 @@ public class HumanIKController : MonoBehaviour
   private bool f = false;
   private void MovementInput(Vector2 movement) {
       _movement = movement;
+  }
+  private void ButtonR() {
   }
   private void Update() {
       // if (count > 0) {
@@ -46,19 +67,6 @@ public class HumanIKController : MonoBehaviour
       // }
       // Debug.Log(this.GetType().Name + " count " + count);
     // Run continuously
-    bool tmp = walking;
-    walking = _movement.y > 0 || Mathf.Abs(_movement.x) > 0 || _movement.y < 0;
-    if (tmp && !walking) {
-      frontLeftLegStepper.handleEvent(EVENT_STOP_WALKING);
-      frontRightLegStepper.handleEvent(EVENT_STOP_WALKING);
-    }
-    // if (!tmp && walking && walkBalance != null) {
-    //   walkBalance.setDampDist(0.5f);
-    // }
-    // walking = true;
-    // Debug.Log(this.GetType().Name + " walking " + walking);
-    if (walking)
-    {
       // Try moving one diagonal pair of legs
       // do
       // {
@@ -78,9 +86,20 @@ public class HumanIKController : MonoBehaviour
       //   if (!frontRightLegStepper.Moving) break;
       //   yield return null;
       // } while (frontRightLegStepper.Moving);
-      frontRightLegStepper.handleEvent(EVENT_KEEP_WALKING);
-      frontLeftLegStepper.TryMove();
-      frontRightLegStepper.TryMove();
+    bool tmp = walking;
+    string eva = EVENT_IDLE;
+    walking = _movement.y > 0 || Mathf.Abs(_movement.x) > 0 || _movement.y < 0;
+    if (tmp && !walking) {
+      // frontLeftLegStepper.handleEvent(EVENT_STOP_WALKING);
+      // frontRightLegStepper.handleEvent(EVENT_STOP_WALKING);
+      eva = EVENT_STOP_WALKING;
+    }
+    if (walking)
+    {
+      // frontRightLegStepper.handleEvent(EVENT_KEEP_WALKING);
+      // frontLeftLegStepper.TryMove();
+      // frontRightLegStepper.TryMove();
+      eva = EVENT_KEEP_WALKING;
     } else {
         Vector3 direction = transform.forward;
         float leftDot = Vector3.Dot(frontLeftLegStepper.transform.position, direction);
@@ -95,7 +114,18 @@ public class HumanIKController : MonoBehaviour
             frontRightLegStepper.handleEvent(EVENT_STOP_WALKING);
           }
         }
-
     }
+    Event ikEvent = new Event();
+    ikEvent.eventId = eva;
+    currentStatus = currentStatus.handleEvent(ikEvent);
+  }
+  public void postUpdateTowHandPosition() {
+    leftHand.postUpdateTowHandPosition();
+    rightHand.postUpdateTowHandPosition();
+  }
+
+  public void logHomeOffset() {
+      leftHand.logHomeOffset();
+      rightHand.logHomeOffset();
   }
 }

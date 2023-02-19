@@ -12,8 +12,15 @@ public class InputModule : MonoBehaviour {
 
     public delegate void onMoveDelegate(Vector2 movement);
     public onMoveDelegate OnMoveDelegates { get; set; }
+
+    public delegate void onButtonRDelegate();
+    public onButtonRDelegate OnButtonRDelegates { get; set; }
     public void OnMove(InputValue value) {
         OnMoveDelegates?.Invoke(value.Get<Vector2>());
+    }
+
+    public void OnButtonR() {
+        OnButtonRDelegates?.Invoke();
     }
 
     void Start() {

@@ -42,6 +42,11 @@ public class Utils {
         );
         return r;
     }
+
+    public static void deltaMove(Transform origin, Vector3 target) {
+        Vector3 delta = target - origin.position;
+        origin.position += delta;
+    }
     
 
 }

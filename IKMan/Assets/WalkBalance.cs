@@ -9,6 +9,10 @@ public class WalkBalance : MonoBehaviour
     public LegControllerType2 leftLeg;
     public LegControllerType2 rightLeg;
 
+    public HandController leftHand;
+
+    public HandController rightHand;
+
     [SerializeField] Transform target;
 
     [SerializeField] float overshoot = 0.2f;
@@ -89,11 +93,13 @@ public class WalkBalance : MonoBehaviour
             Vector3 dist = new Vector3(center.x, target.position.y, center.z);
             dist += Utils.forward(transform) * overshoot;
             dist = new Vector3(dist.x, target.position.y, dist.z);
+            humanIKController.logHomeOffset();
             target.position = Vector3.Lerp(
                                         target.position,
                                         dist,
                                         1 - Mathf.Exp(-returnCenterSpeed * Time.deltaTime)
                                     );
+            humanIKController.postUpdateTowHandPosition();
         }
         // dist += ov;
         // dist1 = Vector3.Lerp(
@@ -189,14 +195,17 @@ public class WalkBalance : MonoBehaviour
         // Debug.Log(this.GetType().Name + " dc " + dampCount);
         // Debug.Log(this.GetType().Name + " delta " + delta);
         // transform.position += delta;
+        humanIKController.logHomeOffset();
         transform.position += forward2 * Vector3.Dot(delta, forward2)
                                 + right2 * Vector3.Dot(delta, right2)
                                 + Vector3.zero * Vector3.Dot(delta, plane);
+        humanIKController.postUpdateTowHandPosition();
         lastDampStart = target.position;
         Debug.DrawLine(target.position, dampDist, Color.red, Time.deltaTime);
         Debug.DrawLine(target.position, left.position, Color.blue, Time.deltaTime);
         Debug.DrawLine(target.position, right.position, Color.green, Time.deltaTime);
     }
+
 
     public void rotateCurrentDampDist(Vector3 forward, Vector3 right) {
         Vector3 offset =  dampDist - target.position;

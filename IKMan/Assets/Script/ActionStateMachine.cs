@@ -10,6 +10,11 @@ using UnityEngine.InputSystem;
 public class ActionStateMachine {
     // ---------- EXTERNAL INPUT ----------
     protected ActionStateMachine previousState;
+    protected HumanIKController humanIKController;
+
+    public ActionStateMachine(HumanIKController humanIKController) {
+        this.humanIKController = humanIKController;
+    }
 
     public void setPreviousState(ActionStateMachine previousState) {
         this.previousState = previousState;
@@ -23,8 +28,8 @@ public class ActionStateMachine {
         return null;
     }
 
-    public virtual void handleEvent(Event e) {
-
+    public virtual ActionStateMachine handleEvent(Event e) {
+        return this;
     }
 
     public virtual void handleInput(SMInput smInput) {

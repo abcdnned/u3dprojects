@@ -57,6 +57,9 @@ public class LegControllerType2 : MonoBehaviour
     public bool Moving;
     public bool Recover;
 
+    public string status;
+
+
     public float normalizedTime = -1f;
 
     private ReadTrigger walkingStop = new ReadTrigger(false);

@@ -18,9 +18,13 @@ public class LocomotionState : AnyState {
             humanIKController.frontRightLegStepper.handleEvent(HumanIKController.EVENT_KEEP_WALKING);
             humanIKController.frontLeftLegStepper.TryMove();
             humanIKController.frontRightLegStepper.TryMove();
+            humanIKController.leftHand.handleEvent(e);
+            humanIKController.rightHand.handleEvent(e);
         } else if (e.eventId.Equals(HumanIKController.EVENT_STOP_WALKING)) {
             humanIKController.frontLeftLegStepper.handleEvent(HumanIKController.EVENT_STOP_WALKING);
             humanIKController.frontRightLegStepper.handleEvent(HumanIKController.EVENT_STOP_WALKING);
+            humanIKController.leftHand.handleEvent(e);
+            humanIKController.rightHand.handleEvent(e);
         }
         return this;
     }

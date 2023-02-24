@@ -616,7 +616,7 @@ public class LegControllerType2 : MonoBehaviour
         // }
         float duration = (wp2 - wp1).magnitude * 0.5f;
         // Debug.Log(this.GetType().Name + " duration " + duration);
-        wp2.y = 0.01f;
+        // wp2.y = 0.01f;
         float curAngel = transform.localEulerAngles.x;
         if (curAngel >= 180) curAngel -= 360;
         // Debug.Log(this.GetType().Name + " tranasfer stand ");

@@ -17,6 +17,10 @@ public class Timer {
         this.time = 0;
     }
 
+    public float getTime() {
+        return time;
+    }
+
     public void countDown(float dt) {
         if (time > 0 && !on.peek()) {
             time -= dt;

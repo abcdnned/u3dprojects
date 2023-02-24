@@ -47,6 +47,26 @@ public class Utils {
         Vector3 delta = target - origin.position;
         origin.position += delta;
     }
+
+    public static Vector3 copy(Vector3 source) {
+        Vector3 r = new Vector3(source.x, source.y, source.z);
+        return r;
+    }
+    public static bool IsSecondPositionBetween(Vector3 position1, Vector3 position2, Vector3 position3, Vector3 direction)
+    {
+        Vector3 v1 = position2 - position1;
+        Vector3 v2 = position3 - position1;
+        float dot1 = Vector3.Dot(v1, direction);
+        float dot2 = Vector3.Dot(v2, direction);
+
+        // Check if the second position is between the other two positions
+        if (dot1 * dot2 <= 0)
+        {
+            return false;
+        }
+
+        return true;
+    }
     
 
 }

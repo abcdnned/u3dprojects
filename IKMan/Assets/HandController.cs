@@ -2,9 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HandController : MonoBehaviour
+public class HandController : TargetController
 {
-    [SerializeField] HandController pairComponent;
     public Transform handHome;
     [SerializeField] float moveDuration = 0.2f;
     [SerializeField] HumanIKController humanIKController;
@@ -13,20 +12,14 @@ public class HandController : MonoBehaviour
     [SerializeField]float stage2 = 1f;
     [SerializeField]int isRightHand = 1;
     [SerializeField]float swingHandDis = 0.2f;
-    [SerializeField]float swingHandDown = 0.1f;
+    [SerializeField]float swingHandUp = 0.1f;
     [SerializeField] Transform hint;
-    [SerializeField] Rigidbody body;
-    public bool Moving;
-    public bool Recover;
+    [SerializeField] float swingBackDF = .5f;
     public float normalizedTime = -1f;
-    [SerializeField] bool enable;
     [SerializeField] bool syncPair;
 
     private ReadTrigger walkingStop = new ReadTrigger(false);
-    private ReadTrigger transferStand = new ReadTrigger(false);
     private ReadTrigger lastStep = new ReadTrigger(false);
-
-    internal Timer walkingStopTime = new Timer();
 
     private Vector3 homeOffset = Vector3.zero;
 
@@ -36,9 +29,9 @@ public class HandController : MonoBehaviour
         Vector3 forward = Utils.forward(body.transform);
         Vector3 endPoint = Vector3.zero;
         if (isRightFoot * isRightHand < 0) {
-            endPoint = home.position + forward * swingHandDis;
+            endPoint = home.position + forward * swingHandDis + up * swingHandUp;
         } else {
-            endPoint = home.position + forward * swingHandDis * -1;
+            endPoint = home.position + forward * swingHandDis * -1 + up * swingHandUp;
         }
         return new Vector3[] { endPoint };
     }
@@ -73,37 +66,64 @@ public class HandController : MonoBehaviour
 
         Vector3 forward2 = (endPoint - transform.position).normalized;
         Vector3 wp1 = transform.position;
-        Vector3 wp2 = endPoint;
+        bool shouldSwing = Utils.IsSecondPositionBetween(wp1, handHome.position, endPoint, Utils.forward(body.transform));
+        Steper steper1 = null;
+        SteperBuilder steperBuilder = new SteperBuilder()
+            .WithForward(forward)
+            .WithRight(right)
+            .WithDuration(duration)
+            .WithBody(body.transform)
+            .WithTarget(transform);
+        if (!shouldSwing) {
+            steper1 = steperBuilder.WithLerpFunction(Steper.LEFP)
+                                   .WithPoints(new Vector3[] {wp1, endPoint}).Build();
+            // PrefabCreator.SpawnDebugger(endPoint, "DebugBall", duration, 0.1f, body.transform);
+        } else {
+            Vector3 wp2 = handHome.transform.position;
+            steper1 = steperBuilder.WithLerpFunction(Steper.BEARZ)
+                                   .WithPoints(new Vector3[] {wp1, wp2, endPoint}).Build();
+            // PrefabCreator.SpawnDebugger(wp2, "DebugBall", duration, 0.1f, body.transform);
+            // PrefabCreator.SpawnDebugger(endPoint, "DebugBall", duration, 0.1f, body.transform);
+        }
         do
         {
+            Vector3 forward3 = Utils.forward(body.transform);
+            Vector3 right3 = Utils.right(body.transform);
             timeElapsed += Time.deltaTime;
-            normalizedTime = timeElapsed / duration;
-            float poc = Mathf.Lerp(0, 1, normalizedTime / normalizedTime);
-            Vector3 targetPosition =
-            Vector3.Lerp(
-                wp1,
-                wp2,
-                poc
-            );
-            Utils.deltaMove(transform, targetPosition);
+            steper1.step(Time.deltaTime);
             if (timeElapsed >= duration) {
                 break;
             } 
             yield return null;
+            walkingStopTime.countDown(Time.deltaTime);
+            if (timeElapsed >= 0 && walkingStopTime.check()) {
+                // Debug.Log(this.GetType().Name + " postwalkingHand ");
+                postWalkingTrigger.set();
+                break;
+            }
         }
         while (timeElapsed < duration);
+        if (walkingStopTime.getTime() > 0) {
+            postWalkingTrigger.set();
+        }
         normalizedTime = -1;
         Moving = false;
+        if (postWalkingTrigger.read()) {
+            TryTransferDirectly(handHome.transform, swingBackDF);
+        }
     }
 
 
-    private void sync()
+    protected override void sync()
     {
         if (syncPair) {
-            moveDuration = pairComponent.moveDuration;
-            stage1 = pairComponent.stage1;
-            stage2 = pairComponent.stage2;
-            isRightHand = -pairComponent.isRightHand;
+            moveDuration = ((HandController)pairComponent).moveDuration;
+            stage1 = ((HandController)pairComponent).stage1;
+            stage2 = ((HandController)pairComponent).stage2;
+            isRightHand = -((HandController)pairComponent).isRightHand;
+            swingHandDis = ((HandController)pairComponent).swingHandDis;
+            swingHandUp = ((HandController)pairComponent).swingHandUp;
+            swingBackDF = ((HandController)pairComponent).swingBackDF;
         }
     }
 

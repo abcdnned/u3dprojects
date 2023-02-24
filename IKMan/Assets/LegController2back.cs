@@ -211,7 +211,7 @@ public class LegController2back : MonoBehaviour
         Vector3 wp3 = transform.position + (up * postLiftDistance) + forward2 * (5 * walkDis / 6);
         Vector3 wp4 = endPoint;
 
-        bool forwardDampingStarted = false;
+        // bool forwardDampingStarted = false;
         bool walkPoseStarted = false;
         // bool stage2Started = false;
         if (!walkPoseStarted) {
@@ -258,10 +258,10 @@ public class LegController2back : MonoBehaviour
                 transform.localEulerAngles = new Vector3(walkAngel, curAngel.y, curAngel.z);
                 syncFootDirection(footDir, normalizedTime);
             } else {
-                if (!forwardDampingStarted) {
-                    walkBalance.startForwardDamping(dampingDuration);
-                    forwardDampingStarted = true;
-                }
+                // if (!forwardDampingStarted) {
+                //     walkBalance.startForwardDamping(dampingDuration);
+                //     forwardDampingStarted = true;
+                // }
                 float poc = Mathf.Lerp(0, 1, (normalizedTime - stage2) / (1 - stage2));
                 transform.position =
                 Vector3.Lerp(

@@ -17,11 +17,18 @@ public class TargetController : MonoBehaviour {
     public Rigidbody body;
 
     public TargetController pairComponent;
+    private Banner recentBanner;
 
     protected virtual void sync() {
         // implementation of sync for base class goes here
     }
 
+    public void handleEvent(Event evt, Banner banner) {
+        if (String.Equals(evt.eventId, HumanIKController.EVENT_STOP_WALKING)) {
+            recentBanner = banner;
+        }
+        handleEvent(evt);
+    }
     public void handleEvent(Event evt) {
         String eventId = evt.eventId;
         if (Moving && String.Equals(eventId, HumanIKController.EVENT_STOP_WALKING)) {

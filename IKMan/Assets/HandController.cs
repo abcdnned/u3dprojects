@@ -68,12 +68,13 @@ public class HandController : TargetController
         Vector3 wp1 = transform.position;
         bool shouldSwing = Utils.IsSecondPositionBetween(wp1, handHome.position, endPoint, Utils.forward(body.transform));
         Steper steper1 = null;
+        //Instantiate a new SteperBuilder object with the given options
         SteperBuilder steperBuilder = new SteperBuilder()
-            .WithForward(forward)
-            .WithRight(right)
-            .WithDuration(duration)
-            .WithBody(body.transform)
-            .WithTarget(transform);
+            .WithForward(forward) //specify the forward direction
+            .WithRight(right) //specify the right direction
+            .WithDuration(duration) //specify the duration of the stepping 
+            .WithBody(body.transform) //specify the body to be stepped on 
+            .WithTarget(transform); //specify the target transform for the stepping
         if (!shouldSwing) {
             steper1 = steperBuilder.WithLerpFunction(Steper.LEFP)
                                    .WithPoints(new Vector3[] {wp1, endPoint}).Build();

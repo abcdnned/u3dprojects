@@ -39,7 +39,7 @@ public class HumanIKController : MonoBehaviour
   }
 
   public void initStatus() {
-    currentStatus = new LocomotionState(this);
+    currentStatus = new IdleStatus(this);
   }
 
   public Vector3 getMovement() {
@@ -117,7 +117,11 @@ public class HumanIKController : MonoBehaviour
     }
     Event ikEvent = new Event();
     ikEvent.eventId = eva;
+    ActionStateMachine oldState = currentStatus;
     currentStatus = currentStatus.handleEvent(ikEvent);
+    if (oldState != currentStatus) {
+      Debug.Log(this.GetType().Name + oldState.getName() + " changed to " + currentStatus.getName());
+    }
   }
   public void postUpdateTowHandPosition() {
     leftHand.postUpdateTowHandPosition();

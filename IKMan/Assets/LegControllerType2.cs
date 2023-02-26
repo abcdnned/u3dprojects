@@ -67,6 +67,7 @@ public class LegControllerType2 : MonoBehaviour
     private ReadTrigger lastStep = new ReadTrigger(false);
 
     internal Timer walkingStopTime = new Timer();
+    private Banner recentBanner;
 
     // internal float walkedDis_fw = 0;
     // internal float walkDis_fw = 0;
@@ -563,6 +564,13 @@ public class LegControllerType2 : MonoBehaviour
             return true;
         }
         return false;
+    }
+
+    public void handleEvent(Event evt, Banner banner) {
+        if (String.Equals(evt.eventId, HumanIKController.EVENT_STOP_WALKING)) {
+            recentBanner = banner;
+        }
+        handleEvent(evt.eventId);
     }
 
     public void handleEvent(string eventId) {

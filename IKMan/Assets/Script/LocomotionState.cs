@@ -14,6 +14,9 @@ public class LocomotionState : AnyState {
         return null;
     }
     public override ActionStateMachine handleEvent(Event e) {
+        if (stopWalkingBanner.Check()) {
+            return new IdleStatus(humanIKController);
+        }
         if (e.eventId.Equals(HumanIKController.EVENT_KEEP_WALKING)) {
             humanIKController.frontRightLegStepper.handleEvent(HumanIKController.EVENT_KEEP_WALKING);
             humanIKController.frontLeftLegStepper.TryMove();
@@ -21,10 +24,11 @@ public class LocomotionState : AnyState {
             humanIKController.leftHand.handleEvent(e);
             humanIKController.rightHand.handleEvent(e);
         } else if (e.eventId.Equals(HumanIKController.EVENT_STOP_WALKING)) {
-            humanIKController.frontLeftLegStepper.handleEvent(HumanIKController.EVENT_STOP_WALKING);
-            humanIKController.frontRightLegStepper.handleEvent(HumanIKController.EVENT_STOP_WALKING);
-            humanIKController.leftHand.handleEvent(e);
-            humanIKController.rightHand.handleEvent(e);
+            stopWalkingBanner.Reset(4);
+            humanIKController.frontLeftLegStepper.handleEvent(e, stopWalkingBanner);
+            humanIKController.frontRightLegStepper.handleEvent(e, stopWalkingBanner);
+            humanIKController.leftHand.handleEvent(e, stopWalkingBanner);
+            humanIKController.rightHand.handleEvent(e, stopWalkingBanner);
         }
         return this;
     }

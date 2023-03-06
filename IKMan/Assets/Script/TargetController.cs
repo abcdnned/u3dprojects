@@ -12,26 +12,41 @@ public class TargetController : MonoBehaviour {
     protected ReadTrigger idleTrigger = new ReadTrigger(false);
     public bool Recover;
 
-    public bool Moving;
+    public Move move;
     public bool enable = true;
     public Rigidbody body;
 
     public TargetController pairComponent;
     private Banner recentBanner;
+    protected MoveManager moveManager = new MoveManager();
 
+    private void Awake() {
+        initMove();
+    }
+
+    protected virtual void initMove() {
+
+    }
     protected virtual void sync() {
         // implementation of sync for base class goes here
     }
 
-    public void handleEvent(Event evt, Banner banner) {
-        if (String.Equals(evt.eventId, HumanIKController.EVENT_STOP_WALKING)) {
-            recentBanner = banner;
+    protected void notifyBanner() {
+        if (recentBanner != null && recentBanner.available()) {
+            recentBanner.Finish();
+            recentBanner = null;
+            Debug.Log(this.GetType().Name + " notifyBanner ");
         }
+    }
+
+    public void handleEvent(Event evt, Banner banner) {
+        recentBanner = banner;
+        banner.addSub(this);
         handleEvent(evt);
     }
     public void handleEvent(Event evt) {
         String eventId = evt.eventId;
-        if (Moving && String.Equals(eventId, HumanIKController.EVENT_STOP_WALKING)) {
+        if (move.name == MoveNameConstants.HandMoving && String.Equals(eventId, HumanIKController.EVENT_STOP_WALKING)) {
             // Debug.Log(this.GetType().Name + " event trigger ");
             walkingStopTime.setTimer(0.1f);
         }
@@ -46,15 +61,14 @@ public class TargetController : MonoBehaviour {
     protected void TryTransferDirectly(Transform target, float durationFactor)
     {
         if (!enable) return;
-        if (Moving) return;
-        Debug.Log(this.GetType().Name + " startCoroutine ");
+        if (move.name == "Moving") return;
         StartCoroutine(TransferDirectly(target, durationFactor));
     }
 
     protected IEnumerator TransferDirectly(Transform target, float durationFactor)
     {
         sync();
-        Moving = true;
+        move = moveManager.getMove(MoveNameConstants.HandMoving);
         Recover = true;
 
         Quaternion endRot = target.rotation;
@@ -81,7 +95,8 @@ public class TargetController : MonoBehaviour {
             yield return null;
         }
         while (timeElapsed < duration);
-        Moving = false;
+        move = moveManager.getMove(MoveNameConstants.HandIdle);
         Recover = false;
+        notifyBanner();
     }
 }

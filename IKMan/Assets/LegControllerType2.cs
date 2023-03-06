@@ -395,6 +395,10 @@ public class LegControllerType2 : MonoBehaviour
         Moving = false;
         if (transferStand.read()) {
             TryTransferStand();
+            Debug.Log(this.GetType().Name + " transferStand ");
+        } else {
+            Debug.Log(this.GetType().Name + " direct finish ");
+            notifyBanner();
         }
     }
 
@@ -566,11 +570,18 @@ public class LegControllerType2 : MonoBehaviour
         return false;
     }
 
-    public void handleEvent(Event evt, Banner banner) {
-        if (String.Equals(evt.eventId, HumanIKController.EVENT_STOP_WALKING)) {
-            recentBanner = banner;
+    public void handleEvent(String evtId, Banner banner) {
+        recentBanner = banner;
+        banner.addSub(this);
+        handleEvent(evtId);
+    }
+
+    private void notifyBanner() {
+        if (recentBanner != null && recentBanner.available()) {
+            Debug.Log(this.GetType().Name + " notifyBanner " + isRightFoot);
+            recentBanner.Finish();
+            recentBanner = null;
         }
-        handleEvent(evt.eventId);
     }
 
     public void handleEvent(string eventId) {
@@ -603,15 +614,17 @@ public class LegControllerType2 : MonoBehaviour
 
         // Vector3 wp2 = pair.position + Utils.right(owner.transform) * 2 * feetBetween * isRightFoot;
         Vector3 wp2 = pair.position + right * 2 * feetBetween * isRightFoot;
-        float homeDot = Vector3.Dot(homeTransform.position, direction);
+        // float homeDot = Vector3.Dot(homeTransform.position, direction);
         float thisDot = Vector3.Dot(transform.position, direction);
         float pairDot = Vector3.Dot(pairComponent.transform.position, direction);
         if (pairDot > thisDot) {
             // wp2 = transform.position + direction * (pairDot - thisDot);
-        }
-        else if (homeDot < thisDot) {
+        } else {
             wp2 = wp1;
         }
+        // else if (homeDot < thisDot) {
+        //     wp2 = wp1;
+        // }
         // wp2 = wp1;
         // float homeDot = Vector3.Dot(homeTransform.position, direction);
         // float thisDot = Vector3.Dot(transform.position, direction);
@@ -624,7 +637,7 @@ public class LegControllerType2 : MonoBehaviour
         // }
         float duration = (wp2 - wp1).magnitude * 0.5f;
         // Debug.Log(this.GetType().Name + " duration " + duration);
-        // wp2.y = 0.01f;
+        wp2.y = 0.01f;
         float curAngel = transform.localEulerAngles.x;
         if (curAngel >= 180) curAngel -= 360;
         // Debug.Log(this.GetType().Name + " tranasfer stand ");
@@ -666,5 +679,7 @@ public class LegControllerType2 : MonoBehaviour
         while (timeElapsed < duration);
         Moving = false;
         Recover = false;
+        Debug.Log(this.GetType().Name + " transfer notify ");
+        notifyBanner();
     }
 }

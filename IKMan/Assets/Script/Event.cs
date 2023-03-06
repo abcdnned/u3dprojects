@@ -12,5 +12,12 @@ public class Event {
 
     internal string eventId;
 
+    public Event() {
+
+    }
+
+    public Event(string eventId) {
+        this.eventId = eventId;
+    }
 
 }

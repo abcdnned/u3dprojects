@@ -7,6 +7,7 @@ public class HumanIKController : MonoBehaviour
   public LegControllerType2 frontLeftLegStepper;
   public LegControllerType2 frontRightLegStepper;
 
+  public Rigidbody body;
   public HandController leftHand;
 
   public HandController rightHand;
@@ -26,6 +27,7 @@ public class HumanIKController : MonoBehaviour
 
   private InputModule inputModule;
     public static string EVENT_STOP_WALKING = "stopWalking";
+    public static string EVENT_STOP_WALKING_NOW = "stopWalkingNow";
     public static string EVENT_KEEP_WALKING = "keepWalking";
 
     public static string EVENT_IDLE = "idle";

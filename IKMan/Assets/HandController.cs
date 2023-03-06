@@ -25,6 +25,13 @@ public class HandController : TargetController
 
     private Quaternion homeRotationDelta = Quaternion.identity;
 
+    protected override void initMove() {
+        HandMovingMove handMovingMove = new HandMovingMove();
+        moveManager.addMove(handMovingMove);
+        moveManager.addMove(new HandIdleMove());
+        move = moveManager.getMove(MoveNameConstants.HandIdle);
+    }
+
     private Vector3[] getEndPoint(Transform body, Transform home, Vector3 up, int isRightFoot, int isRightHand) {
         Vector3 forward = Utils.forward(body.transform);
         Vector3 endPoint = Vector3.zero;
@@ -56,7 +63,7 @@ public class HandController : TargetController
     IEnumerator MoveToHome(float duration, int isRightFoot)
     {
         sync();
-        Moving = true;
+        move = moveManager.getMove(MoveNameConstants.HandMoving);
         float timeElapsed = 0;
         Vector3 plane = Vector3.up;
         Vector3 forward = Utils.forward(body.transform);
@@ -108,9 +115,11 @@ public class HandController : TargetController
             postWalkingTrigger.set();
         }
         normalizedTime = -1;
-        Moving = false;
+        move = moveManager.getMove(MoveNameConstants.HandIdle);
         if (postWalkingTrigger.read()) {
             TryTransferDirectly(handHome.transform, swingBackDF);
+        } else {
+            notifyBanner();
         }
     }
 
@@ -130,7 +139,7 @@ public class HandController : TargetController
 
     public void TryMove(float duration, float isRightFoot)
     {
-        if (Moving) return;
+        if (move.name == MoveNameConstants.HandMoving) return;
 
         StartCoroutine(MoveToHome(duration, Mathf.FloorToInt(isRightFoot)));
     }

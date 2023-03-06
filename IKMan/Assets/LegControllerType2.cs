@@ -3,17 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LegControllerType2 : MonoBehaviour
+public class LegControllerType2 : TargetController
 {
     // The position and rotation we want to stay in range of
     [SerializeField] Transform homeTransform;
     [SerializeField] Transform pair;
-    [SerializeField] LegControllerType2 pairComponent;
     [SerializeField] Transform toe;
     [SerializeField] Transform foot;
     // [SerializeField] Rigidbody owner;
     [SerializeField] WalkPointer owner;
-    [SerializeField] Rigidbody body;
     // Stay within this distance of home
     [SerializeField] float halfStepDistance = 0.2f;
     // How long a step takes to complete
@@ -31,7 +29,6 @@ public class LegControllerType2 : MonoBehaviour
     [SerializeField] float feetBetween = 0.2f;
     public int stepCount;
 
-    [SerializeField] bool enable;
     [SerializeField] bool syncPair;
 
     [SerializeField] HumanIKController humanIKController;
@@ -55,8 +52,6 @@ public class LegControllerType2 : MonoBehaviour
 
     //state variable
     public bool Moving;
-    public bool Recover;
-
     public string status;
 
 
@@ -572,7 +567,7 @@ public class LegControllerType2 : MonoBehaviour
 
     public void handleEvent(String evtId, Banner banner) {
         recentBanner = banner;
-        banner.addSub(this);
+        banner.registerSub(this);
         handleEvent(evtId);
     }
 

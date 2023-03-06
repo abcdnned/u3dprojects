@@ -141,6 +141,7 @@ public class HandController : TargetController
     {
         if (move.name == MoveNameConstants.HandMoving) return;
 
+        registerBanner();
         StartCoroutine(MoveToHome(duration, Mathf.FloorToInt(isRightFoot)));
     }
 

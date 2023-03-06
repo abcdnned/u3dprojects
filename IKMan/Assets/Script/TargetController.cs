@@ -31,6 +31,11 @@ public class TargetController : MonoBehaviour {
         // implementation of sync for base class goes here
     }
 
+    protected void registerBanner() {
+        if (recentBanner != null) {
+            recentBanner.registerSub(this);
+        }
+    }
     protected void notifyBanner() {
         if (recentBanner != null && recentBanner.available()) {
             recentBanner.Finish();
@@ -41,7 +46,6 @@ public class TargetController : MonoBehaviour {
 
     public void handleEvent(Event evt, Banner banner) {
         recentBanner = banner;
-        banner.addSub(this);
         handleEvent(evt);
     }
     public void handleEvent(Event evt) {
@@ -62,6 +66,7 @@ public class TargetController : MonoBehaviour {
     {
         if (!enable) return;
         if (move.name == "Moving") return;
+        registerBanner();
         StartCoroutine(TransferDirectly(target, durationFactor));
     }
 

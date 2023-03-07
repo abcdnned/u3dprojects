@@ -7,7 +7,7 @@ public class CameraFollower : MonoBehaviour
     public LegControllerType2 leftLeg;
     public LegControllerType2 rightLeg;
     public Transform follower;
-    public Transform camera;
+    public Transform cam;
 
     public WalkBalance walkBalance;
 
@@ -57,12 +57,12 @@ public class CameraFollower : MonoBehaviour
     // }
 
     private Transform getMainFoot() {
-        if (leftLeg.Moving && !rightLeg.Moving) {
+        if (leftLeg.move.IsLegMoving() && !rightLeg.move.IsLegMoving()) {
             return leftLeg.transform;
-        } else if (rightLeg.Moving && !leftLeg.Moving) {
+        } else if (rightLeg.move.IsLegMoving() && !leftLeg.move.IsLegMoving()) {
             return rightLeg.transform;
-        } else if (leftLeg.Moving && rightLeg.Moving) {
-            return leftLeg.normalizedTime > rightLeg.normalizedTime
+        } else if (leftLeg.move.IsLegMoving() && rightLeg.move.IsLegMoving()) {
+            return leftLeg.move.normalizedTime > rightLeg.move.normalizedTime
                                 ? leftLeg.transform
                                 : rightLeg.transform;
         }
@@ -94,7 +94,7 @@ public class CameraFollower : MonoBehaviour
         Vector3 forward = Utils.forward(follower);
         Vector3 right = Utils.right(follower);
         Vector2 m = humanIKController.getMovement();
-        Vector3 dir = Utils.forward(camera) * m.y + Utils.right(camera) * m.x;
+        Vector3 dir = Utils.forward(cam) * m.y + Utils.right(cam) * m.x;
         // Vector3 dir = Utils.forward(camera);
         Quaternion tr = Quaternion.LookRotation(dir);       
         Quaternion r = Quaternion.Slerp(

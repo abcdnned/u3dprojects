@@ -29,7 +29,7 @@ public class HandController : TargetController
         HandMovingMove handMovingMove = new HandMovingMove();
         moveManager.addMove(handMovingMove);
         moveManager.addMove(new HandIdleMove());
-        move = moveManager.getMove(MoveNameConstants.HandIdle);
+        moveManager.ChangeMove(MoveNameConstants.HandIdle);
     }
 
     private Vector3[] getEndPoint(Transform body, Transform home, Vector3 up, int isRightFoot, int isRightHand) {
@@ -63,7 +63,7 @@ public class HandController : TargetController
     IEnumerator MoveToHome(float duration, int isRightFoot)
     {
         sync();
-        move = moveManager.getMove(MoveNameConstants.HandMoving);
+        moveManager.ChangeMove(MoveNameConstants.HandMoving);
         float timeElapsed = 0;
         Vector3 plane = Vector3.up;
         Vector3 forward = Utils.forward(body.transform);
@@ -115,11 +115,11 @@ public class HandController : TargetController
             postWalkingTrigger.set();
         }
         normalizedTime = -1;
-        move = moveManager.getMove(MoveNameConstants.HandIdle);
+        moveManager.ChangeMove(MoveNameConstants.HandIdle);
         if (postWalkingTrigger.read()) {
             TryTransferDirectly(handHome.transform, swingBackDF);
         } else {
-            notifyBanner();
+            // notifyBanner();
         }
     }
 
@@ -141,7 +141,7 @@ public class HandController : TargetController
     {
         if (move.name == MoveNameConstants.HandMoving) return;
 
-        registerBanner();
+        // registerBanner();
         StartCoroutine(MoveToHome(duration, Mathf.FloorToInt(isRightFoot)));
     }
 

@@ -44,7 +44,7 @@ public class LegControllerType2 : TargetController
     [SerializeField] float maxFootBodyAngel = 30;
     [SerializeField] float detourFac = 3;
 
-    [SerializeField] bool cgFoot = true;
+    // [SerializeField] bool cgFoot = true;
     [SerializeField] float firstStepFac = 0.75f;
     [SerializeField] float bigFirstStepDampFac = 0.8f;
     [SerializeField] float firstStepDampFac = 0.7f;
@@ -61,7 +61,6 @@ public class LegControllerType2 : TargetController
     private ReadTrigger transferStand = new ReadTrigger(false);
     private ReadTrigger lastStep = new ReadTrigger(false);
 
-    internal Timer walkingStopTime = new Timer();
     private Banner recentBanner;
 
     // internal float walkedDis_fw = 0;
@@ -69,21 +68,23 @@ public class LegControllerType2 : TargetController
 
     // Is the leg moving?
 
-    private void setPairCGFoot(bool v) {
-        cgFoot = v;
-        pairComponent.cgFoot = !v;
-    }
+    // private void setPairCGFoot(bool v) {
+    //     cgFoot = v;
+    //     pairComponent.cgFoot = !v;
+    // }
 
-    private void setCGFoot(bool v) {
-        cgFoot = v;
-    }
-
-    private void Awake() {
-        stepCount = 0;
-    }
+    // private void setCGFoot(bool v) {
+    //     cgFoot = v;
+    // }
 
     public bool isStandGravity() {
         return transform.position.y < 0.1f;
+    }
+    protected override void initMove() {
+        moveManager.addMove(new LegIdleMove());
+        moveManager.addMove(new LegMovingMove());
+        moveManager.ChangeMove(MoveNameConstants.LegIdle);
+        stepCount = 0;
     }
     private void Update() {
         Vector3 d = transform.forward;
@@ -185,7 +186,7 @@ public class LegControllerType2 : TargetController
         Vector3 curDir = Utils.forward(transform);
         Vector3 pairDir = Utils.forward(pair);
         Vector3 pairRight = Utils.right(pair);
-        float stepDistance = pairComponent.Moving ? halfStepDistance : (halfStepDistance * firstStepFac);
+        float stepDistance = pairComponent.move.IsLegMoving() ? halfStepDistance : (halfStepDistance * firstStepFac);
         Vector3 overshootVector = forward * (pairProjectDis + stepDistance);
         overshootVector = Vector3.ProjectOnPlane(overshootVector, plane);
         Vector3 endPoint = transform.position + overshootVector;
@@ -231,7 +232,7 @@ public class LegControllerType2 : TargetController
     IEnumerator MoveToHome(float pairProjectDis)
     {
         sync();
-        Moving = true;
+        moveManager.ChangeMove(MoveNameConstants.LegMoving);
         Vector2 m = humanIKController.getMovement();
         Vector3 targetDir = Utils.forward(cameraModule.Camera.transform) * m.y + Utils.right(cameraModule.Camera.transform) * m.x;
         // Debug.Log(this.GetType().Name + " td " + targetDir);
@@ -255,7 +256,7 @@ public class LegControllerType2 : TargetController
 
         Vector3 forward2 = (endPoint - transform.position).normalized;
         float walkDis = Vector3.ProjectOnPlane((endPoint - transform.position), plane).magnitude;
-        if (!pairComponent.Moving) {
+        if (!pairComponent.move.IsLegMoving()) {
             if (walkDis > halfStepDistance * 1.15f) {
                 walkBalance.setDampDist(bigFirstStepDampFac);
             } else {
@@ -286,8 +287,8 @@ public class LegControllerType2 : TargetController
             Vector3 forward3 = Utils.forward(body.transform);
             Vector3 right3 = Utils.right(body.transform);
             timeElapsed += Time.deltaTime;
-            normalizedTime = timeElapsed / duration;
-            if (normalizedTime > preStartMovingDistance && !walkPoseStarted) {
+            move.normalizedTime = timeElapsed / duration;
+            if (move.normalizedTime > preStartMovingDistance && !walkPoseStarted) {
                 walkBalance.startWalk(moveDuration - (moveDuration * preStartMovingDistance));
                 walkPoseStarted = true;
             }
@@ -295,7 +296,7 @@ public class LegControllerType2 : TargetController
             //     walkBalance.centerForwardIncrease();
             //     centerForward = true;
             // }
-            if (normalizedTime >= 0 && normalizedTime <= stage1) {
+            if (move.normalizedTime >= 0 && move.normalizedTime <= stage1) {
                 if (!init1) {
                     lastPosition = startPoint;
                     init1 = true;
@@ -303,7 +304,7 @@ public class LegControllerType2 : TargetController
                     humanIKController.leftHand.TryMove(handDuration, isRightFoot);
                     humanIKController.rightHand.TryMove(handDuration, isRightFoot);
                 }
-                float poc = Mathf.Lerp(0, 1, normalizedTime / stage1);
+                float poc = Mathf.Lerp(0, 1, move.normalizedTime / stage1);
                 Vector3 targetPosition =
                 Vector3.Lerp(
                     startPoint,
@@ -319,12 +320,12 @@ public class LegControllerType2 : TargetController
                 Vector3 curAngel = transform.localEulerAngles;
                 float walkAngel = Mathf.Lerp(0, walkFeetAngel, poc);
                 transform.localEulerAngles = new Vector3(walkAngel, curAngel.y, curAngel.z);
-            } else if (normalizedTime >= stage1 && normalizedTime <= stage2) {
+            } else if (move.normalizedTime >= stage1 && move.normalizedTime <= stage2) {
                 if (!init2) {
                     lastPosition = wp1;
                     init2 = true;
                 }
-                float poc = Mathf.Lerp(0, 1, (normalizedTime - stage1) / (stage2 - stage1));
+                float poc = Mathf.Lerp(0, 1, (move.normalizedTime - stage1) / (stage2 - stage1));
                 // Vector3.Lerp(wp1, wp3, poc);
                 Vector3 targetPosition =
                 Vector3.Lerp(
@@ -347,7 +348,7 @@ public class LegControllerType2 : TargetController
                     lastPosition = wp3;
                     init3 = true;
                 }
-                float poc = Mathf.Lerp(0, 1, (normalizedTime - stage2) / (1 - stage2));
+                float poc = Mathf.Lerp(0, 1, (move.normalizedTime - stage2) / (1 - stage2));
                 Vector3 targetPosition =
                 Vector3.Lerp(
                     wp3,
@@ -377,23 +378,26 @@ public class LegControllerType2 : TargetController
                 break;
             } 
             walkingStopTime.countDown(Time.deltaTime);
-            if (normalizedTime >= stage1 && walkingStopTime.check()) {
+            if (move.normalizedTime >= stage1 && walkingStopTime.check()) {
                 // Debug.Log(this.GetType().Name + " transferStand.set() ");
                 transferStand.set();
                 break;
+                // } else {
+                //     Debug.Log(this.GetType().Name + " normalize " + move.normalizedTime);
+                //     Debug.Log(this.GetType().Name + " walkingStopTime " + walkingStopTime.getTime());
             }
             yield return null;
         }
         while (timeElapsed < duration);
 
-        normalizedTime = -1;
-        Moving = false;
+        move.normalizedTime = -1;
         if (transferStand.read()) {
             TryTransferStand();
             Debug.Log(this.GetType().Name + " transferStand ");
         } else {
+            moveManager.ChangeMove(MoveNameConstants.LegIdle);
             Debug.Log(this.GetType().Name + " direct finish ");
-            notifyBanner();
+            // notifyBanner();
         }
     }
 
@@ -404,7 +408,7 @@ public class LegControllerType2 : TargetController
 
     private void syncPairFootDir()
     {
-        if (!pairComponent.Moving) {
+        if (!pairComponent.move.IsLegMoving()) {
             Vector3 bf = Utils.forward(body.transform);
             Vector3 tf = Utils.forward(pair);
             float deg = Vector3.Angle(bf, tf);
@@ -414,11 +418,11 @@ public class LegControllerType2 : TargetController
         }
     }
 
-    private void syncFootDirection(Vector3 footDir, float normalizedTime) {
-        float poc = Mathf.Lerp(0, 1, (normalizedTime - stage1) / (stage2 - stage1));
-        Quaternion tr = Quaternion.LookRotation(footDir);       
-        transform.rotation = Quaternion.Slerp(transform.rotation, tr, poc);
-    }
+    // private void syncFootDirection(Vector3 footDir, float normalizedTime) {
+    //     float poc = Mathf.Lerp(0, 1, (normalizedTime - stage1) / (stage2 - stage1));
+    //     Quaternion tr = Quaternion.LookRotation(footDir);       
+    //     transform.rotation = Quaternion.Slerp(transform.rotation, tr, poc);
+    // }
 
     private float calculateFeetBetween(Vector3 position1, Vector3 forward, Vector3 position2)
     {
@@ -430,35 +434,35 @@ public class LegControllerType2 : TargetController
         return b;
     }
 
-    private float calculateFeetDistance(Vector3 position1, Vector3 position2)
-    {
-        float c = Vector3.Distance(position1, position2);
-        return c / 2;
-    }
+    // private float calculateFeetDistance(Vector3 position1, Vector3 position2)
+    // {
+    //     float c = Vector3.Distance(position1, position2);
+    //     return c / 2;
+    // }
 
-    private void sync()
+    protected override void sync()
     {
         if (syncPair) {
-            halfStepDistance = pairComponent.halfStepDistance;
-            moveDuration = pairComponent.moveDuration;
-            preLiftDistance = pairComponent.preLiftDistance;
-            postLiftDistance = pairComponent.postLiftDistance;
-            preStartMovingDistance = pairComponent.preStartMovingDistance;
-            swingDownDistance = pairComponent.swingDownDistance;
-            walkFeetAngel = pairComponent.walkFeetAngel;
-            walkFeetAngel2 = pairComponent.walkFeetAngel2;
-            stage1 = pairComponent.stage1;
-            stage2 = pairComponent.stage2;
-            dampingDuration = pairComponent.dampingDuration;
-            enable = pairComponent.enable;
-            feetBetween = pairComponent.feetBetween;
-            isRightFoot = -pairComponent.isRightFoot;
-            preMoveOvershootFix = pairComponent.preMoveOvershootFix;
-            maxFootBodyAngel = pairComponent.maxFootBodyAngel;
-            detourFac = pairComponent.detourFac;
-            firstStepFac = pairComponent.firstStepFac;
-            bigFirstStepDampFac = pairComponent.bigFirstStepDampFac;
-            firstStepDampFac = pairComponent.firstStepDampFac;
+            halfStepDistance = ((LegControllerType2)pairComponent).halfStepDistance;
+            moveDuration = ((LegControllerType2)pairComponent).moveDuration;
+            preLiftDistance = ((LegControllerType2)pairComponent).preLiftDistance;
+            postLiftDistance = ((LegControllerType2)pairComponent).postLiftDistance;
+            preStartMovingDistance = ((LegControllerType2)pairComponent).preStartMovingDistance;
+            swingDownDistance = ((LegControllerType2)pairComponent).swingDownDistance;
+            walkFeetAngel = ((LegControllerType2)pairComponent).walkFeetAngel;
+            walkFeetAngel2 = ((LegControllerType2)pairComponent).walkFeetAngel2;
+            stage1 = ((LegControllerType2)pairComponent).stage1;
+            stage2 = ((LegControllerType2)pairComponent).stage2;
+            dampingDuration = ((LegControllerType2)pairComponent).dampingDuration;
+            enable = ((LegControllerType2)pairComponent).enable;
+            feetBetween = ((LegControllerType2)pairComponent).feetBetween;
+            isRightFoot = -((LegControllerType2)pairComponent).isRightFoot;
+            preMoveOvershootFix = ((LegControllerType2)pairComponent).preMoveOvershootFix;
+            maxFootBodyAngel = ((LegControllerType2)pairComponent).maxFootBodyAngel;
+            detourFac = ((LegControllerType2)pairComponent).detourFac;
+            firstStepFac = ((LegControllerType2)pairComponent).firstStepFac;
+            bigFirstStepDampFac = ((LegControllerType2)pairComponent).bigFirstStepDampFac;
+            firstStepDampFac = ((LegControllerType2)pairComponent).firstStepDampFac;
         }
     }
 
@@ -476,7 +480,7 @@ public class LegControllerType2 : TargetController
     {
         if (!enable) return;
         // If we are already moving, don't start another move
-        if (Moving) return;
+        if (move.IsLegMoving()) return;
 
         if (!checkPairStatusAndDecideToMove()) return;
 
@@ -508,7 +512,7 @@ public class LegControllerType2 : TargetController
         float dirProject = Vector3.Dot(transform.position, direction);
         float pairProjectDis = pairDirProject - dirProject;
         bool twoFootAlign = false;
-        if (pairComponent.Moving) {
+        if (pairComponent.move.IsLegMoving()) {
             // Debug.Log(this.GetType().Name + " continue moving ");
             StartCoroutine(MoveToHome(pairProjectDis));
         } else {
@@ -532,7 +536,7 @@ public class LegControllerType2 : TargetController
                 }
                 // Debug.Log(this.GetType().Name + " startRight " + startRight);
                 // Debug.Log(this.GetType().Name + " isRightFoot " + isRightFoot);
-                if (!pairComponent.Moving
+                if (!pairComponent.move.IsLegMoving()
                     && ((startRight && isRightFoot > 0)
                     || (!startRight && isRightFoot < 0)))
                 {
@@ -551,49 +555,41 @@ public class LegControllerType2 : TargetController
     private void TryTransferStand()
     {
         if (!enable) return;
-        if (Moving) return;
+        // registerBanner();
         StartCoroutine(TransferStand());
     }
 
     
 
     public bool checkPairStatusAndDecideToMove() {
-        if (pairComponent.Moving == false) return true;
-        if (pairComponent.normalizedTime >= 1 - preStartMovingDistance) {
+        if (pairComponent.move.IsLegMoving() == false) return true;
+        if (pairComponent.move.normalizedTime >= 1 - preStartMovingDistance) {
             return true;
         }
         return false;
     }
 
-    public void handleEvent(String evtId, Banner banner) {
-        recentBanner = banner;
-        banner.registerSub(this);
-        handleEvent(evtId);
-    }
+    // public void handleEvent(String evtId, Banner banner) {
+    //     recentBanner = banner;
+    //     banner.registerSub(this);
+    //     handleEvent(evtId);
+    // }
 
-    private void notifyBanner() {
-        if (recentBanner != null && recentBanner.available()) {
-            Debug.Log(this.GetType().Name + " notifyBanner " + isRightFoot);
-            recentBanner.Finish();
-            recentBanner = null;
-        }
-    }
-
-    public void handleEvent(string eventId) {
-        if (Moving && String.Equals(eventId, HumanIKController.EVENT_STOP_WALKING)) {
-            // Debug.Log(this.GetType().Name + " event trigger ");
-            walkingStopTime.setTimer(0.1f);
-        }
-        if (String.Equals(eventId, HumanIKController.EVENT_KEEP_WALKING)) {
-            walkingStopTime.reset();
-            pairComponent.walkingStopTime.reset();
-        }
-    }
+    // public void handleEvent(string eventId) {
+    //     if (Moving && String.Equals(eventId, HumanIKController.EVENT_STOP_WALKING)) {
+    //         // Debug.Log(this.GetType().Name + " event trigger ");
+    //         walkingStopTime.setTimer(0.1f);
+    //     }
+    //     if (String.Equals(eventId, HumanIKController.EVENT_KEEP_WALKING)) {
+    //         walkingStopTime.reset();
+    //         pairComponent.walkingStopTime.reset();
+    //     }
+    // }
 
     IEnumerator TransferStand()
     {
         sync();
-        Moving = true;
+        moveManager.ChangeMove(MoveNameConstants.LegMoving);
         Recover = true;
 
         Quaternion endRot = homeTransform.rotation;
@@ -672,9 +668,9 @@ public class LegControllerType2 : TargetController
             yield return null;
         }
         while (timeElapsed < duration);
-        Moving = false;
+        moveManager.ChangeMove(MoveNameConstants.LegIdle);
         Recover = false;
-        Debug.Log(this.GetType().Name + " transfer notify ");
-        notifyBanner();
+        // Debug.Log(this.GetType().Name + " transfer notify ");
+        // notifyBanner();
     }
 }

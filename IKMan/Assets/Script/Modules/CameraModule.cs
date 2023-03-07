@@ -63,7 +63,7 @@ public class CameraModule : MonoBehaviour {
         _startDirection = _lookPoint.forward;
 
         if (cameraFollower != null) {
-            cameraFollower.camera = Camera.transform;
+            cameraFollower.cam = Camera.transform;
         }
         if (walkPointer != null) {
             walkPointer.camera = Camera.transform;

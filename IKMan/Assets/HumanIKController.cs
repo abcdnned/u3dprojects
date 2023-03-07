@@ -106,16 +106,16 @@ public class HumanIKController : MonoBehaviour
         Vector3 direction = transform.forward;
         float leftDot = Vector3.Dot(frontLeftLegStepper.transform.position, direction);
         float rightDot = Vector3.Dot(frontRightLegStepper.transform.position, direction);
-        if (false && !frontLeftLegStepper.Moving && !frontRightLegStepper.Moving
-            && (Mathf.Max(leftDot, rightDot) - Mathf.Min(leftDot, rightDot) > 0.2)) {
-          if (leftDot < rightDot) {
-            frontLeftLegStepper.TryMove();
-            frontLeftLegStepper.handleEvent(EVENT_STOP_WALKING);
-          } else {
-            frontRightLegStepper.TryMove();
-            frontRightLegStepper.handleEvent(EVENT_STOP_WALKING);
-          }
-        }
+        // if (false && !frontLeftLegStepper.move.IsLegMoving() && !frontRightLegStepper.move.IsLegMoving()
+        //     && (Mathf.Max(leftDot, rightDot) - Mathf.Min(leftDot, rightDot) > 0.2)) {
+        //   if (leftDot < rightDot) {
+        //     frontLeftLegStepper.TryMove();
+        //     frontLeftLegStepper.handleEvent(EVENT_STOP_WALKING);
+        //   } else {
+        //     frontRightLegStepper.TryMove();
+        //     frontRightLegStepper.handleEvent(EVENT_STOP_WALKING);
+        //   }
+        // }
     }
     Event ikEvent = new Event();
     ikEvent.eventId = eva;

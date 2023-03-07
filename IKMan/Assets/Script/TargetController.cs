@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 public class TargetController : MonoBehaviour {
 
-    protected Timer walkingStopTime = new Timer();
+    internal Timer walkingStopTime = new Timer();
     protected ReadTrigger postWalkingTrigger = new ReadTrigger(false);
     protected ReadTrigger keepWalkingTrigger = new ReadTrigger(false);
     protected ReadTrigger stopWalkingTrigger = new ReadTrigger(false);
@@ -18,9 +18,10 @@ public class TargetController : MonoBehaviour {
 
     public TargetController pairComponent;
     private Banner recentBanner;
-    protected MoveManager moveManager = new MoveManager();
+    protected MoveManager moveManager;
 
     private void Awake() {
+        moveManager = new MoveManager(this);
         initMove();
     }
 
@@ -31,26 +32,25 @@ public class TargetController : MonoBehaviour {
         // implementation of sync for base class goes here
     }
 
-    protected void registerBanner() {
-        if (recentBanner != null) {
-            recentBanner.registerSub(this);
-        }
-    }
-    protected void notifyBanner() {
-        if (recentBanner != null && recentBanner.available()) {
-            recentBanner.Finish();
-            recentBanner = null;
-            Debug.Log(this.GetType().Name + " notifyBanner ");
-        }
-    }
+    // protected void registerBanner() {
+    //     if (recentBanner != null) {
+    //         recentBanner.registerSub(this);
+    //     }
+    // }
+    // protected void notifyBanner() {
+    //     if (recentBanner != null && recentBanner.available()) {
+    //         recentBanner.Finish();
+    //         recentBanner = null;
+    //         Debug.Log(this.GetType().Name + " notifyBanner ");
+    //     }
+    // }
 
-    public void handleEvent(Event evt, Banner banner) {
-        recentBanner = banner;
-        handleEvent(evt);
+    public void handleEvent(string evtId, Banner banner) {
+        // recentBanner = banner;
+        handleEvent(evtId);
     }
-    public void handleEvent(Event evt) {
-        String eventId = evt.eventId;
-        if (move.name == MoveNameConstants.HandMoving && String.Equals(eventId, HumanIKController.EVENT_STOP_WALKING)) {
+    public void handleEvent(string eventId) {
+        if ((move.IsHandMoving() || move.IsLegMoving()) && String.Equals(eventId, HumanIKController.EVENT_STOP_WALKING)) {
             // Debug.Log(this.GetType().Name + " event trigger ");
             walkingStopTime.setTimer(0.1f);
         }
@@ -58,22 +58,22 @@ public class TargetController : MonoBehaviour {
             walkingStopTime.reset();
             pairComponent.walkingStopTime.reset();
         }
-        if (evt.eventId == HumanIKController.EVENT_IDLE) {
+        if (eventId == HumanIKController.EVENT_IDLE) {
             idleTrigger.set();
         }
     }
     protected void TryTransferDirectly(Transform target, float durationFactor)
     {
         if (!enable) return;
-        if (move.name == "Moving") return;
-        registerBanner();
+        if (move.IsHandMoving()) return;
+        // registerBanner();
         StartCoroutine(TransferDirectly(target, durationFactor));
     }
 
     protected IEnumerator TransferDirectly(Transform target, float durationFactor)
     {
         sync();
-        move = moveManager.getMove(MoveNameConstants.HandMoving);
+        moveManager.ChangeMove(MoveNameConstants.HandMoving);
         Recover = true;
 
         Quaternion endRot = target.rotation;
@@ -100,8 +100,8 @@ public class TargetController : MonoBehaviour {
             yield return null;
         }
         while (timeElapsed < duration);
-        move = moveManager.getMove(MoveNameConstants.HandIdle);
+        moveManager.ChangeMove(MoveNameConstants.HandIdle);
         Recover = false;
-        notifyBanner();
+        // notifyBanner();
     }
 }

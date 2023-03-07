@@ -85,7 +85,7 @@ public class WalkBalance : MonoBehaviour
         // ov = Utils.forward(transform) * centerForward;
         // if (!humanIKController.walking || leftLeg.Recover || rightLeg.Recover) {
         // Debug.Log(this.GetType().Name + "wu");
-        if ((leftLeg.Moving && !leftLeg.Recover) || (rightLeg.Moving && !rightLeg.Recover)) {
+        if ((leftLeg.move.IsLegMoving() && !leftLeg.Recover) || (rightLeg.move.IsLegMoving() && !rightLeg.Recover)) {
             keepBalanceWhenWalking();
         } else {
             // Debug.Log(this.GetType().Name + " center ");

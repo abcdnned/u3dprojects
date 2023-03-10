@@ -9,10 +9,11 @@ public class LocomotionState : AnyState {
     private States stoppingState;
     private States transferState;
 
-    private States cs;
-
     public LocomotionState(HumanIKController humanIKController) : base(humanIKController)
     {
+    }
+
+    protected override void initState() {
         moveState = new States("moveState", Move);
         stoppingState = new States("stoppingState", Stopping);
         transferState = new States("transferState", Transfer);
@@ -96,13 +97,13 @@ public class LocomotionState : AnyState {
     public override ActionStateMachine run() {
         return null;
     }
-    public override ActionStateMachine handleEvent(Event e) {
-        (States, ActionStateMachine) value = cs.handleEvent(e);
-        if (cs != value.Item1) {
-            Debug.Log(this.GetType().Name + " State change to " + value.Item1.name);
-            cs = value.Item1;
-        }
-        return value.Item2;
+    // public override ActionStateMachine handleEvent(Event e) {
+    //     (States, ActionStateMachine) value = cs.handleEvent(e);
+    //     if (cs != value.Item1) {
+    //         Debug.Log(this.GetType().Name + " State change to " + value.Item1.name);
+    //         cs = value.Item1;
+    //     }
+    //     return value.Item2;
         // if (transferBanner.Check()) {
         //     Debug.Log(this.GetType().Name + " transferBanner checked ");
         //     return new IdleStatus(humanIKController);
@@ -144,7 +145,7 @@ public class LocomotionState : AnyState {
         //     humanIKController.leftHand.handleEvent(e, stopWalkingBanner);
         //     humanIKController.rightHand.handleEvent(e, stopWalkingBanner);
         // }
-    }
+    // }
 
 
     public override void handleInput(SMInput smInput) {

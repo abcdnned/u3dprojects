@@ -1,9 +1,11 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class HumanIKController : MonoBehaviour
 {
+  [Header("--- BODY PART ---")]
   public LegControllerType2 frontLeftLegStepper;
   public LegControllerType2 frontRightLegStepper;
 
@@ -15,11 +17,24 @@ public class HumanIKController : MonoBehaviour
   private Vector2 _movement;
   internal bool walking;
 
-  public string status;
-  public const string STATUS_MOVING = "STATUS_MOVING";
-  public const string STATUS_BATTLE_IDLE = "STATUS_BATTLE_IDLE";
+  public const int ANCHOR_LEFT_LEG = 0;
+  public const int ANCHOR_RIGHT_LEG = 1;
+  public const int ANCHOR_LEFT_HAND = 2;
+  public const int ANCHOR_RIGHT_HAND = 3;
+
+  [Header("--- BATTLE_IDLE ---")]
+  public float bi_footAngel = 15f;
+  public float bi_footDistance = 0.3f;
+  public float bi_backFootAngelOffset = 95f;
+  public float bi_fontLegAngelOffset = 10f;
+  public Vector3[] battleIdleAnchorPoints = new Vector3[10];
+
+  [Header("--- IDLE ---")]
+  public Vector3[] idleAnchorPoints = new Vector3[10];
 
   private ActionStateMachine currentStatus;
+
+  private ReadTrigger TriggerR = new ReadTrigger(false);
 
   [SerializeField] WalkBalance walkBalance;
 
@@ -29,6 +44,7 @@ public class HumanIKController : MonoBehaviour
     public static string EVENT_STOP_WALKING = "stopWalking";
     public static string EVENT_STOP_WALKING_NOW = "stopWalkingNow";
     public static string EVENT_KEEP_WALKING = "keepWalking";
+    public static string EVENT_BUTTON_R = "buttonR";
 
     public static string EVENT_IDLE = "idle";
 
@@ -44,7 +60,32 @@ public class HumanIKController : MonoBehaviour
     currentStatus = new IdleStatus(this);
   }
 
-  public Vector3 getMovement() {
+  private void updateAnchorPoints() {
+    idleAnchorPoints[ANCHOR_LEFT_LEG] = frontLeftLegStepper.homeTransform.position;
+    idleAnchorPoints[ANCHOR_RIGHT_LEG] = frontLeftLegStepper.homeTransform.position;
+    idleAnchorPoints[ANCHOR_LEFT_HAND] = leftHand.handHome.position;
+    idleAnchorPoints[ANCHOR_RIGHT_HAND] = rightHand.handHome.position;
+    calculateBattleIdlePoints();
+  }
+
+  private void calculateBattleIdlePoints()
+  {
+    Vector3 forward = Utils.forward(body.transform);
+
+    Quaternion leftRotation = Quaternion.AngleAxis(-bi_footAngel, Vector3.up);
+    Quaternion rightRotation = Quaternion.AngleAxis(180f - bi_footAngel, Vector3.up);
+
+    Vector3 leftOffset = leftRotation * forward;
+    Vector3 rightOffset = rightRotation * forward;
+
+    Vector3 position = body.transform.position;
+    Vector3 pointA = position + leftOffset * 1.0f;
+    Vector3 pointB = position + rightOffset * 1.0f;
+    battleIdleAnchorPoints[ANCHOR_LEFT_LEG] = pointA;
+    battleIdleAnchorPoints[ANCHOR_RIGHT_LEG] = pointB;
+  }
+
+    public Vector3 getMovement() {
     return _movement;
   }
 
@@ -54,70 +95,35 @@ public class HumanIKController : MonoBehaviour
       _movement = movement;
   }
   private void ButtonR() {
+    Debug.Log(this.GetType().Name + " buttonR ");
+    TriggerR.set();
   }
   private void Update() {
-      // if (count > 0) {
-      //   count--;
-      // } else {
-      //   count = 500;
-      //   f = !f;
-      // }
-      // if (f) {
-      //   _movement = new Vector2(0,1);
-      // } else {
-      //   _movement = new Vector2(0,-1);
-      // }
-      // Debug.Log(this.GetType().Name + " count " + count);
-    // Run continuously
-      // Try moving one diagonal pair of legs
-      // do
-      // {
-      //   frontLeftLegStepper.TryMove();
-        // Wait a frame
-        
-        // Stay in this loop while either leg is moving.
-        // If only one leg in the pair is moving, the calls to TryMove() will let
-        // the other leg move if it wants to.
-      //   if (!frontLeftLegStepper.Moving) break;
-      //   yield return null;
-      // } while (frontLeftLegStepper.Moving);
-      // Do the same thing for the other diagonal pair
-      // do
-      // {
-      //   frontRightLegStepper.TryMove();
-      //   if (!frontRightLegStepper.Moving) break;
-      //   yield return null;
-      // } while (frontRightLegStepper.Moving);
+    // Update anchor points for animation to use
+    updateAnchorPoints();
+    // Movement input
     bool tmp = walking;
     string eva = EVENT_IDLE;
     walking = _movement.y > 0 || Mathf.Abs(_movement.x) > 0 || _movement.y < 0;
     if (tmp && !walking) {
-      // frontLeftLegStepper.handleEvent(EVENT_STOP_WALKING);
-      // frontRightLegStepper.handleEvent(EVENT_STOP_WALKING);
       eva = EVENT_STOP_WALKING;
     }
     if (walking)
     {
-      // frontRightLegStepper.handleEvent(EVENT_KEEP_WALKING);
-      // frontLeftLegStepper.TryMove();
-      // frontRightLegStepper.TryMove();
       eva = EVENT_KEEP_WALKING;
     } else {
         Vector3 direction = transform.forward;
         float leftDot = Vector3.Dot(frontLeftLegStepper.transform.position, direction);
         float rightDot = Vector3.Dot(frontRightLegStepper.transform.position, direction);
-        // if (false && !frontLeftLegStepper.move.IsLegMoving() && !frontRightLegStepper.move.IsLegMoving()
-        //     && (Mathf.Max(leftDot, rightDot) - Mathf.Min(leftDot, rightDot) > 0.2)) {
-        //   if (leftDot < rightDot) {
-        //     frontLeftLegStepper.TryMove();
-        //     frontLeftLegStepper.handleEvent(EVENT_STOP_WALKING);
-        //   } else {
-        //     frontRightLegStepper.TryMove();
-        //     frontRightLegStepper.handleEvent(EVENT_STOP_WALKING);
-        //   }
-        // }
+    }
+    // Button Group A input
+    string bga = null;
+    if (TriggerR.read()) {
+      bga = EVENT_BUTTON_R;
+      Debug.Log(this.GetType().Name + " bga set ");
     }
     Event ikEvent = new Event();
+    ikEvent.bgA = bga;
     ikEvent.eventId = eva;
     ActionStateMachine oldState = currentStatus;
     currentStatus = currentStatus.handleEvent(ikEvent);

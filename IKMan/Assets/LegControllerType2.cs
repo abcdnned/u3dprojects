@@ -6,7 +6,7 @@ using UnityEngine;
 public class LegControllerType2 : TargetController
 {
     // The position and rotation we want to stay in range of
-    [SerializeField] Transform homeTransform;
+    [SerializeField] public Transform homeTransform;
     [SerializeField] Transform pair;
     [SerializeField] Transform toe;
     [SerializeField] Transform foot;

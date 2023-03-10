@@ -6,9 +6,13 @@ public class AnyState : ActionStateMachine
     protected Banner stopWalkingBanner;
     protected Banner keepWalkingBanner;
     protected Banner idleBanner;
+    protected States cs;
     public AnyState(HumanIKController humanIKController) : base(humanIKController)
     {
         stopWalkingBanner = new Banner(Banner.STOP_WALKING);
+        initState();
+    }
+    protected virtual void initState() {
     }
     public bool allIdleCheck()
     {
@@ -23,5 +27,13 @@ public class AnyState : ActionStateMachine
     {
         return humanIKController.frontLeftLegStepper.move.name.Contains("idle")
                && humanIKController.frontRightLegStepper.move.name.Contains("idle");
+    }
+    public override ActionStateMachine handleEvent(Event e) {
+        (States, ActionStateMachine) value = cs.handleEvent(e);
+        if (value.Item1 != null && cs != value.Item1) {
+            Debug.Log(this.GetType().Name + " State change to " + value.Item1.name);
+            cs = value.Item1;
+        }
+        return value.Item2;
     }
 }

@@ -10,6 +10,7 @@ public class TargetController : MonoBehaviour {
     protected ReadTrigger keepWalkingTrigger = new ReadTrigger(false);
     protected ReadTrigger stopWalkingTrigger = new ReadTrigger(false);
     protected ReadTrigger idleTrigger = new ReadTrigger(false);
+    public const float DEFAULT_DURATION_FACTOR = 0.5f;
     public bool Recover;
 
     public Move move;
@@ -62,7 +63,24 @@ public class TargetController : MonoBehaviour {
             idleTrigger.set();
         }
     }
-    protected void TryTransferDirectly(Transform target, float durationFactor)
+
+    public void TryTransferDirectly(Vector3 point)
+    {
+        TryTransferDirectly(point, DEFAULT_DURATION_FACTOR);
+    }
+
+    public void TryTransferDirectly(Transform target)
+    {
+        TryTransferDirectly(target, DEFAULT_DURATION_FACTOR);
+    }
+    public void TryTransferDirectly(Vector3 point, float durationFactor)
+    {
+        if (!enable) return;
+        if (move.IsHandMoving()) return;
+        // registerBanner();
+        StartCoroutine(TransferDirectly(point, durationFactor));
+    }
+    public void TryTransferDirectly(Transform target, float durationFactor)
     {
         if (!enable) return;
         if (move.IsHandMoving()) return;
@@ -70,20 +88,18 @@ public class TargetController : MonoBehaviour {
         StartCoroutine(TransferDirectly(target, durationFactor));
     }
 
-    protected IEnumerator TransferDirectly(Transform target, float durationFactor)
+    protected IEnumerator TransferDirectly(Vector3 point, Vector3 direction, Vector3 right, Transform targetRotation, float durationFactor)
     {
         sync();
         moveManager.ChangeMove(MoveNameConstants.HandMoving);
         Recover = true;
 
-        Quaternion endRot = target.rotation;
+        Quaternion endRot = targetRotation.rotation;
 
         float timeElapsed = 0;
         Vector3 wp1 = transform.position;
-        Vector3 direction = Utils.forward(target);
-        Vector3 right = Utils.right(target);
         Vector3 plane = Vector3.up;
-        Vector3 wp2 = target.position;
+        Vector3 wp2 = point;
         float duration = (wp2 - wp1).magnitude * durationFactor;
         Steper steper = new Steper(direction, right, duration, Steper.LEFP, body.transform, transform,
                                    new Vector3[] { wp1, wp2 } );
@@ -103,5 +119,14 @@ public class TargetController : MonoBehaviour {
         moveManager.ChangeMove(MoveNameConstants.HandIdle);
         Recover = false;
         // notifyBanner();
+    }
+
+    protected IEnumerator TransferDirectly(Vector3 point, float durationFactor)
+    {
+        return TransferDirectly(point, Utils.forward(transform), Utils.right(transform), transform, durationFactor);
+    }
+    protected IEnumerator TransferDirectly(Transform target, float durationFactor)
+    {
+        return TransferDirectly(target.position, Utils.forward(target), Utils.right(target), target, durationFactor);
     }
 }

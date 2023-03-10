@@ -12,6 +12,9 @@ public class Event {
 
     internal string eventId;
 
+    // Button group A
+    internal string bgA;
+
     public Event() {
 
     }

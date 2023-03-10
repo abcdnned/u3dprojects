@@ -27,12 +27,15 @@ public class HumanIKController : MonoBehaviour
   public float bi_footDistance = 0.3f;
   public float bi_backFootAngelOffset = 95f;
   public float bi_fontLegAngelOffset = 10f;
+  // public float bi_footTurnDuration = 0.5f;
   public Vector3[] battleIdleAnchorPoints = new Vector3[10];
+
+  public float[] battleIdleAngelOffset = new float[30];
 
   [Header("--- IDLE ---")]
   public Vector3[] idleAnchorPoints = new Vector3[10];
 
-  private ActionStateMachine currentStatus;
+  internal ActionStateMachine currentStatus;
 
   private ReadTrigger TriggerR = new ReadTrigger(false);
 
@@ -62,7 +65,7 @@ public class HumanIKController : MonoBehaviour
 
   private void updateAnchorPoints() {
     idleAnchorPoints[ANCHOR_LEFT_LEG] = frontLeftLegStepper.homeTransform.position;
-    idleAnchorPoints[ANCHOR_RIGHT_LEG] = frontLeftLegStepper.homeTransform.position;
+    idleAnchorPoints[ANCHOR_RIGHT_LEG] = frontRightLegStepper.homeTransform.position;
     idleAnchorPoints[ANCHOR_LEFT_HAND] = leftHand.handHome.position;
     idleAnchorPoints[ANCHOR_RIGHT_HAND] = rightHand.handHome.position;
     calculateBattleIdlePoints();
@@ -79,8 +82,8 @@ public class HumanIKController : MonoBehaviour
     Vector3 rightOffset = rightRotation * forward;
 
     Vector3 position = body.transform.position;
-    Vector3 pointA = position + leftOffset * 1.0f;
-    Vector3 pointB = position + rightOffset * 1.0f;
+    Vector3 pointA = position + leftOffset * bi_footDistance;
+    Vector3 pointB = position + rightOffset * bi_footDistance;
     battleIdleAnchorPoints[ANCHOR_LEFT_LEG] = pointA;
     battleIdleAnchorPoints[ANCHOR_RIGHT_LEG] = pointB;
   }
@@ -128,7 +131,7 @@ public class HumanIKController : MonoBehaviour
     ActionStateMachine oldState = currentStatus;
     currentStatus = currentStatus.handleEvent(ikEvent);
     if (oldState != currentStatus) {
-      Debug.Log(this.GetType().Name + oldState.getName() + " changed to " + currentStatus.getName());
+      Debug.Log(oldState.getName() + " changed to " + currentStatus.getName());
     }
   }
   public void postUpdateTowHandPosition() {

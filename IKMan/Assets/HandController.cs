@@ -6,7 +6,6 @@ public class HandController : TargetController
 {
     public Transform handHome;
     [SerializeField] float moveDuration = 0.2f;
-    [SerializeField] HumanIKController humanIKController;
     [SerializeField] WalkBalance walkBalance;
     [SerializeField]float stage1 = 0.5f;
     [SerializeField]float stage2 = 1f;

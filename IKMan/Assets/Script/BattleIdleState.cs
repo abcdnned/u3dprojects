@@ -23,8 +23,8 @@ public class BattleIdleState : AnyState {
         if (e.bgA == EVENT_BUTTON_R) {
             Vector3 leftPoint = humanIKController.idleAnchorPoints[ANCHOR_LEFT_LEG];
             Vector3 rightPoint = humanIKController.idleAnchorPoints[ANCHOR_RIGHT_LEG];
-            humanIKController.frontLeftLegStepper.TryTransferDirectly(leftPoint);
-            humanIKController.frontRightLegStepper.TryTransferDirectly(rightPoint);
+            humanIKController.frontLeftLegStepper.TryTransferDirectly(leftPoint, 0);
+            humanIKController.frontRightLegStepper.TryTransferDirectly(rightPoint, 0);
             return (toIdleTransfer, this);
         }
         return (battleIdleState, this);
@@ -43,5 +43,8 @@ public class BattleIdleState : AnyState {
     }
 
 
+    public override string getName() {
+        return "BattleIdleState";
+    }
 
 }

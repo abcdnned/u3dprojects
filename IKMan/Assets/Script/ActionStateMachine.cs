@@ -11,6 +11,7 @@ public class ActionStateMachine {
     // ---------- EXTERNAL INPUT ----------
     protected ActionStateMachine previousState;
     protected HumanIKController humanIKController;
+    internal States cs;
 
     public ActionStateMachine(HumanIKController humanIKController) {
         this.humanIKController = humanIKController;

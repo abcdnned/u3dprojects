@@ -2,7 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 public class LocomotionState : AnyState {
-
+    public const string NAME = "LocomotionState";
+    public const string STATE_MOVE = "moveState";
+    public const string STATE_STOPPING = "stoppingState";
+    public const string STATE_TRANSFER = "transferState";
     Banner transferBanner = new Banner(Banner.WALKING_TO_TRANSFER);
 
     private States moveState;
@@ -14,9 +17,9 @@ public class LocomotionState : AnyState {
     }
 
     protected override void initState() {
-        moveState = new States("moveState", Move);
-        stoppingState = new States("stoppingState", Stopping);
-        transferState = new States("transferState", Transfer);
+        moveState = new States(STATE_MOVE, Move);
+        stoppingState = new States(STATE_STOPPING, Stopping);
+        transferState = new States(STATE_TRANSFER, Transfer);
         cs = moveState;
     }
     private (States, ActionStateMachine) Move(Event e)
@@ -91,7 +94,7 @@ public class LocomotionState : AnyState {
         return (transferState, this);
     }
     public override string getName() {
-        return "LocomotionState";
+        return NAME;
     }
 
     public override ActionStateMachine run() {

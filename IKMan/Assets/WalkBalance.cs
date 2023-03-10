@@ -36,55 +36,10 @@ public class WalkBalance : MonoBehaviour
 
     private int dampCount;
 
-
-
-    // private bool afterDamping = false;
-    // private bool forwardDamping = false;
-
-    // private float forwardDampingDuration = 0f;
-
-    // private float forwardDampingTimeElapse = 0f;
-
-    // private Vector3 moveAcc = new Vector3(0,0,0);
-
-    // private Vector3 dist1, dist2 = new Vector3(0,0,0);
-
-    // private float centerForward = 0;
-    // public float centerForwardSpeed = 0.05f;
-    // public float centerFowardDownSpeed = 0.03f;
-
-    // public float centerForwardMax = 0.15f;
-
-    // public bool centerForwardFalg = false;
-
     public Vector3 dampDist = new Vector3(0,0,0);
-
-    // public void centerForwardIncrease() {
-    //     centerForwardFalg = true;
-    // }
 
     void Update()
     {
-        // Vector3 ov = Vector3.zero;
-        // if (humanIKController.walking) {
-        // }
-        // if (centerForwardFalg) {
-        //     if (centerForward < centerForwardMax) {
-        //         centerForward += centerForwardSpeed;
-        //     } else {
-        //         centerForward -= centerFowardDownSpeed;
-        //         centerForwardFalg = false;
-        //     }
-        // } else {
-        //     centerForward -= centerFowardDownSpeed;
-        // }
-        // centerForward = Mathf.Clamp(centerForward, 0, centerForwardMax);
-        // if (centerForward != 0) {
-        //     Debug.Log(this.GetType().Name + " centerForward " + centerForward);
-        // }
-        // ov = Utils.forward(transform) * centerForward;
-        // if (!humanIKController.walking || leftLeg.Recover || rightLeg.Recover) {
-        // Debug.Log(this.GetType().Name + "wu");
         if ((leftLeg.move.IsLegMoving() && !leftLeg.Recover) || (rightLeg.move.IsLegMoving() && !rightLeg.Recover)) {
             keepBalanceWhenWalking();
         } else {
@@ -101,82 +56,6 @@ public class WalkBalance : MonoBehaviour
                                     );
             humanIKController.postUpdateTowHandPosition();
         }
-        // dist += ov;
-        // dist1 = Vector3.Lerp(
-        //                                 target.position,
-        //                                 dist,
-        //                                 1 - Mathf.Exp(-dampSpeed * Time.deltaTime)
-        //                             );
-
-        // Debug.Log(this.GetType().Name + " left " + leftLeg.isStandGravity());
-        // Debug.Log(this.GetType().Name + " right " + rightLeg.isStandGravity());
-        // if ((!leftLeg.isStandGravity() && rightLeg.isStandGravity())
-        //     || (leftLeg.isStandGravity() && !rightLeg.isStandGravity())) {
-        //     Vector3 dist = leftLeg.isStandGravity() ? leftLeg.transform.position : rightLeg.transform.position;
-        //     dist1 = Vector3.Lerp(
-        //                                     target.position,
-        //                                     dist,
-        //                                     1 - Mathf.Exp(-dampSpeed * Time.deltaTime)
-        //                                 );
-        //     target.position = new Vector3(dist1.x, target.position.y, dist1.z);
-        // } else {
-        //     Debug.Log(this.GetType().Name + " center ");
-        //     Vector3 center = (left.transform.position + right.transform.position) / 2;
-        //     Vector3 dist = new Vector3(center.x, target.position.y, center.z);
-        //     dist1 = Vector3.Lerp(
-        //                                     target.position,
-        //                                     dist,
-        //                                     1 - Mathf.Exp(-dampSpeed * Time.deltaTime)
-        //                                 );
-        //     target.position = new Vector3(dist1.x, target.position.y, dist1.z);
-        // }
-
-        // dist += target.forward * overshoot;
-        // target.position = dist;
-        // if (humanIKController.walking && forwardDamping) {
-        //     dist += target.forward * (overshoot + dampDis);
-        //     dist1 = Vector3.Lerp(
-        //                                     target.position,
-        //                                     dist,
-        //                                     1 - Mathf.Exp(-dampSpeed * Time.deltaTime)
-        //                                 );
-        //     target.position = new Vector3(dist1.x, target.position.y, dist1.z);
-        //     forwardDampingTimeElapse += Time.deltaTime;
-        //     if (forwardDampingTimeElapse >= forwardDampingDuration) {
-        //         stopForwardDamping();
-        //         afterDamping = true;
-        //     }
-        // } else {
-        //     dist += target.forward * overshoot;
-        //     float dp = Vector3.Dot(dist, target.forward);
-        //     float cp = Vector3.Dot(target.position, target.forward);
-        //     if (!humanIKController.walking || !afterDamping) {
-        //         target.position = dist;
-        //     } else {
-        //         if (dp > cp) {
-        //             // Debug.Log(this.GetType().Name + " yes ");
-        //             afterDamping = false;
-        //             target.position = dist;
-        //         } else {
-        //             // Debug.Log(this.GetType().Name + " no ");
-        //             target.position = target.position + target.forward *  (1 - Mathf.Exp(-afterDampingSpeed * Time.deltaTime));
-        //         }
-        //     }
-        // }
-
-        // Vector3 direction = target.forward;
-        // float lp = Vector3.Dot(left.position, direction);
-        // float rp = Vector3.Dot(right.position, direction);
-
-        // Vector3 front = left.position;
-        // Vector3 back = right.position;
-        // if (lp < rp) {
-        //     front = right.position;
-        //     back = left.position;
-        // }
-
-        // Vector3 dist = Vector3.Lerp(back, front, 1f);
-        // target.position = new Vector3(target.position.x, target.position.y, dist.z);
     }
 
     private void keepBalanceWhenWalking() {
@@ -192,9 +71,6 @@ public class WalkBalance : MonoBehaviour
         Vector3 delta = tp - lastDampStart;
         dampSum += delta.magnitude;
         dampCount++;
-        // Debug.Log(this.GetType().Name + " dc " + dampCount);
-        // Debug.Log(this.GetType().Name + " delta " + delta);
-        // transform.position += delta;
         humanIKController.logHomeOffset();
         transform.position += forward2 * Vector3.Dot(delta, forward2)
                                 + right2 * Vector3.Dot(delta, right2)
@@ -229,19 +105,6 @@ public class WalkBalance : MonoBehaviour
         finalDampSpeed = dampSpeed * fac;
         dampDist = dist;
     }
-
-    // public void startForwardDamping(float duration) {
-    //     forwardDampingDuration = duration;
-    //     forwardDampingTimeElapse = 0f;
-    //     forwardDamping = true;
-    // }
-
-    // public void stopForwardDamping() {
-    //     forwardDampingDuration = 0f;
-    //     forwardDampingTimeElapse = 0f;
-    //     forwardDamping = false;
-    //     // Debug.Log(this.GetType().Name + " stop damp ");
-    // }
 
     IEnumerator walkPose(float moveDuration)
     {

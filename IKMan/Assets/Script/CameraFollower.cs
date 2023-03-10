@@ -42,9 +42,10 @@ public class CameraFollower : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!humanIKController.walking) return;
-        // updateMovementChange();
-        transfer();
+        if (humanIKController.currentStatus.getName() == LocomotionState.NAME
+            && humanIKController.currentStatus.cs.name == LocomotionState.STATE_MOVE) {
+            transfer();
+        }
     }
 
     // private void updateMovementChange() {

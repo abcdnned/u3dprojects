@@ -6,7 +6,6 @@ public class AnyState : ActionStateMachine
     protected Banner stopWalkingBanner;
     protected Banner keepWalkingBanner;
     protected Banner idleBanner;
-    protected States cs;
     public AnyState(HumanIKController humanIKController) : base(humanIKController)
     {
         stopWalkingBanner = new Banner(Banner.STOP_WALKING);

@@ -11,7 +11,6 @@ public class LegControllerType2 : TargetController
     [SerializeField] Transform toe;
     [SerializeField] Transform foot;
     // [SerializeField] Rigidbody owner;
-    [SerializeField] WalkPointer owner;
     // Stay within this distance of home
     [SerializeField] float halfStepDistance = 0.2f;
     // How long a step takes to complete
@@ -31,7 +30,6 @@ public class LegControllerType2 : TargetController
 
     [SerializeField] bool syncPair;
 
-    [SerializeField] HumanIKController humanIKController;
     [SerializeField] WalkBalance walkBalance;
     [SerializeField]float stage1 = 0.2f;
     [SerializeField]float stage2 = 0.85f;
@@ -93,19 +91,19 @@ public class LegControllerType2 : TargetController
         r.Normalize();
         d.y = 0;
         d.Normalize();
-        Vector3 target = owner.transform.position + d * 1f;
+        Vector3 target = walkPointer.transform.position + d * 1f;
         target += r * Mathf.Abs(feetBetween) * isRightFoot;
         target.y = 0.7f;
         hint.position = target;
     }
 
     private Vector3[] getEndPoint(Transform target, float pairProjectDis, Vector3 plane) {
-        Vector3 forward = owner.transform.forward;
+        Vector3 forward = walkPointer.transform.forward;
         forward.y = 0;
         forward.Normalize();
         Vector3 footDir = forward;
         Vector3 detour = Vector3.zero;
-        Vector3 right = owner.transform.right;
+        Vector3 right = walkPointer.transform.right;
         right.y = 0;
         right.Normalize();
         Vector3 curDir = transform.forward;
@@ -248,8 +246,8 @@ public class LegControllerType2 : TargetController
         Vector3 plane = Vector3.up;
         Vector3 forward = Utils.forward(body.transform);
         Vector3 right = Utils.right(body.transform);
-        Vector3 up = owner.transform.up;
-        Vector3[] Points = getEndPoint2(owner.transform, pairProjectDis, plane);
+        Vector3 up = walkPointer.transform.up;
+        Vector3[] Points = getEndPoint2(walkPointer.transform, pairProjectDis, plane);
         Vector3 endPoint = Points[0];
         // Vector3 footDir = Points[1];
         // Vector3 detour = Points[2];
@@ -469,7 +467,7 @@ public class LegControllerType2 : TargetController
     private float calculateLegAngle(Vector3 plan)
     {
         Vector3 legBetween = Vector3.ProjectOnPlane(pair.transform.position - transform.position, plan);
-        Vector3 forward = Vector3.ProjectOnPlane(owner.gameObject.transform.forward, plan);
+        Vector3 forward = Vector3.ProjectOnPlane(walkPointer.gameObject.transform.forward, plan);
         float AngleRad = Mathf.Atan2(legBetween.y - forward.y, legBetween.x - forward.x);
         float AngleDeg = (180 / Mathf.PI) * AngleRad;
         return AngleDeg;

@@ -43,7 +43,6 @@ public class LegController2back : MonoBehaviour
     [SerializeField]float preMoveOvershootFix = 0.3f;
     [SerializeField] Transform hint;
     [SerializeField] CameraModule cameraModule;
-    [SerializeField] CameraFollower cameraFollower;
     [SerializeField] float maxFootBodyAngel = 30;
     [SerializeField] float detourFac = 3;
 
@@ -182,7 +181,7 @@ public class LegController2back : MonoBehaviour
         Vector2 m = humanIKController.getMovement();
         Vector3 targetDir = Utils.forward(cameraModule.Camera.transform) * m.y + Utils.right(cameraModule.Camera.transform) * m.x;
         Debug.Log(this.GetType().Name + " td " + targetDir);
-        cameraFollower.setDir(targetDir);
+        // cameraFollower.setDir(targetDir);
         stepCount++;
 
         Vector3 startPoint = transform.position;

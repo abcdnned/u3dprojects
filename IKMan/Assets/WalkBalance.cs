@@ -38,6 +38,9 @@ public class WalkBalance : MonoBehaviour
 
     public Vector3 dampDist = new Vector3(0,0,0);
 
+    [SerializeField] float trackSpeed = 5;
+    public Transform cam;
+
     void Update()
     {
         if ((leftLeg.move.IsLegMoving() && !leftLeg.Recover) || (rightLeg.move.IsLegMoving() && !rightLeg.Recover)) {
@@ -56,6 +59,32 @@ public class WalkBalance : MonoBehaviour
                                     );
             humanIKController.postUpdateTowHandPosition();
         }
+        // Update rotation based on camera.
+        if (humanIKController.currentStatus.getName() == LocomotionState.NAME
+            && humanIKController.currentStatus.cs.name == LocomotionState.STATE_MOVE) {
+            transfer();
+        }
+    }
+
+    private void transfer() {
+        Vector3 forward = Utils.forward(target);
+        Vector3 right = Utils.right(target);
+        Vector2 m = humanIKController.getMovement();
+        Vector3 dir = Utils.forward(cam) * m.y + Utils.right(cam) * m.x;
+        Quaternion tr = Quaternion.LookRotation(dir);       
+        Quaternion r = Quaternion.Slerp(
+            target.rotation,
+            tr, 
+            1 - Mathf.Exp(-trackSpeed * Time.deltaTime)
+        );
+        leftLeg.transform.SetParent(target);
+        rightLeg.transform.SetParent(target);
+        humanIKController.logHomeOffset();
+        target.rotation = r;
+        rotateCurrentDampDist(forward, right);
+        leftLeg.transform.SetParent(null);
+        rightLeg.transform.SetParent(null);
+        humanIKController.postUpdateTowHandPosition();
     }
 
     private void keepBalanceWhenWalking() {

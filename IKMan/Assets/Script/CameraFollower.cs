@@ -24,7 +24,7 @@ public class CameraFollower : MonoBehaviour
     public float maxBodyAngel = 20;
     private Vector2 lastm = Vector2.zero;
 
-    private Vector3 targetDir = Vector3.zero;
+    // private Vector3 targetDir = Vector3.zero;
 
     // private ReadTrigger step = new ReadTrigger(false);
     // private ReadTrigger movementChange = new ReadTrigger(false);
@@ -78,10 +78,10 @@ public class CameraFollower : MonoBehaviour
     //     }
     // }
 
-    public void setDir(Vector3 v) {
-        // Debug.Log(this.GetType().Name + " set dir " + v);
-        targetDir = v;
-    }
+    // public void setDir(Vector3 v) {
+    //     // Debug.Log(this.GetType().Name + " set dir " + v);
+    //     targetDir = v;
+    // }
 
     private void transfer() {
         // if (movementChange.read()) {

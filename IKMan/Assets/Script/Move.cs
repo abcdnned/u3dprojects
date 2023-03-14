@@ -32,4 +32,12 @@ public class Move
         return this.name == MoveNameConstants.LegIdle;
     }
 
+    public bool isMoving() {
+        return this.name.Contains("moving");
+    }
+
+    public virtual Move move() {
+        return this;
+    }
+
 }

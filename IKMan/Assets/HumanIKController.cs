@@ -13,6 +13,11 @@ public class HumanIKController : MonoBehaviour
   public HandController leftHand;
 
   public HandController rightHand;
+  [SerializeField] public WalkBalance walkBalance;
+
+  public HeadController headController;
+
+  public WalkPointer walkPointer;
 
   private Vector2 _movement;
   internal bool walking;
@@ -39,7 +44,6 @@ public class HumanIKController : MonoBehaviour
 
   private ReadTrigger TriggerR = new ReadTrigger(false);
 
-  [SerializeField] WalkBalance walkBalance;
 
   // Only allow diagonal leg pairs to step together
 

@@ -26,6 +26,8 @@ public class TargetController : MonoBehaviour {
 
     private void Awake() {
         moveManager = new MoveManager(this);
+        moveManager.addMove(new Move(MoveNameConstants.DirectMoving));
+        moveManager.addMove(new Move(MoveNameConstants.Idle));
         initMove();
     }
 
@@ -67,6 +69,10 @@ public class TargetController : MonoBehaviour {
         }
     }
 
+    protected virtual void subHandleEvent(string eventId) {
+        
+    }
+
     public void TryTransferDirectly(Vector3 point, float angelOffset)
     {
         TryTransferDirectly(point, DEFAULT_DURATION_FACTOR, angelOffset);
@@ -96,7 +102,7 @@ public class TargetController : MonoBehaviour {
                                            float angelOffset, float durationFactor)
     {
         sync();
-        moveManager.ChangeMove(MoveNameConstants.HandMoving);
+        moveManager.ChangeMove(MoveNameConstants.DirectMoving);
         Recover = true;
 
         Quaternion endRot = forwardTarget.rotation;
@@ -123,7 +129,7 @@ public class TargetController : MonoBehaviour {
             yield return null;
         }
         while (timeElapsed < duration);
-        moveManager.ChangeMove(MoveNameConstants.HandIdle);
+        moveManager.ChangeMove(MoveNameConstants.Idle);
         Recover = false;
         // notifyBanner();
     }

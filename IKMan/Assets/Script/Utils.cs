@@ -47,6 +47,10 @@ public class Utils {
         Vector3 delta = target - origin.position;
         origin.position += delta;
     }
+    public static void deltaRotate(Transform origin, Quaternion target) {
+        Quaternion diff = origin.rotation.Diff(target);
+        origin.rotation *= diff;
+    }
 
     public static Vector3 copy(Vector3 source) {
         Vector3 r = new Vector3(source.x, source.y, source.z);

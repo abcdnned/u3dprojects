@@ -68,11 +68,6 @@ public class LegControllerType2 : TargetController
     // private void setPairCGFoot(bool v) {
     //     cgFoot = v;
     //     pairComponent.cgFoot = !v;
-    // }
-
-    // private void setCGFoot(bool v) {
-    //     cgFoot = v;
-    // }
 
     public bool isStandGravity() {
         return transform.position.y < 0.1f;

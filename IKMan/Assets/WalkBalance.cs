@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WalkBalance : MonoBehaviour
+public class WalkBalance : TargetController
 {
     [SerializeField] Transform left;
     [SerializeField] Transform right;
@@ -15,6 +15,9 @@ public class WalkBalance : MonoBehaviour
 
     [SerializeField] Transform target;
 
+    [SerializeField] Transform direction;
+
+    [Header("--- WALKING ---")]
     [SerializeField] float overshoot = 0.2f;
     [SerializeField] float dampSpeed = 2f;
     [SerializeField] float returnCenterSpeed = 6f;
@@ -27,8 +30,11 @@ public class WalkBalance : MonoBehaviour
 
     [SerializeField] float walkPoseLift = 0.1f;
     [SerializeField] bool walkPosing = false;
-    [SerializeField] HumanIKController humanIKController;
-    [SerializeField] Transform direction;
+
+    [Header("--- BATTLE ---")]
+
+    [SerializeField] float battleIdleAngelOffset = 45;
+
 
     private Vector3 lastDampStart;
 
@@ -40,6 +46,7 @@ public class WalkBalance : MonoBehaviour
 
     [SerializeField] float trackSpeed = 5;
     public Transform cam;
+    private Vector3 transferDir;
 
     void Update()
     {
@@ -62,16 +69,36 @@ public class WalkBalance : MonoBehaviour
         // Update rotation based on camera.
         if (humanIKController.currentStatus.getName() == LocomotionState.NAME
             && humanIKController.currentStatus.cs.name == LocomotionState.STATE_MOVE) {
-            transfer();
+            Vector2 m = humanIKController.getMovement();
+            Vector3 dir = Utils.forward(cam) * m.y + Utils.right(cam) * m.x;
+            updateTransferDirection(dir);
+            transfer(0);
+        }
+        else if (
+            (humanIKController.currentStatus.getName() == IdleStatus.NAME
+            && humanIKController.currentStatus.cs.name == IdleStatus.STATE_TOBATTLEIDLE) ||
+            (humanIKController.currentStatus.getName() == BattleIdleState.NAME
+            && humanIKController.currentStatus.cs.name == BattleIdleState.STATE_BATTLE)) {
+            transfer(battleIdleAngelOffset);
         }
     }
 
-    private void transfer() {
+    protected override void initMove() {
+        moveManager.addMove(new HipIdleMove());
+        moveManager.addMove(new HipDampMove());
+        moveManager.ChangeMove(MoveNameConstants.HipIdle);
+    }
+
+    private void updateTransferDirection(Vector3 d) {
+        transferDir = d;
+    }
+
+    private void transfer(float angelOffset) {
         Vector3 forward = Utils.forward(target);
         Vector3 right = Utils.right(target);
-        Vector2 m = humanIKController.getMovement();
-        Vector3 dir = Utils.forward(cam) * m.y + Utils.right(cam) * m.x;
-        Quaternion tr = Quaternion.LookRotation(dir);       
+        Quaternion tr = Quaternion.LookRotation(transferDir);       
+        Quaternion offset = Quaternion.AngleAxis(angelOffset, Vector3.up);
+        tr *= offset;
         Quaternion r = Quaternion.Slerp(
             target.rotation,
             tr, 
@@ -109,6 +136,10 @@ public class WalkBalance : MonoBehaviour
         Debug.DrawLine(target.position, dampDist, Color.red, Time.deltaTime);
         Debug.DrawLine(target.position, left.position, Color.blue, Time.deltaTime);
         Debug.DrawLine(target.position, right.position, Color.green, Time.deltaTime);
+    }
+
+    public void TryBattleIdle() {
+        updateTransferDirection(Utils.forward(cam));
     }
 
 
@@ -173,16 +204,10 @@ public class WalkBalance : MonoBehaviour
     }
     public void startWalk(float moveDuration) {
         if (walkPosing) {
-            // Debug.Log(this.GetType().Name + " still walk pose ");
             return;
         } else {
-            // Debug.Log(this.GetType().Name + " walkPose ");
         }
         StartCoroutine(walkPose(moveDuration));
-        // Debug.Log(this.GetType().Name + " startWalk ");
     }
 
-    public void handleEvent(string eventId) {
-
-    }
 }

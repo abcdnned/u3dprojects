@@ -4,6 +4,8 @@ using UnityEngine;
 using static HumanIKController;
 public class BattleIdleState : AnyState {
 
+    public const string NAME = "BattleIdleState";
+    public const string STATE_BATTLE = "battleState";
     private States battleIdleState;
 
     private States toIdleTransfer;
@@ -13,7 +15,7 @@ public class BattleIdleState : AnyState {
     }
 
     protected override void initState() {
-        battleIdleState = new States("battleState", BattleIdle);
+        battleIdleState = new States(STATE_BATTLE, BattleIdle);
         toIdleTransfer = new States("toIdleTransfer", ToIdleTransfer);
         cs = battleIdleState;;
     }
@@ -25,6 +27,7 @@ public class BattleIdleState : AnyState {
             Vector3 rightPoint = humanIKController.idleAnchorPoints[ANCHOR_RIGHT_LEG];
             humanIKController.frontLeftLegStepper.TryTransferDirectly(leftPoint, 0);
             humanIKController.frontRightLegStepper.TryTransferDirectly(rightPoint, 0);
+            humanIKController.headController.setMode(1);
             return (toIdleTransfer, this);
         }
         return (battleIdleState, this);
@@ -44,7 +47,7 @@ public class BattleIdleState : AnyState {
 
 
     public override string getName() {
-        return "BattleIdleState";
+        return NAME;
     }
 
 }

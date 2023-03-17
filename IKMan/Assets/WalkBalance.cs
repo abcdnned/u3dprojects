@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class WalkBalance : TargetController
 {
-    [SerializeField] Transform left;
-    [SerializeField] Transform right;
+    public Transform left;
+    public Transform right;
     public LegControllerType2 leftLeg;
     public LegControllerType2 rightLeg;
 
@@ -13,7 +13,7 @@ public class WalkBalance : TargetController
 
     public HandController rightHand;
 
-    [SerializeField] Transform target;
+    public Transform target;
 
     [SerializeField] Transform direction;
 
@@ -22,7 +22,7 @@ public class WalkBalance : TargetController
     [SerializeField] float dampSpeed = 2f;
     [SerializeField] float returnCenterSpeed = 6f;
 
-    private float finalDampSpeed = 2f;
+    internal float finalDampSpeed = 2f;
     [SerializeField] float dampDis = 0.1f;
     [SerializeField] float afterDampingSpeed = 1f;
 
@@ -31,40 +31,57 @@ public class WalkBalance : TargetController
     [SerializeField] float walkPoseLift = 0.1f;
     [SerializeField] bool walkPosing = false;
 
-    [Header("--- BATTLE ---")]
-
-    [SerializeField] float battleIdleAngelOffset = 45;
 
 
-    private Vector3 lastDampStart;
+    internal Vector3 lastDampStart;
 
-    private float dampSum;
+    internal float dampSum;
 
-    private int dampCount;
+    internal int dampCount;
 
     public Vector3 dampDist = new Vector3(0,0,0);
 
+    [Header("--- BATTLE ---")]
+    public float battleIdleAngelOffset = 45;
+    public float battleIdleTransferDuration = 1;
+
+    public float battleIdleHipH = 0.2f;
+    public float battleIdleHipOffset = 0.7f;
+    public float hipBattleSpeed = 4f;
+    [Header("--- GENERAL ---")]
     [SerializeField] float trackSpeed = 5;
+
     public Transform cam;
     private Vector3 transferDir;
+    public float airRayCastDistance = 0.5f;
+    public LayerMask airRayCastIgnoreLayer;
+    private const float DOWN_RAY_OFFSET = 10;
 
     void Update()
     {
-        if ((leftLeg.move.IsLegMoving() && !leftLeg.Recover) || (rightLeg.move.IsLegMoving() && !rightLeg.Recover)) {
-            keepBalanceWhenWalking();
+        if (move != null
+            && move.name != MoveNameConstants.HipIdle
+            && move.name != MoveNameConstants.HipDamp) {
+            move = move.move(Time.deltaTime);
         } else {
-            // Debug.Log(this.GetType().Name + " center ");
-            Vector3 center = (left.transform.position + right.transform.position) / 2;
-            Vector3 dist = new Vector3(center.x, target.position.y, center.z);
-            dist += Utils.forward(transform) * overshoot;
-            dist = new Vector3(dist.x, target.position.y, dist.z);
-            humanIKController.logHomeOffset();
-            target.position = Vector3.Lerp(
-                                        target.position,
-                                        dist,
-                                        1 - Mathf.Exp(-returnCenterSpeed * Time.deltaTime)
-                                    );
-            humanIKController.postUpdateTowHandPosition();
+            if ((leftLeg.move.IsLegMoving() && !leftLeg.Recover) || (rightLeg.move.IsLegMoving() && !rightLeg.Recover)) {
+                // Debug.Log(this.GetType().Name + " walking ");
+                moveManager.ChangeMove(MoveNameConstants.HipDamp);
+                keepBalanceWhenWalking();
+            } else {
+                moveManager.ChangeMove(MoveNameConstants.HipIdle);
+                Vector3 center = (left.transform.position + right.transform.position) / 2;
+                Vector3 dist = new Vector3(center.x, target.position.y, center.z);
+                dist += Utils.forward(transform) * overshoot;
+                dist = new Vector3(dist.x, target.position.y, dist.z);
+                humanIKController.logHomeOffset();
+                target.position = Vector3.Lerp(
+                                            target.position,
+                                            dist,
+                                            1 - Mathf.Exp(-returnCenterSpeed * Time.deltaTime)
+                                        );
+                humanIKController.postUpdateTowHandPosition();
+            }
         }
         // Update rotation based on camera.
         if (humanIKController.currentStatus.getName() == LocomotionState.NAME
@@ -74,26 +91,58 @@ public class WalkBalance : TargetController
             updateTransferDirection(dir);
             transfer(0);
         }
-        else if (
-            (humanIKController.currentStatus.getName() == IdleStatus.NAME
-            && humanIKController.currentStatus.cs.name == IdleStatus.STATE_TOBATTLEIDLE) ||
-            (humanIKController.currentStatus.getName() == BattleIdleState.NAME
-            && humanIKController.currentStatus.cs.name == BattleIdleState.STATE_BATTLE)) {
-            transfer(battleIdleAngelOffset);
-        }
+        // else if (
+        //     (humanIKController.currentStatus.getName() == IdleStatus.NAME
+        //     && humanIKController.currentStatus.cs.name == IdleStatus.STATE_TOBATTLEIDLE) ||
+        //     (humanIKController.currentStatus.getName() == BattleIdleState.NAME
+        //     && humanIKController.currentStatus.cs.name == BattleIdleState.STATE_BATTLE)) {
+            // transfer(battleIdleAngelOffset);
+        // }
     }
 
     protected override void initMove() {
         moveManager.addMove(new HipIdleMove());
         moveManager.addMove(new HipDampMove());
+        moveManager.addMove(new Hip2BattleIdleMove());
+        moveManager.addMove(new HipBattleIdleMove());
         moveManager.ChangeMove(MoveNameConstants.HipIdle);
     }
+
+    internal void adjustHeight(float h, Vector3 normal, float speed) {
+        if (h < 0) {
+            h = 0;
+        }
+        RaycastHit hit;
+        Vector3 start = Utils.copy(transform.position);
+        start.y += DOWN_RAY_OFFSET;
+        if (Physics.Raycast(start, -normal, out hit, DOWN_RAY_OFFSET + airRayCastDistance, ~airRayCastIgnoreLayer)) {
+            h -= battleIdleHipOffset;
+            Vector3 desiredPos = hit.point + normal * h;
+            desiredPos.y = h;
+            Utils.deltaMove(transform, Vector3.MoveTowards(transform.position, desiredPos, speed * Time.deltaTime));
+        }
+    }
+
+    internal float hipHeightDiff(float h, Vector3 normal) {
+        float r = 0;
+        RaycastHit hit;
+        Vector3 start = Utils.copy(transform.position);
+        start.y += DOWN_RAY_OFFSET;
+        if (Physics.Raycast(start, -normal, out hit, DOWN_RAY_OFFSET + airRayCastDistance, ~airRayCastIgnoreLayer)) {
+            h -= battleIdleHipOffset;
+            Vector3 desiredPos = hit.point + normal * h;
+            desiredPos.y = h;
+            r = Vector3.Distance(transform.position, desiredPos);
+        }
+        return r;
+    }
+    
 
     private void updateTransferDirection(Vector3 d) {
         transferDir = d;
     }
 
-    private void transfer(float angelOffset) {
+    internal void transfer(float angelOffset) {
         Vector3 forward = Utils.forward(target);
         Vector3 right = Utils.right(target);
         Quaternion tr = Quaternion.LookRotation(transferDir);       
@@ -140,6 +189,8 @@ public class WalkBalance : TargetController
 
     public void TryBattleIdle() {
         updateTransferDirection(Utils.forward(cam));
+        moveManager.ChangeMove(MoveNameConstants.HipIdle2BattleIdle);
+
     }
 
 

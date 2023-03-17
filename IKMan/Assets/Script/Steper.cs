@@ -27,11 +27,25 @@ public class Steper
     public static int BEARZ = 1;
     int lerpFunction = 0;
 
+
+    /**
+     * forward and right for Dot
+     * duration: move duration
+     * realForward, realRight, body: real move direction and right
+     * mode: 0 use body as move direction,
+     *       1 use vector3 as direction not rotate with body,
+     *       2 rotate with body
+     * target: the target to move
+     * points move milestones
+     */
     public Steper(Vector3 forward,
                   Vector3 right,
                   float duration,
                   int function,
                   Transform body,
+                  Vector3 realForward,
+                  Vector3 realRight,
+                  int mode,
                   Transform target,
                   Vector3[] points) {
         // Init field.
@@ -46,23 +60,6 @@ public class Steper
         timeElapsed = 0;
         state = 0;
     }
-    public Steper(float duration, int function, Transform body, Transform target, Vector3[] points) {
-        // Init field.
-        this.duration = duration;
-        this.lerpFunction = function;
-        this.body = body;
-        transform = target;
-        setwp(points);
-
-        // Calculate forward and right vectors from body's transform.
-        forward = Utils.forward(body.transform);
-        right = Utils.right(body.transform);
-
-        // Init state.
-        timeElapsed = 0;
-        state = 0;
-    }
-
     public void setwp(Vector3[] points) {
         wpCount = points.Length;
         wp = new Vector3[wpCount];

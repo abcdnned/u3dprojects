@@ -46,6 +46,10 @@ public class LegControllerType2 : TargetController
     [SerializeField] float bigFirstStepDampFac = 0.8f;
     [SerializeField] float firstStepDampFac = 0.7f;
 
+    [Header("--- General ---")]
+    public float shortStepDuration = 0.3f;
+    public float shortStepLiftDistance = 0.3f;
+
 
     //state variable
     public bool Moving;

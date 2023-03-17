@@ -30,7 +30,7 @@ public class AnyState : ActionStateMachine
     public override ActionStateMachine handleEvent(Event e) {
         (States, ActionStateMachine) value = cs.handleEvent(e);
         if (value.Item1 != null && cs != value.Item1) {
-            Debug.Log(this.GetType().Name + " State change to " + value.Item1.name);
+            Debug.Log(this.GetType().Name + " states change to " + value.Item1.name);
             cs = value.Item1;
         }
         return value.Item2;

@@ -9,6 +9,16 @@ public class Move
 
     public float normalizedTime;
 
+    public float duration;
+
+    public Move nextMove;
+
+    public TargetController targetController;
+
+    public HumanIKController humanIKController;
+
+    public MoveManager moveManager;
+
     public Move(string n) {
         this.name = n;
     }
@@ -36,8 +46,14 @@ public class Move
         return this.name.Contains("moving");
     }
 
-    public virtual Move move() {
+    public virtual Move transfer() {
         return this;
+    }
+    public virtual Move move(float dt) {
+        return this;
+    }
+
+    public virtual void init() {
     }
 
 }

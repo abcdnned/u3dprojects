@@ -8,7 +8,11 @@ public class SteperBuilder
     private Vector3 right;
     private float duration;
     private int lerpFunction;
+
     private Transform body;
+    private Vector3 realForward;
+    private Vector3 realRight;
+    int mode;
     private Transform target;
     private Vector3[] points;
 
@@ -54,8 +58,35 @@ public class SteperBuilder
         return this;
     }
 
+    public SteperBuilder WithRealForward(Vector3 realForward)
+    {
+        this.realForward = realForward;
+        return this;
+    }
+
+    public SteperBuilder WithRealRight(Vector3 realRight)
+    {
+        this.realRight = realRight;
+        return this;
+    }
+
+    public SteperBuilder WithMode(int mode)
+    {
+        this.mode = mode;
+        return this;
+    }
+
     public Steper Build()
     {
-        return new Steper(forward, right, duration, lerpFunction, body, target, points);
+        return new Steper(forward,
+                          right,
+                          duration,
+                          lerpFunction,
+                          body,
+                          realForward,
+                          realRight,
+                          mode,
+                          target,
+                          points);
     }
 }

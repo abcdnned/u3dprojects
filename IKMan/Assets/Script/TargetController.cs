@@ -75,26 +75,21 @@ public class TargetController : MonoBehaviour {
 
     public void TryTransferDirectly(Vector3 point, float angelOffset)
     {
-        TryTransferDirectly(point, DEFAULT_DURATION_FACTOR, angelOffset);
+        if (!enable) return;
+        if (move.isMoving()) return;
+        // registerBanner();
+        StartCoroutine(TransferDirectly(point, Utils.forward(body.transform),
+                                Utils.right(body.transform), walkPointer.transform,
+                                angelOffset, DEFAULT_DURATION_FACTOR));
     }
 
-    public void TryTransferDirectly(Transform target)
-    {
-        TryTransferDirectly(target, DEFAULT_DURATION_FACTOR);
-    }
-    public void TryTransferDirectly(Vector3 point, float durationFactor, float angelOffset)
-    {
-        if (!enable) return;
-        if (move.IsHandMoving()) return;
-        // registerBanner();
-        StartCoroutine(TransferDirectly(point, durationFactor, angelOffset));
-    }
     public void TryTransferDirectly(Transform target, float durationFactor)
     {
         if (!enable) return;
         if (move.IsHandMoving()) return;
         // registerBanner();
-        StartCoroutine(TransferDirectly(target, durationFactor));
+        StartCoroutine(TransferDirectly(target.position, Utils.forward(target), Utils.right(target),
+                                        walkPointer.transform, 0, durationFactor));
     }
 
     protected IEnumerator TransferDirectly(Vector3 point, Vector3 direction,
@@ -132,17 +127,5 @@ public class TargetController : MonoBehaviour {
         moveManager.ChangeMove(MoveNameConstants.Idle);
         Recover = false;
         // notifyBanner();
-    }
-
-    protected IEnumerator TransferDirectly(Vector3 point, float durationFactor, float angelOffset)
-    {
-        return TransferDirectly(point, Utils.forward(body.transform),
-                                Utils.right(body.transform), walkPointer.transform,
-                                angelOffset, durationFactor);
-    }
-    protected IEnumerator TransferDirectly(Transform target, float durationFactor)
-    {
-        return TransferDirectly(target.position, Utils.forward(target), Utils.right(target),
-                                walkPointer.transform, 0, durationFactor);
     }
 }

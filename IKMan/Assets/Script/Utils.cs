@@ -71,6 +71,18 @@ public class Utils {
 
         return true;
     }
+    public static void GetForwardAndRight(Vector3 A, Vector3 B, out Vector3 forward, out Vector3 right) {
+        forward = (B - A).normalized;
+        right = Vector3.Cross(Vector3.up, forward);
+    }
+
+    public static Vector3 GetMiddleLiftPoint(Vector3 a, Vector3 b, float distance)
+    {
+        Vector3 middle = (a + b) / 2f;
+        middle += Vector3.up * distance;
+        return middle;
+    }
+
     
 
 }

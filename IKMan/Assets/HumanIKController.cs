@@ -135,7 +135,7 @@ public class HumanIKController : MonoBehaviour
     ActionStateMachine oldState = currentStatus;
     currentStatus = currentStatus.handleEvent(ikEvent);
     if (oldState != currentStatus) {
-      Debug.Log(oldState.getName() + " changed to " + currentStatus.getName());
+      Debug.Log(oldState.getName() + "status changed to " + currentStatus.getName());
     }
   }
   public void postUpdateTowHandPosition() {

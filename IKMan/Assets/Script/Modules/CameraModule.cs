@@ -69,7 +69,7 @@ public class CameraModule : MonoBehaviour {
             walkBalance.cam = Camera.transform;
         }
         if (walkPointer != null) {
-            walkPointer.camera = Camera.transform;
+            walkPointer.cam = Camera.transform;
             walkPointer.cameraModule = this;
         }
     }

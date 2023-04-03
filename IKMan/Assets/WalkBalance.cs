@@ -24,9 +24,9 @@ public class WalkBalance : TargetController
 
     internal float finalDampSpeed = 2f;
     [SerializeField] float dampDis = 0.1f;
-    [SerializeField] float afterDampingSpeed = 1f;
+    // [SerializeField] float afterDampingSpeed = 1f;
 
-    [SerializeField] float walkPoseDuration = 0.2f;
+    // [SerializeField] float walkPoseDuration = 0.2f;
 
     [SerializeField] float walkPoseLift = 0.1f;
     [SerializeField] bool walkPosing = false;
@@ -46,7 +46,8 @@ public class WalkBalance : TargetController
     public float battleIdleTransferDuration = 1;
 
     public float battleIdleHipH = 0.2f;
-    public float battleIdleHipOffset = 0.7f;
+    public float idleHipH = 0.4f;
+    public float hipHeightOffset = 0.7f;
     public float hipBattleSpeed = 4f;
     [Header("--- GENERAL ---")]
     [SerializeField] float trackSpeed = 5;
@@ -55,7 +56,21 @@ public class WalkBalance : TargetController
     private Vector3 transferDir;
     public float airRayCastDistance = 0.5f;
     public LayerMask airRayCastIgnoreLayer;
-    private const float DOWN_RAY_OFFSET = 10;
+    public static float DOWN_RAY_OFFSET = 10;
+
+    internal void ReturnToCenter() {
+        Vector3 center = (left.transform.position + right.transform.position) / 2;
+        Vector3 dist = new Vector3(center.x, target.position.y, center.z);
+        dist += Utils.forward(transform) * overshoot;
+        dist = new Vector3(dist.x, target.position.y, dist.z);
+        humanIKController.logHomeOffset();
+        target.position = Vector3.Lerp(
+                                    target.position,
+                                    dist,
+                                    1 - Mathf.Exp(-returnCenterSpeed * Time.deltaTime)
+                                );
+        humanIKController.postUpdateTowHandPosition();
+    }
 
     void Update()
     {
@@ -70,17 +85,7 @@ public class WalkBalance : TargetController
                 keepBalanceWhenWalking();
             } else {
                 moveManager.ChangeMove(MoveNameConstants.HipIdle);
-                Vector3 center = (left.transform.position + right.transform.position) / 2;
-                Vector3 dist = new Vector3(center.x, target.position.y, center.z);
-                dist += Utils.forward(transform) * overshoot;
-                dist = new Vector3(dist.x, target.position.y, dist.z);
-                humanIKController.logHomeOffset();
-                target.position = Vector3.Lerp(
-                                            target.position,
-                                            dist,
-                                            1 - Mathf.Exp(-returnCenterSpeed * Time.deltaTime)
-                                        );
-                humanIKController.postUpdateTowHandPosition();
+                ReturnToCenter();
             }
         }
         // Update rotation based on camera.
@@ -105,6 +110,8 @@ public class WalkBalance : TargetController
         moveManager.addMove(new HipDampMove());
         moveManager.addMove(new Hip2BattleIdleMove());
         moveManager.addMove(new HipBattleIdleMove());
+        moveManager.addMove(new Hip2IdleMove());
+        moveManager.addMove(new HipHeightChangeMove());
         moveManager.ChangeMove(MoveNameConstants.HipIdle);
     }
 
@@ -116,7 +123,7 @@ public class WalkBalance : TargetController
         Vector3 start = Utils.copy(transform.position);
         start.y += DOWN_RAY_OFFSET;
         if (Physics.Raycast(start, -normal, out hit, DOWN_RAY_OFFSET + airRayCastDistance, ~airRayCastIgnoreLayer)) {
-            h -= battleIdleHipOffset;
+            h -= hipHeightOffset;
             Vector3 desiredPos = hit.point + normal * h;
             desiredPos.y = h;
             Utils.deltaMove(transform, Vector3.MoveTowards(transform.position, desiredPos, speed * Time.deltaTime));
@@ -129,7 +136,7 @@ public class WalkBalance : TargetController
         Vector3 start = Utils.copy(transform.position);
         start.y += DOWN_RAY_OFFSET;
         if (Physics.Raycast(start, -normal, out hit, DOWN_RAY_OFFSET + airRayCastDistance, ~airRayCastIgnoreLayer)) {
-            h -= battleIdleHipOffset;
+            h -= hipHeightOffset;
             Vector3 desiredPos = hit.point + normal * h;
             desiredPos.y = h;
             r = Vector3.Distance(transform.position, desiredPos);
@@ -190,7 +197,13 @@ public class WalkBalance : TargetController
     public void TryBattleIdle() {
         updateTransferDirection(Utils.forward(cam));
         moveManager.ChangeMove(MoveNameConstants.HipIdle2BattleIdle);
+    }
 
+    public void TryRotate(float targetRotation, float targetHeight) {
+        updateTransferDirection(Utils.forward(cam));
+        HipHeightChangeMove m = (HipHeightChangeMove)moveManager.ChangeMove(MoveNameConstants.HipHeightChangeMove);
+        m.targetRotation = targetRotation;
+        m.groundHeight = targetHeight;
     }
 
 

@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 public class Utils {
+    public static float AIR_RAY_CAST_DISTANCE = 1.5f;
+    public static float DOWN_RAY_OFFSET = 10;
 
     public static Vector3 halfTowards(Vector3 direction1, Vector3 direction2, float maxMagDelta) {
         return customTowards(direction1, direction2, 0.5f, maxMagDelta);
@@ -18,6 +20,25 @@ public class Utils {
         forward.y = 0;
         forward.Normalize();
         return forward;
+    }
+
+    public static Vector3 snapTo(Vector3 start) {
+        return snapTo(start, Vector3.up, 0);
+    }
+    public static Vector3 snapTo(Vector3 position, Vector3 normal, float h) {
+        if (h < 0) {
+            h = 0;
+        }
+        RaycastHit hit;
+        Vector3 start = position + normal * DOWN_RAY_OFFSET;
+        // Debug.DrawLine(start, start + ((DOWN_RAY_OFFSET + AIR_RAY_CAST_DISTANCE) * -normal), Color.red, 30);
+        if (Physics.Raycast(start, -normal, out hit, DOWN_RAY_OFFSET + AIR_RAY_CAST_DISTANCE, ~0)) {
+            // Debug.Log(" snapTo hitt! ");
+            Vector3 desiredPos = hit.point + normal * h;
+            desiredPos.y = h;
+            return desiredPos;
+        }
+        return position;
     }
 
     public static Vector3 right(Transform v) {

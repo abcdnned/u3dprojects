@@ -83,8 +83,6 @@ public class SteperBuilder
                           duration,
                           lerpFunction,
                           body,
-                          realForward,
-                          realRight,
                           mode,
                           target,
                           points);

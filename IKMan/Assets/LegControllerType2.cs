@@ -79,6 +79,8 @@ public class LegControllerType2 : TargetController
     protected override void initMove() {
         moveManager.addMove(new LegIdleMove());
         moveManager.addMove(new LegMovingMove());
+        moveManager.addMove(new LegPutMove(isRightFoot == 1));
+        moveManager.addMove(new LegRotateMove());
         moveManager.ChangeMove(MoveNameConstants.LegIdle);
         stepCount = 0;
     }
@@ -93,6 +95,7 @@ public class LegControllerType2 : TargetController
         target += r * Mathf.Abs(feetBetween) * isRightFoot;
         target.y = 0.7f;
         hint.position = target;
+        move.move(Time.deltaTime);
     }
 
     private Vector3[] getEndPoint(Transform target, float pairProjectDis, Vector3 plane) {
@@ -668,5 +671,18 @@ public class LegControllerType2 : TargetController
         Recover = false;
         // Debug.Log(this.GetType().Name + " transfer notify ");
         // notifyBanner();
+    }
+    public void TryPutLeg(Vector3 leftPoint, float angelOffset)
+    {
+        sync();
+        LegPutMove cm = (LegPutMove)moveManager.ChangeMove(MoveNameConstants.LegPutMove);
+        leftPoint = Utils.snapTo(leftPoint, Vector3.up, 0);
+        cm.setTargetPosition(leftPoint, new Vector3(angelOffset, 0, 0));
+    }
+
+    public void TryRotateLeg(float angelOffset) {
+        sync();
+        LegRotateMove cm = (LegRotateMove)moveManager.ChangeMove(MoveNameConstants.LegRotateMove);
+        cm.setTargetPosition(new Vector3(angelOffset, 0, 0));
     }
 }

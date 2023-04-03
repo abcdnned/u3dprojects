@@ -25,9 +25,15 @@ public class IdleStatus : AnyState
             Vector3 rightPoint = humanIKController.battleIdleAnchorPoints[ANCHOR_RIGHT_LEG];
             humanIKController.walkPointer.lookCamera();
             humanIKController.headController.setMode(0);
-            humanIKController.frontLeftLegStepper.TryTransferDirectly(leftPoint, humanIKController.bi_fontLegAngelOffset);
-            humanIKController.frontRightLegStepper.TryTransferDirectly(rightPoint, humanIKController.bi_backFootAngelOffset);
-            humanIKController.walkBalance.TryBattleIdle();
+            // humanIKController.frontLeftLegStepper.TryRotateLeg(humanIKController.bi_fontLegAngelOffset);
+
+            Vector3 leftLegPosition = humanIKController.frontLeftLegStepper.transform.position;
+            leftLegPosition = Utils.snapTo(leftLegPosition, Vector3.up, 0);
+            humanIKController.frontLeftLegStepper.TryTransferDirectly(leftLegPosition,
+                                                                      humanIKController.bi_fontLegAngelOffset);
+            humanIKController.frontRightLegStepper.TryPutLeg(rightPoint, humanIKController.bi_backFootAngelOffset);
+            WalkBalance wb = humanIKController.walkBalance;
+            wb.TryRotate(wb.battleIdleAngelOffset, wb.battleIdleHipH);
             return (toBattleIdleState, this);
         }
         else if (e.eventId.Equals(HumanIKController.EVENT_KEEP_WALKING)) {

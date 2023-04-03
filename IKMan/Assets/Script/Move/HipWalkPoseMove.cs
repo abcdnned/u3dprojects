@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class HipWalkPoseMove : Move
 {
-    [SerializeField] bool walkPosing = false;
+    // [SerializeField] bool walkPosing = false;
     public HipWalkPoseMove() : base(MoveNameConstants.HipWalkPose)
     {
         

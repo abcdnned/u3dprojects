@@ -30,6 +30,7 @@ public class HandController : TargetController
         moveManager.addMove(new HandIdleMove());
         moveManager.ChangeMove(MoveNameConstants.HandIdle);
     }
+    
 
     private Vector3[] getEndPoint(Transform body, Transform home, Vector3 up, int isRightFoot, int isRightHand) {
         Vector3 forward = Utils.forward(body.transform);

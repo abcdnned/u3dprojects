@@ -107,7 +107,7 @@ public class TargetController : MonoBehaviour {
         Vector3 plane = Vector3.up;
         Vector3 wp2 = point;
         float duration = (wp2 - wp1).magnitude * durationFactor;
-        Steper steper = new Steper(direction, right, duration, Steper.LEFP, body.transform, transform,
+        Steper steper = new Steper(direction, right, duration, Steper.LEFP, body.transform, 0, transform,
                                    new Vector3[] { wp1, wp2 } );
         Rotater rotater = new Rotater(body.transform, transform,
                                       duration,

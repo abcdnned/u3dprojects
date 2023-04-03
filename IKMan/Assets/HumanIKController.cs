@@ -96,8 +96,8 @@ public class HumanIKController : MonoBehaviour
     return _movement;
   }
 
-  private int count = 500;
-  private bool f = false;
+  // private int count = 500;
+  // private bool f = false;
   private void MovementInput(Vector2 movement) {
       _movement = movement;
   }

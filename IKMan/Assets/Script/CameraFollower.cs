@@ -11,17 +11,17 @@ public class CameraFollower : MonoBehaviour
 
     public WalkBalance walkBalance;
 
-    public bool lockdir = false;
+    // public bool lockdir = false;
     [SerializeField] float trackSpeed = 5;
 
-    bool waiting = false;
-    private int llsc;
+    // bool waiting = false;
+    // private int llsc;
 
-    private int rlsc;
+    // private int rlsc;
     // Start is called before the first frame update
 
     private HumanIKController humanIKController;
-    public float maxBodyAngel = 20;
+    // public float maxBodyAngel = 20;
     private Vector2 lastm = Vector2.zero;
 
     // private Vector3 targetDir = Vector3.zero;
@@ -31,8 +31,8 @@ public class CameraFollower : MonoBehaviour
 
     private void Awake() {
         humanIKController = GetComponent<HumanIKController>();
-        llsc = 0;
-        rlsc = 0;
+        // llsc = 0;
+        // rlsc = 0;
     }
     void Start()
     {

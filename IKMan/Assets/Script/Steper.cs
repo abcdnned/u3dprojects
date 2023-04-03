@@ -27,6 +27,8 @@ public class Steper
     public static int BEARZ = 1;
     int lerpFunction = 0;
 
+    int mode;
+
 
     /**
      * forward and right for Dot
@@ -43,8 +45,6 @@ public class Steper
                   float duration,
                   int function,
                   Transform body,
-                  Vector3 realForward,
-                  Vector3 realRight,
                   int mode,
                   Transform target,
                   Vector3[] points) {
@@ -56,6 +56,7 @@ public class Steper
         this.body = body;
         transform = target;
         setwp(points);
+        this.mode = mode;
         // Init state.
         timeElapsed = 0;
         state = 0;
@@ -73,15 +74,19 @@ public class Steper
             state = 1;
             lastPosition = wp[0];
         }
-        Vector3 forward3 = Utils.forward(body.transform);
-        Vector3 right3 = Utils.right(body.transform);
         timeElapsed += dt;
         float poc = timeElapsed / duration;
         Vector3 targetPosition = calculate(poc);
         Vector3 delta = targetPosition - lastPosition;
-        transform.position += forward3 * Vector3.Dot(delta, forward)
-                            + right3 * Vector3.Dot(delta, right)
-                            + Vector3.up * Vector3.Dot(delta, Vector3.up);
+        if (mode == 1) {
+            transform.position += delta;
+        } else {
+            Vector3 forward3 = Utils.forward(body.transform);
+            Vector3 right3 = Utils.right(body.transform);
+            transform.position += forward3 * Vector3.Dot(delta, forward)
+                                + right3 * Vector3.Dot(delta, right)
+                                + Vector3.up * Vector3.Dot(delta, Vector3.up);
+        }
         lastPosition = targetPosition;
     }
     public delegate Vector3 Function(Vector3 s, Vector3 e, float v);

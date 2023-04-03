@@ -13,7 +13,7 @@ public class HipIdleMove : Move
     }
 
     public override Move move(float dt) {
-        keepBalanceWhenWalking();
+        // keepBalanceWhenWalking();
         return this;
     }
     public override Move transfer() {

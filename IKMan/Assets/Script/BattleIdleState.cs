@@ -25,8 +25,12 @@ public class BattleIdleState : AnyState {
         if (e.bgA == EVENT_BUTTON_R) {
             Vector3 leftPoint = humanIKController.idleAnchorPoints[ANCHOR_LEFT_LEG];
             Vector3 rightPoint = humanIKController.idleAnchorPoints[ANCHOR_RIGHT_LEG];
+            leftPoint = Utils.snapTo(leftPoint, Vector3.up, 0);
+            rightPoint = Utils.snapTo(rightPoint, Vector3.up, 0);
             humanIKController.frontLeftLegStepper.TryTransferDirectly(leftPoint, 0);
             humanIKController.frontRightLegStepper.TryTransferDirectly(rightPoint, 0);
+            WalkBalance wb = humanIKController.walkBalance;
+            wb.TryRotate(0, wb.idleHipH);
             humanIKController.headController.setMode(1);
             return (toIdleTransfer, this);
         }

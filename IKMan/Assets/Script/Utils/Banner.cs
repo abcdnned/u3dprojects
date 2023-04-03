@@ -18,7 +18,7 @@ public class Banner {
 
     public static int DEFAULT_CONDITION_COUNT = 0;
 
-    private float timeout = 0;
+    // private float timeout = 0;
     private int DEFAULT_BANNER_SIZE = 20;
 
     public Banner(string id) {
@@ -26,7 +26,7 @@ public class Banner {
         checkedTrigger = new ReadTrigger(false);
         subs = new object[DEFAULT_BANNER_SIZE];
         sc = 0;
-        timeout = 0;
+        // timeout = 0;
         this.id = id;
     }
     public void refresh() {
@@ -34,7 +34,7 @@ public class Banner {
         checkedTrigger.clear();
         subs = new object[DEFAULT_BANNER_SIZE];
         sc = 0;
-        timeout = 0;
+        // timeout = 0;
     }
 
     public bool available() {

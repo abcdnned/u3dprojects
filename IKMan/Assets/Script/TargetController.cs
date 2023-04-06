@@ -51,10 +51,10 @@ public class TargetController : MonoBehaviour {
     //     }
     // }
 
-    public void handleEvent(string evtId, Banner banner) {
+    // public void handleEvent(string evtId, Banner banner) {
         // recentBanner = banner;
-        handleEvent(evtId);
-    }
+    //     handleEvent(evtId);
+    // }
     public void handleEvent(string eventId) {
         if ((move.IsHandMoving() || move.IsLegMoving()) && String.Equals(eventId, HumanIKController.EVENT_STOP_WALKING)) {
             // Debug.Log(this.GetType().Name + " event trigger ");

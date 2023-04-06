@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Threading;
 public class Utils {
     public static float AIR_RAY_CAST_DISTANCE = 1.5f;
     public static float DOWN_RAY_OFFSET = 10;
@@ -104,6 +105,11 @@ public class Utils {
         return middle;
     }
 
+    public static void OutputThreadInfo() {
+        Thread currentThread = Thread.CurrentThread;
+        Debug.Log("Current thread ID: " + currentThread.ManagedThreadId);
+        Debug.Log("Current thread name: " + currentThread.Name);
+    }
     
 
 }

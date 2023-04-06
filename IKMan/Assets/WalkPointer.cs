@@ -22,8 +22,9 @@ public class WalkPointer : MonoBehaviour
     void Update()
     {
         // bool turn = false;
-        if (humanIKController.currentStatus.getName() == LocomotionState.NAME
-            && humanIKController.currentStatus.cs.name == LocomotionState.STATE_MOVE) {
+        if ((humanIKController.currentStatus.getName() == LocomotionState.NAME
+            && humanIKController.currentStatus.cs.name == LocomotionState.STATE_MOVE)
+            || humanIKController.currentStatus.legMovingCheck() ) {
             transform.position = new Vector3(player.position.x, transform.position.y, player.position.z);
             Vector2 m = humanIKController.getMovement();
             if (Mathf.Abs(m.y) > 0 || Mathf.Abs(m.x) > 0) {

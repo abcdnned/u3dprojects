@@ -44,14 +44,18 @@ public class WalkBalance : TargetController
     [Header("--- BATTLE ---")]
     public float battleIdleAngelOffset = 45;
     public float battleIdleTransferDuration = 1;
-
     public float battleIdleHipH = 0.2f;
     public float idleHipH = 0.4f;
     public float hipHeightOffset = 0.7f;
     public float hipBattleSpeed = 4f;
+    public float battleLegDistance = 0.4f;
     [Header("--- GENERAL ---")]
-    [SerializeField] float trackSpeed = 5;
-
+    public float trackSpeed = 5;
+    public float defaultLegDistance = 0.65f;
+    public float defaultTransfer = 0;
+    public float expectLegDistance = 0.65f;
+    public float expectTransfer = 0;
+    public float expectTransferSpeed = 5;
     public Transform cam;
     private Vector3 transferDir;
     public float airRayCastDistance = 0.5f;
@@ -74,19 +78,19 @@ public class WalkBalance : TargetController
 
     void Update()
     {
-        if (move != null
-            && move.name != MoveNameConstants.HipIdle
-            && move.name != MoveNameConstants.HipDamp) {
+        if ((leftLeg.move.IsLegMoving() && !leftLeg.Recover) || (rightLeg.move.IsLegMoving() && !rightLeg.Recover)) {
+            // Debug.Log(this.GetType().Name + " walking ");
+            moveManager.ChangeMove(MoveNameConstants.HipDamp);
+            keepBalanceWhenWalking();
+        } else if (humanIKController.currentStatus.legIdleChecker()) {
+            moveManager.ChangeMove(MoveNameConstants.HipIdle);
+            // ReturnToCenter();
+        }
+        // Move.
+        if (move != null) {
+            // && move.name != MoveNameConstants.HipIdle
+            // && move.name != MoveNameConstants.HipDamp) {
             move = move.move(Time.deltaTime);
-        } else {
-            if ((leftLeg.move.IsLegMoving() && !leftLeg.Recover) || (rightLeg.move.IsLegMoving() && !rightLeg.Recover)) {
-                // Debug.Log(this.GetType().Name + " walking ");
-                moveManager.ChangeMove(MoveNameConstants.HipDamp);
-                keepBalanceWhenWalking();
-            } else {
-                moveManager.ChangeMove(MoveNameConstants.HipIdle);
-                ReturnToCenter();
-            }
         }
         // Update rotation based on camera.
         if (humanIKController.currentStatus.getName() == LocomotionState.NAME
@@ -113,6 +117,27 @@ public class WalkBalance : TargetController
         moveManager.addMove(new Hip2IdleMove());
         moveManager.addMove(new HipHeightChangeMove());
         moveManager.ChangeMove(MoveNameConstants.HipIdle);
+    }
+    
+    internal void adjustLegDistance() {
+        ActionStateMachine asm = humanIKController.currentStatus;
+        if (asm.cs.name == IdleStatus.STATE_TOBATTLEIDLE
+            || (asm.getName() == BattleIdleState.NAME && asm.cs.name != BattleIdleState.STATE_TO_IDLE)) {
+            expectLegDistance = battleLegDistance;
+        } else {
+            expectLegDistance = defaultLegDistance;
+        }
+    }
+
+    internal Vector3 getDynamicHeight(Vector3 p1, Vector3 p2, float legDistance) {
+        float x = (p1.x + p2.x) / 2;
+        float z = (p1.z + p2.z) / 2;
+        if (legDistance <= 0) {
+            return new Vector3(x, defaultLegDistance, z);
+        }
+        float a = Vector3.Distance(p1, p2) / 2;
+        float y = Mathf.Sqrt(Mathf.Pow(legDistance, 2) - Mathf.Pow(a, 2));
+        return new Vector3(x, y, z);
     }
 
     internal void adjustHeight(float h, Vector3 normal, float speed) {
@@ -145,11 +170,15 @@ public class WalkBalance : TargetController
     }
     
 
-    private void updateTransferDirection(Vector3 d) {
+    internal void updateTransferDirection(Vector3 d) {
         transferDir = d;
     }
-
-    internal void transfer(float angelOffset) {
+    internal float getTransferSpeed(float angel, float duration) {
+        Vector3 d1 = Utils.forward(body.transform);
+        Vector3 d2 = Quaternion.AngleAxis(angel, Vector3.up) * transferDir;
+        return Vector3.Angle(d1, d2) / duration;
+    }
+    internal void transfer(float angelOffset, float speed) {
         Vector3 forward = Utils.forward(target);
         Vector3 right = Utils.right(target);
         Quaternion tr = Quaternion.LookRotation(transferDir);       
@@ -158,7 +187,7 @@ public class WalkBalance : TargetController
         Quaternion r = Quaternion.Slerp(
             target.rotation,
             tr, 
-            1 - Mathf.Exp(-trackSpeed * Time.deltaTime)
+            1 - Mathf.Exp(-speed * Time.deltaTime)
         );
         leftLeg.transform.SetParent(target);
         rightLeg.transform.SetParent(target);
@@ -168,6 +197,30 @@ public class WalkBalance : TargetController
         leftLeg.transform.SetParent(null);
         rightLeg.transform.SetParent(null);
         humanIKController.postUpdateTowHandPosition();
+    }
+    internal void transferByTime(float angelOffset, float t) {
+        Vector3 forward = Utils.forward(target);
+        Vector3 right = Utils.right(target);
+        Quaternion tr = Quaternion.LookRotation(transferDir);       
+        Quaternion offset = Quaternion.AngleAxis(angelOffset, Vector3.up);
+        tr *= offset;
+        Quaternion r = Quaternion.Slerp(
+            target.rotation,
+            tr, 
+            t
+        );
+        leftLeg.transform.SetParent(target);
+        rightLeg.transform.SetParent(target);
+        humanIKController.logHomeOffset();
+        target.rotation = r;
+        rotateCurrentDampDist(forward, right);
+        leftLeg.transform.SetParent(null);
+        rightLeg.transform.SetParent(null);
+        humanIKController.postUpdateTowHandPosition();
+    }
+
+    internal void transfer(float angelOffset) {
+        transfer(angelOffset, trackSpeed);
     }
 
     private void keepBalanceWhenWalking() {

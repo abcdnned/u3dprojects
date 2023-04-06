@@ -16,6 +16,7 @@ public class HipBattleIdleMove : Move
         if (state == 0) {
             state = 1;
         }
+        Debug.Log(" battle idle ");
         normalizedTime += dt;
         parent.transfer(parent.battleIdleAngelOffset);
         parent.adjustHeight(parent.battleIdleHipH, Vector3.up,

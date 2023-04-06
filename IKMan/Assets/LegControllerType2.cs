@@ -678,6 +678,7 @@ public class LegControllerType2 : TargetController
         LegPutMove cm = (LegPutMove)moveManager.ChangeMove(MoveNameConstants.LegPutMove);
         leftPoint = Utils.snapTo(leftPoint, Vector3.up, 0);
         cm.setTargetPosition(leftPoint, new Vector3(angelOffset, 0, 0));
+        cm.beReady();
     }
 
     public void TryRotateLeg(float angelOffset) {

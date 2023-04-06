@@ -37,4 +37,24 @@ public class ActionStateMachine {
 
     }
 
+    public bool allIdleCheck()
+    {
+        return humanIKController.leftHand.move.name.Contains("idle")
+               && humanIKController.rightHand.move.name.Contains("idle")
+               && humanIKController.frontLeftLegStepper.move.name.Contains("idle")
+               && humanIKController.frontRightLegStepper.move.name.Contains("idle");
+    }
+
+    public bool legMovingCheck() {
+        return humanIKController.frontLeftLegStepper.move.name.Contains("moving")
+               || humanIKController.frontRightLegStepper.move.name.Contains("moving");
+    }
+
+    // check if only the two legs are idle
+    public bool legIdleChecker()
+    {
+        return humanIKController.frontLeftLegStepper.move.name.Contains("idle")
+               && humanIKController.frontRightLegStepper.move.name.Contains("idle");
+    }
+
 }

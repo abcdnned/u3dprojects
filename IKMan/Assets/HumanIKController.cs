@@ -67,7 +67,7 @@ public class HumanIKController : MonoBehaviour
     currentStatus = new IdleStatus(this);
   }
 
-  private void updateAnchorPoints() {
+  public void updateAnchorPoints() {
     idleAnchorPoints[ANCHOR_LEFT_LEG] = frontLeftLegStepper.homeTransform.position;
     idleAnchorPoints[ANCHOR_RIGHT_LEG] = frontRightLegStepper.homeTransform.position;
     idleAnchorPoints[ANCHOR_LEFT_HAND] = leftHand.handHome.position;
@@ -107,7 +107,7 @@ public class HumanIKController : MonoBehaviour
   }
   private void Update() {
     // Update anchor points for animation to use
-    updateAnchorPoints();
+    // updateAnchorPoints();
     // Movement input
     bool tmp = walking;
     string eva = EVENT_IDLE;
@@ -134,9 +134,9 @@ public class HumanIKController : MonoBehaviour
     ikEvent.eventId = eva;
     ActionStateMachine oldState = currentStatus;
     currentStatus = currentStatus.handleEvent(ikEvent);
-    if (oldState != currentStatus) {
-      Debug.Log(oldState.getName() + "status changed to " + currentStatus.getName());
-    }
+    // if (oldState != currentStatus) {
+    //   Debug.Log(oldState.getName() + "status changed to " + currentStatus.getName());
+    // }
   }
   public void postUpdateTowHandPosition() {
     leftHand.postUpdateTowHandPosition();

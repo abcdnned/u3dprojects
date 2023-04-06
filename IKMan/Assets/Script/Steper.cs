@@ -73,6 +73,8 @@ public class Steper
         if (state == 0) {
             state = 1;
             lastPosition = wp[0];
+            // Debug.DrawLine(wp[0], wp[0] + forward * 2, Color.red, 10);
+            // Debug.DrawLine(wp[0], wp[wpCount - 1], Color.blue, 10);
         }
         timeElapsed += dt;
         float poc = timeElapsed / duration;
@@ -80,6 +82,7 @@ public class Steper
         Vector3 delta = targetPosition - lastPosition;
         if (mode == 1) {
             transform.position += delta;
+            Debug.Log(" ++ ");
         } else {
             Vector3 forward3 = Utils.forward(body.transform);
             Vector3 right3 = Utils.right(body.transform);

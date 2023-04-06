@@ -19,6 +19,10 @@ public class Move
 
     public MoveManager moveManager;
 
+    public virtual void beReady() {
+
+    }
+
     public Move(string n) {
         this.name = n;
     }

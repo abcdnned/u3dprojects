@@ -392,10 +392,10 @@ public class LegControllerType2 : TargetController
         move.normalizedTime = -1;
         if (transferStand.read()) {
             TryTransferStand();
-            Debug.Log(this.GetType().Name + " transferStand ");
+            // Debug.Log(this.GetType().Name + " transferStand ");
         } else {
             moveManager.ChangeMove(MoveNameConstants.LegIdle);
-            Debug.Log(this.GetType().Name + " direct finish ");
+            // Debug.Log(this.GetType().Name + " direct finish ");
             // notifyBanner();
         }
     }

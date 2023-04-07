@@ -17,6 +17,11 @@ public class HandController : TargetController
     public float normalizedTime = -1f;
     [SerializeField] bool syncPair;
 
+    [Header("--- Main2BattleIdle ---")]
+    public float m2b_pivotOffset = 0.3f;
+    public float m2b_duration = 0.2f;
+    public Vector3 m2b_rotation = new Vector3(-220, -70, 0);
+
     private ReadTrigger walkingStop = new ReadTrigger(false);
     private ReadTrigger lastStep = new ReadTrigger(false);
 

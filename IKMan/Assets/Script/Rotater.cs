@@ -24,12 +24,15 @@ public class Rotater
         this.target = target;
         this.targetAngel = targetAngel;
         this.duration = duration;
+        targetRotation = body.rotation * Quaternion.AngleAxis(targetAngel.x, Vector3.up);
+    }
+    public void setTargetRotation(Quaternion q) {
+        targetRotation = q;
     }
 
     public void rot(float dt) {
         if (state == 0) {
             initRotation = target.rotation;
-            targetRotation = body.rotation * Quaternion.AngleAxis(targetAngel.x, Vector3.up);
             state = 1;
             lastRotation = initRotation;
         }

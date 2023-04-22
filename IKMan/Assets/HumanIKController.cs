@@ -14,6 +14,8 @@ public class HumanIKController : MonoBehaviour
 
   public HandController rightHand;
   [SerializeField] public WalkBalance walkBalance;
+  public Transform weaponHandle;
+  public Transform weaponReadyHandle;
 
   public HeadController headController;
 
@@ -21,6 +23,7 @@ public class HumanIKController : MonoBehaviour
 
   private Vector2 _movement;
   internal bool walking;
+
 
   public const int ANCHOR_LEFT_LEG = 0;
   public const int ANCHOR_RIGHT_LEG = 1;
@@ -127,7 +130,7 @@ public class HumanIKController : MonoBehaviour
     string bga = null;
     if (TriggerR.read()) {
       bga = EVENT_BUTTON_R;
-      Debug.Log(this.GetType().Name + " bga set ");
+      // Debug.Log(this.GetType().Name + " bga set ");
     }
     Event ikEvent = new Event();
     ikEvent.bgA = bga;

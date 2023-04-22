@@ -32,6 +32,7 @@ public class IdleStatus : AnyState
             //                                                           humanIKController.bi_fontLegAngelOffset);
             // PrefabCreator.SpawnDebugger(rightPoint, "DebugBall", 5, 0.5f, null);
             humanIKController.frontRightLegStepper.TryPutLeg(rightPoint, humanIKController.bi_backFootAngelOffset);
+            humanIKController.rightHand.TryGetGreatSword();
             WalkBalance wb = humanIKController.walkBalance;
             wb.TryBattleIdle();
             return (toBattleIdleState, this);

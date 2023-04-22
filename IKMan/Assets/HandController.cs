@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,11 +17,18 @@ public class HandController : TargetController
     [SerializeField] float swingBackDF = .5f;
     public float normalizedTime = -1f;
     [SerializeField] bool syncPair;
+    public Transform handHint;
+    public Transform arm;
 
     [Header("--- Main2BattleIdle ---")]
     public float m2b_pivotOffset = 0.3f;
+    public float m2b_pivotOffset2 = 0.5f;
     public float m2b_duration = 0.2f;
+    public float m2b_duration2 = 0.2f;
     public Vector3 m2b_rotation = new Vector3(-220, -70, 0);
+    public Vector3 m2b_rotation2 = new Vector3(20, 180, -90);
+
+    public Vector3 m2b_tpOffset = new Vector3(0,0,0);
 
     private ReadTrigger walkingStop = new ReadTrigger(false);
     private ReadTrigger lastStep = new ReadTrigger(false);
@@ -33,9 +41,10 @@ public class HandController : TargetController
         HandMovingMove handMovingMove = new HandMovingMove();
         moveManager.addMove(handMovingMove);
         moveManager.addMove(new HandIdleMove());
+        moveManager.addMove(new MainHoldWeapon());
+        moveManager.addMove(new HandMain2Battle());
         moveManager.ChangeMove(MoveNameConstants.HandIdle);
     }
-    
 
     private Vector3[] getEndPoint(Transform body, Transform home, Vector3 up, int isRightFoot, int isRightHand) {
         Vector3 forward = Utils.forward(body.transform);
@@ -150,4 +159,20 @@ public class HandController : TargetController
         StartCoroutine(MoveToHome(duration, Mathf.FloorToInt(isRightFoot)));
     }
 
+    internal void TryGetGreatSword()
+    {
+        HandMain2Battle move = (HandMain2Battle)moveManager.ChangeMove(MoveNameConstants.HandMain2Battle);
+        move.initTargetRotation(m2b_rotation.x, m2b_rotation.y, m2b_rotation.z);
+        move.initTargetRotation2(m2b_rotation2.x, m2b_rotation2.y, m2b_rotation2.z);
+        move.initBasic(m2b_duration, m2b_duration2,
+                       humanIKController.weaponHandle,
+                       humanIKController.weaponReadyHandle,
+                       1, m2b_pivotOffset);
+        move.initHint(handHint, 90);
+        move.beReady();
+    }
+
+    private void Update() {
+        move.move(Time.deltaTime);
+    }
 }

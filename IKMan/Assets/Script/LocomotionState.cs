@@ -52,7 +52,7 @@ public class LocomotionState : AnyState {
     {
         if (legIdleChecker()) {
             Debug.Log(this.GetType().Name + " stopWalingBanner checked ");
-            Vector3 direction = Utils.forward(humanIKController.body.transform);
+            Vector3 direction = Utils.forwardFlat(humanIKController.body.transform);
             float leftDot = Vector3.Dot(humanIKController.frontLeftLegStepper.transform.position, direction);
             float rightDot = Vector3.Dot(humanIKController.frontRightLegStepper.transform.position, direction);
             if (!humanIKController.frontLeftLegStepper.move.IsLegMoving() && !humanIKController.frontRightLegStepper.move.IsLegMoving()

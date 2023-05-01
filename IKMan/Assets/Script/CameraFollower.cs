@@ -92,10 +92,10 @@ public class CameraFollower : MonoBehaviour
         // Debug.Log(this.GetType().Name + " targetDir " + targetDir);
 
         // if (targetDir.magnitude == 0) return; 
-        Vector3 forward = Utils.forward(follower);
+        Vector3 forward = Utils.forwardFlat(follower);
         Vector3 right = Utils.right(follower);
         Vector2 m = humanIKController.getMovement();
-        Vector3 dir = Utils.forward(cam) * m.y + Utils.right(cam) * m.x;
+        Vector3 dir = Utils.forwardFlat(cam) * m.y + Utils.right(cam) * m.x;
         // Vector3 dir = Utils.forward(camera);
         Quaternion tr = Quaternion.LookRotation(dir);       
         Quaternion r = Quaternion.Slerp(

@@ -32,9 +32,9 @@ public class HeadController : TargetController
 
     private void headTransfer(float angelOffset) {
         if (mode == 1) {
-            updateTransferDirection(Utils.forward(body.transform));
+            updateTransferDirection(Utils.forwardFlat(body.transform));
         } else {
-            updateTransferDirection(Utils.forward(walkPointer.transform));
+            updateTransferDirection(Utils.forwardFlat(walkPointer.transform));
         }
         Quaternion tr = Quaternion.LookRotation(transferDir);       
         Quaternion offset = Quaternion.AngleAxis(angelOffset, Vector3.up);

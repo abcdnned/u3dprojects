@@ -80,7 +80,7 @@ public class HumanIKController : MonoBehaviour
 
   private void calculateBattleIdlePoints()
   {
-    Vector3 forward = Utils.forward(body.transform);
+    Vector3 forward = Utils.forwardFlat(body.transform);
 
     Quaternion leftRotation = Quaternion.AngleAxis(-bi_footAngel, Vector3.up);
     Quaternion rightRotation = Quaternion.AngleAxis(180f - bi_footAngel, Vector3.up);

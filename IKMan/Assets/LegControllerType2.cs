@@ -180,10 +180,10 @@ public class LegControllerType2 : TargetController
     }
 
     private Vector3[] getEndPoint2(Transform target, float pairProjectDis, Vector3 plane) {
-        Vector3 forward = Utils.forward(body.transform);
+        Vector3 forward = Utils.forwardFlat(body.transform);
         Vector3 right = Utils.right(body.transform);
-        Vector3 curDir = Utils.forward(transform);
-        Vector3 pairDir = Utils.forward(pair);
+        Vector3 curDir = Utils.forwardFlat(transform);
+        Vector3 pairDir = Utils.forwardFlat(pair);
         Vector3 pairRight = Utils.right(pair);
         float stepDistance = pairComponent.move.IsLegMoving() ? halfStepDistance : (halfStepDistance * firstStepFac);
         Vector3 overshootVector = forward * (pairProjectDis + stepDistance);
@@ -233,7 +233,7 @@ public class LegControllerType2 : TargetController
         sync();
         moveManager.ChangeMove(MoveNameConstants.LegMoving);
         Vector2 m = humanIKController.getMovement();
-        Vector3 targetDir = Utils.forward(cameraModule.Camera.transform) * m.y + Utils.right(cameraModule.Camera.transform) * m.x;
+        Vector3 targetDir = Utils.forwardFlat(cameraModule.Camera.transform) * m.y + Utils.right(cameraModule.Camera.transform) * m.x;
         // Debug.Log(this.GetType().Name + " td " + targetDir);
         // cameraFollower.setDir(targetDir);
         stepCount++;
@@ -245,7 +245,7 @@ public class LegControllerType2 : TargetController
         float timeElapsed = 0;
         float duration = moveDuration;
         Vector3 plane = Vector3.up;
-        Vector3 forward = Utils.forward(body.transform);
+        Vector3 forward = Utils.forwardFlat(body.transform);
         Vector3 right = Utils.right(body.transform);
         Vector3 up = walkPointer.transform.up;
         Vector3[] Points = getEndPoint2(walkPointer.transform, pairProjectDis, plane);
@@ -283,7 +283,7 @@ public class LegControllerType2 : TargetController
         // bool centerForward = false;
         do
         {
-            Vector3 forward3 = Utils.forward(body.transform);
+            Vector3 forward3 = Utils.forwardFlat(body.transform);
             Vector3 right3 = Utils.right(body.transform);
             timeElapsed += Time.deltaTime;
             move.normalizedTime = timeElapsed / duration;
@@ -401,15 +401,15 @@ public class LegControllerType2 : TargetController
     }
 
     private void syncFootBodyRotation() {
-        Vector3 bf = Utils.forward(body.transform);
+        Vector3 bf = Utils.forwardFlat(body.transform);
         transform.rotation = Utils.dampTrack(transform, bf, 5);
     }
 
     private void syncPairFootDir()
     {
         if (!pairComponent.move.IsLegMoving()) {
-            Vector3 bf = Utils.forward(body.transform);
-            Vector3 tf = Utils.forward(pair);
+            Vector3 bf = Utils.forwardFlat(body.transform);
+            Vector3 tf = Utils.forwardFlat(pair);
             float deg = Vector3.Angle(bf, tf);
             if (deg > maxFootBodyAngel) {
                 pair.rotation = Utils.dampTrack(pair, bf, 5);
@@ -485,7 +485,7 @@ public class LegControllerType2 : TargetController
 
         // Vector3 direction = cameraModule.Camera.transform.forward;
         // Vector3 direction = owner.gameObject.transform.forward;
-        Vector3 direction = Utils.forward(body.transform);
+        Vector3 direction = Utils.forwardFlat(body.transform);
         // Vector3 direction = pair.transform.forward;
         // int walkStright = 0;
         Vector3 curDir = transform.forward;
@@ -597,7 +597,7 @@ public class LegControllerType2 : TargetController
         Vector3 wp1 = transform.position;
         // Vector3 wp2 = homeTransform.position;
         // Vector3 direction = owner.gameObject.transform.forward;
-        Vector3 direction = Utils.forward(body.transform);
+        Vector3 direction = Utils.forwardFlat(body.transform);
         Vector3 right = Utils.right(body.transform);
         Vector3 plane = Vector3.up;
         // Vector3 wp2 = homeTransform.position;
@@ -639,7 +639,7 @@ public class LegControllerType2 : TargetController
                 lastPosition = wp1;
                 init = true;
             }
-            Vector3 forward3 = Utils.forward(body.transform);
+            Vector3 forward3 = Utils.forwardFlat(body.transform);
             Vector3 right3 = Utils.right(body.transform);
             timeElapsed += Time.deltaTime;
             float normalizedTime = timeElapsed / duration;

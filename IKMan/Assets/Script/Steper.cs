@@ -84,7 +84,7 @@ public class Steper
             transform.position += delta;
             Debug.Log(" ++ ");
         } else {
-            Vector3 forward3 = Utils.forward(body.transform);
+            Vector3 forward3 = Utils.forwardFlat(body.transform);
             Vector3 right3 = Utils.right(body.transform);
             transform.position += forward3 * Vector3.Dot(delta, forward)
                                 + right3 * Vector3.Dot(delta, right)

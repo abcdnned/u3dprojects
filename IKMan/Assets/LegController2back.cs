@@ -179,7 +179,7 @@ public class LegController2back : MonoBehaviour
         sync();
         Moving = true;
         Vector2 m = humanIKController.getMovement();
-        Vector3 targetDir = Utils.forward(cameraModule.Camera.transform) * m.y + Utils.right(cameraModule.Camera.transform) * m.x;
+        Vector3 targetDir = Utils.forwardFlat(cameraModule.Camera.transform) * m.y + Utils.right(cameraModule.Camera.transform) * m.x;
         Debug.Log(this.GetType().Name + " td " + targetDir);
         // cameraFollower.setDir(targetDir);
         stepCount++;
@@ -296,8 +296,8 @@ public class LegController2back : MonoBehaviour
     private void syncPairFootDir()
     {
         if (!pairComponent.Moving) {
-            Vector3 bf = Utils.forward(body.transform);
-            Vector3 tf = Utils.forward(pair);
+            Vector3 bf = Utils.forwardFlat(body.transform);
+            Vector3 tf = Utils.forwardFlat(pair);
             float deg = Vector3.Angle(bf, tf);
             if (deg > maxFootBodyAngel) {
                 pair.rotation = Utils.dampTrack(pair, bf, 5);

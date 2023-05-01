@@ -65,7 +65,7 @@ public class WalkBalance : TargetController
     internal void ReturnToCenter() {
         Vector3 center = (left.transform.position + right.transform.position) / 2;
         Vector3 dist = new Vector3(center.x, target.position.y, center.z);
-        dist += Utils.forward(transform) * overshoot;
+        dist += Utils.forwardFlat(transform) * overshoot;
         dist = new Vector3(dist.x, target.position.y, dist.z);
         humanIKController.logHomeOffset();
         target.position = Vector3.Lerp(
@@ -96,7 +96,7 @@ public class WalkBalance : TargetController
         if (humanIKController.currentStatus.getName() == LocomotionState.NAME
             && humanIKController.currentStatus.cs.name == LocomotionState.STATE_MOVE) {
             Vector2 m = humanIKController.getMovement();
-            Vector3 dir = Utils.forward(cam) * m.y + Utils.right(cam) * m.x;
+            Vector3 dir = Utils.forwardFlat(cam) * m.y + Utils.right(cam) * m.x;
             updateTransferDirection(dir);
             transfer(0);
         }
@@ -174,12 +174,12 @@ public class WalkBalance : TargetController
         transferDir = d;
     }
     internal float getTransferSpeed(float angel, float duration) {
-        Vector3 d1 = Utils.forward(body.transform);
+        Vector3 d1 = Utils.forwardFlat(body.transform);
         Vector3 d2 = Quaternion.AngleAxis(angel, Vector3.up) * transferDir;
         return Vector3.Angle(d1, d2) / duration;
     }
     internal void transfer(float angelOffset, float speed) {
-        Vector3 forward = Utils.forward(target);
+        Vector3 forward = Utils.forwardFlat(target);
         Vector3 right = Utils.right(target);
         Quaternion tr = Quaternion.LookRotation(transferDir);       
         Quaternion offset = Quaternion.AngleAxis(angelOffset, Vector3.up);
@@ -199,7 +199,7 @@ public class WalkBalance : TargetController
         humanIKController.postUpdateTowHandPosition();
     }
     internal void transferByTime(float angelOffset, float t) {
-        Vector3 forward = Utils.forward(target);
+        Vector3 forward = Utils.forwardFlat(target);
         Vector3 right = Utils.right(target);
         Quaternion tr = Quaternion.LookRotation(transferDir);       
         Quaternion offset = Quaternion.AngleAxis(angelOffset, Vector3.up);
@@ -224,7 +224,7 @@ public class WalkBalance : TargetController
     }
 
     private void keepBalanceWhenWalking() {
-        Vector3 forward2 = Utils.forward(target);
+        Vector3 forward2 = Utils.forwardFlat(target);
         Vector3 right2 = Utils.right(target);
         Vector3 plane = Vector3.up;
         Vector3 tp = Vector3.Lerp(
@@ -248,12 +248,12 @@ public class WalkBalance : TargetController
     }
 
     public void TryBattleIdle() {
-        updateTransferDirection(Utils.forward(cam));
+        // updateTransferDirection(Utils.forwardFlat(cam));
         moveManager.ChangeMove(MoveNameConstants.HipIdle2BattleIdle);
     }
 
     public void TryRotate(float targetRotation, float targetHeight) {
-        updateTransferDirection(Utils.forward(cam));
+        updateTransferDirection(Utils.forwardFlat(cam));
         HipHeightChangeMove m = (HipHeightChangeMove)moveManager.ChangeMove(MoveNameConstants.HipHeightChangeMove);
         m.targetRotation = targetRotation;
         m.groundHeight = targetHeight;
@@ -264,7 +264,7 @@ public class WalkBalance : TargetController
         Vector3 offset =  dampDist - target.position;
         float z = Vector3.Dot(offset, forward);
         float x = Vector3.Dot(offset, right);
-        Vector3 forward2 = Utils.forward(target);
+        Vector3 forward2 = Utils.forwardFlat(target);
         Vector3 right2 = Utils.right(target);
         Vector3 new_offset = transform.position + forward2 * z + right2 * x;
         dampDist = new_offset;
@@ -278,7 +278,7 @@ public class WalkBalance : TargetController
         // Debug.Log(this.GetType().Name + " dampCount " + dampCount);
         dampSum = 0;
         dampCount = 0;
-        dist += Utils.forward(target) * dampDis * fac;
+        dist += Utils.forwardFlat(target) * dampDis * fac;
         finalDampSpeed = dampSpeed * fac;
         dampDist = dist;
     }

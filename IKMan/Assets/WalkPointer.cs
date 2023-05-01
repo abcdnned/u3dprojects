@@ -28,7 +28,7 @@ public class WalkPointer : MonoBehaviour
             transform.position = new Vector3(player.position.x, transform.position.y, player.position.z);
             Vector2 m = humanIKController.getMovement();
             if (Mathf.Abs(m.y) > 0 || Mathf.Abs(m.x) > 0) {
-                Vector3 targetDir = Utils.forward(cam) * m.y + Utils.right(cam) * m.x;
+                Vector3 targetDir = Utils.forwardFlat(cam) * m.y + Utils.right(cam) * m.x;
                 Quaternion tr = Quaternion.LookRotation(targetDir);       
                 transform.rotation = tr;
             }
@@ -36,7 +36,7 @@ public class WalkPointer : MonoBehaviour
     }
 
     public void lookCamera() {
-        Vector3 targetDir = Utils.forward(cam);
+        Vector3 targetDir = Utils.forwardFlat(cam);
         Quaternion tr = Quaternion.LookRotation(targetDir);       
         transform.rotation = tr;
     }

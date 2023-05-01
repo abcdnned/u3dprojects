@@ -22,7 +22,7 @@ public class LegPutMove : LegMove
         Vector3 wp1 = target.position;
         Vector3 wp3 = targetPosition;
         Vector3 wp2 = Utils.GetMiddleLiftPoint(wp1, wp3, parent.shortStepLiftDistance);
-        steper = new Steper(Utils.forward(parent.body.transform),
+        steper = new Steper(Utils.forwardFlat(parent.body.transform),
                             Utils.right(parent.body.transform),
                             parent.shortStepDuration,
                             Steper.BEARZ,

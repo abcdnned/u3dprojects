@@ -4,24 +4,24 @@ using UnityEngine;
 public class HandMain2Battle : HandMove
 {
     private Quaternion end;
-    private float alpha;
-    private float beta;
-    private float gamma;
-    private float alpha2;
-    private float beta2;
-    private float gamma2;
-    private int initStepCount = 0;
-    private Transform targetPosition;
-    private Transform targetPosition2;
-    private int lr;
-    private float pivotOffset;
-    private Steper steper;
-    private Steper steper2;
-    private Rotater rotater;
-    private Rotater rotater2;
-    private float duration2;
-    private Transform handHint;
-    private float hintTargetDegree;
+    protected float alpha;
+    protected float beta;
+    protected float gamma;
+    protected float alpha2;
+    protected float beta2;
+    protected float gamma2;
+    protected int initStepCount = 0;
+    protected Transform targetPosition;
+    protected Transform targetPosition2;
+    protected int lr;
+    protected float pivotOffset;
+    protected Steper steper;
+    protected Steper steper2;
+    protected EularRotater rotater;
+    protected EularRotater rotater2;
+    protected float duration2;
+    protected Transform handHint;
+    // private float hintTargetDegree;
     public HandMain2Battle() : base(MoveNameConstants.HandMain2Battle)
     {
     }
@@ -53,9 +53,9 @@ public class HandMain2Battle : HandMove
         this.duration2 = duration2;
     }
 
-    public void initHint(Transform handHint, float targetDegree) {
+    public void initHint(Transform handHint) {
         this.handHint = handHint;
-        this.hintTargetDegree = targetDegree;
+        // this.hintTargetDegree = targetDegree;
         initStepCount++;
     }
 
@@ -64,7 +64,7 @@ public class HandMain2Battle : HandMove
         Vector3 wp1 = parent.transform.position;
         Vector3 wp3 = targetPosition.position;
         Vector3 wp2 = getMoveCenter(wp1, wp3);
-        steper = new Steper(Utils.forward(parent.body.transform),
+        steper = new Steper(Utils.forwardFlat(parent.body.transform),
                             Utils.right(parent.body.transform),
                             duration,
                             Steper.BEARZ,
@@ -73,18 +73,18 @@ public class HandMain2Battle : HandMove
                             parent.transform,
                             new Vector3[] {wp1, wp2, wp3});
         // Init rotater
-        end = Quaternion.Euler(alpha, beta, gamma);
-        rotater = new Rotater(parent.body.transform, parent.transform, duration, Vector3.zero);
-        rotater.setTargetRotation(end);
+        // end = Quaternion.Euler(alpha, beta, gamma);
+        rotater = new EularRotater(parent.body.transform, parent.transform, duration, new Vector3(alpha, beta, gamma));
+        // rotater.setTargetRotation(end);
         initStepCount++;
     }
 
-    private void initStep2() {
+    protected void initStep2() {
         // Init steper
         Vector3 wp1 = parent.transform.position;
         Vector3 wp3 = targetPosition2.position;
         Vector3 wp2 = getMoveCenter(wp1, wp3);
-        steper2 = new Steper(Utils.forward(parent.body.transform),
+        steper2 = new Steper(Utils.forwardFlat(parent.body.transform),
                             Utils.right(parent.body.transform),
                             duration2,
                             Steper.BEARZ,
@@ -93,9 +93,10 @@ public class HandMain2Battle : HandMove
                             parent.transform,
                             new Vector3[] {wp1, wp2, wp3});
         // Init rotater
-        end = Quaternion.Euler(alpha2, beta2, gamma2);
-        rotater2 = new Rotater(parent.body.transform, parent.transform, duration2, Vector3.zero);
-        rotater2.setTargetRotation(end);
+        // end = Quaternion.Euler(alpha2, beta2, gamma2);
+        rotater2 = new EularRotater(parent.body.transform, parent.transform,
+                               duration2, new Vector3(alpha2, beta2, gamma2));
+        // rotater2.setTargetRotation(end);
         initStepCount++;
     }
 
@@ -117,13 +118,15 @@ public class HandMain2Battle : HandMove
             if (normalizedTime > duration) {
                 state = 2;
                 initStep2();
+                parent.handHint.hAd = parent.m2b_elbow;
             } else {
                 steper.step(dt);
-                parent.transform.rotation = parent.arm.rotation;
-                // rotater.rot(dt);
+                // parent.transform.rotation = parent.arm.rotation;
+                rotater.rot(dt);
             }
         } else if (state == 2) {
             normalizedTime += dt;
+
             if (normalizedTime > duration + duration2) {
                 state = 3;
                 return moveManager.ChangeMove(MoveNameConstants.MainHoldWeaponIdle);

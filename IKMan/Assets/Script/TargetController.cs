@@ -78,7 +78,7 @@ public class TargetController : MonoBehaviour {
         if (!enable) return;
         if (move.isMoving()) return;
         // registerBanner();
-        StartCoroutine(TransferDirectly(point, Utils.forward(body.transform),
+        StartCoroutine(TransferDirectly(point, Utils.forwardFlat(body.transform),
                                 Utils.right(body.transform), walkPointer.transform,
                                 angelOffset, DEFAULT_DURATION_FACTOR));
     }
@@ -88,7 +88,7 @@ public class TargetController : MonoBehaviour {
         if (!enable) return;
         if (move.IsHandMoving()) return;
         // registerBanner();
-        StartCoroutine(TransferDirectly(target.position, Utils.forward(target), Utils.right(target),
+        StartCoroutine(TransferDirectly(target.position, Utils.forwardFlat(target), Utils.right(target),
                                         walkPointer.transform, 0, durationFactor));
     }
 

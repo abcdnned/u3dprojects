@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Threading;
+using static UnityEngine.Mathf;
 public class Utils {
     public static float AIR_RAY_CAST_DISTANCE = 1.5f;
     public static float DOWN_RAY_OFFSET = 10;
@@ -16,9 +17,14 @@ public class Utils {
         return twoFootForward;
     }
 
-    public static Vector3 forward(Transform v) {
+    public static Vector3 forwardFlat(Transform v) {
         Vector3 forward = v.forward;
         forward.y = 0;
+        forward.Normalize();
+        return forward;
+    }
+    public static Vector3 forward(Transform v) {
+        Vector3 forward = v.forward;
         forward.Normalize();
         return forward;
     }
@@ -111,5 +117,8 @@ public class Utils {
         Debug.Log("Current thread name: " + currentThread.Name);
     }
     
+    public static float AbsDiff(float a, float b) {
+        return Abs(Abs(a) - Abs(b));
+    }
 
 }

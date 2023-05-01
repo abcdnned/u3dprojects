@@ -34,6 +34,7 @@ public class BattleIdleState : AnyState {
             // WalkBalance wb = humanIKController.walkBalance;
             // wb.TryRotate(0, wb.idleHipH);
             humanIKController.headController.setMode(1);
+            humanIKController.rightHand.TryReturnSword();
             return (toIdleTransfer, this);
         }
         return (battleIdleState, this);

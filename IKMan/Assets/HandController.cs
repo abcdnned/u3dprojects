@@ -17,8 +17,10 @@ public class HandController : TargetController
     [SerializeField] float swingBackDF = .5f;
     public float normalizedTime = -1f;
     [SerializeField] bool syncPair;
-    public Transform handHint;
+    public HandLooker handHint;
     public Transform arm;
+
+    public Transform HandLook;
 
     [Header("--- Main2BattleIdle ---")]
     public float m2b_pivotOffset = 0.3f;
@@ -27,6 +29,8 @@ public class HandController : TargetController
     public float m2b_duration2 = 0.2f;
     public Vector3 m2b_rotation = new Vector3(-220, -70, 0);
     public Vector3 m2b_rotation2 = new Vector3(20, 180, -90);
+    public float m2b_elbow = 60f;
+    public float m2b_idle_elbow = 180f;
 
     public Vector3 m2b_tpOffset = new Vector3(0,0,0);
 
@@ -43,11 +47,12 @@ public class HandController : TargetController
         moveManager.addMove(new HandIdleMove());
         moveManager.addMove(new MainHoldWeapon());
         moveManager.addMove(new HandMain2Battle());
+        moveManager.addMove(new HandMainBattle2Idle());
         moveManager.ChangeMove(MoveNameConstants.HandIdle);
     }
 
     private Vector3[] getEndPoint(Transform body, Transform home, Vector3 up, int isRightFoot, int isRightHand) {
-        Vector3 forward = Utils.forward(body.transform);
+        Vector3 forward = Utils.forwardFlat(body.transform);
         Vector3 endPoint = Vector3.zero;
         if (isRightFoot * isRightHand < 0) {
             endPoint = home.position + forward * swingHandDis + up * swingHandUp;
@@ -80,14 +85,14 @@ public class HandController : TargetController
         moveManager.ChangeMove(MoveNameConstants.HandMoving);
         float timeElapsed = 0;
         Vector3 plane = Vector3.up;
-        Vector3 forward = Utils.forward(body.transform);
+        Vector3 forward = Utils.forwardFlat(body.transform);
         Vector3 right = Utils.right(body.transform);
         Vector3[] Points = getEndPoint(body.transform, handHome.transform, plane, isRightFoot, isRightHand);
         Vector3 endPoint = Points[0];
 
         Vector3 forward2 = (endPoint - transform.position).normalized;
         Vector3 wp1 = transform.position;
-        bool shouldSwing = Utils.IsSecondPositionBetween(wp1, handHome.position, endPoint, Utils.forward(body.transform));
+        bool shouldSwing = Utils.IsSecondPositionBetween(wp1, handHome.position, endPoint, Utils.forwardFlat(body.transform));
         Steper steper1 = null;
         //Instantiate a new SteperBuilder object with the given options
         SteperBuilder steperBuilder = new SteperBuilder()
@@ -109,7 +114,7 @@ public class HandController : TargetController
         }
         do
         {
-            Vector3 forward3 = Utils.forward(body.transform);
+            Vector3 forward3 = Utils.forwardFlat(body.transform);
             Vector3 right3 = Utils.right(body.transform);
             timeElapsed += Time.deltaTime;
             steper1.step(Time.deltaTime);
@@ -168,8 +173,24 @@ public class HandController : TargetController
                        humanIKController.weaponHandle,
                        humanIKController.weaponReadyHandle,
                        1, m2b_pivotOffset);
-        move.initHint(handHint, 90);
+        move.initHint(handHint.transform);
         move.beReady();
+    }
+
+    internal void TryReturnSword() {
+        HandMainBattle2Idle move = (HandMainBattle2Idle)moveManager.ChangeMove(MoveNameConstants.HandMainBattle2Idle);
+        move.initTargetRotation(m2b_rotation.x, m2b_rotation.y, m2b_rotation.z);
+        move.initTargetRotation2(0,0,0);
+        move.initBasic(m2b_duration, m2b_duration2,
+                       humanIKController.weaponHandle,
+                       humanIKController.rightHand.handHome,
+                       1, m2b_pivotOffset);
+        move.initHint(handHint.transform);
+        move.beReady();
+    }
+
+    internal void LookToHandLook() {
+
     }
 
     private void Update() {

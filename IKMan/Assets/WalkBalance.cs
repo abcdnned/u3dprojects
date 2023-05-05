@@ -248,7 +248,7 @@ public class WalkBalance : TargetController
     }
 
     public void TryBattleIdle() {
-        // updateTransferDirection(Utils.forwardFlat(cam));
+        updateTransferDirection(Utils.forwardFlat(cam));
         moveManager.ChangeMove(MoveNameConstants.HipIdle2BattleIdle);
     }
 

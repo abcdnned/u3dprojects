@@ -20,7 +20,10 @@ public class HandController : TargetController
     public HandLooker handHint;
     public Transform arm;
 
-    public Transform HandLook;
+    public HandDelayLooker HandLook;
+    public HandDelayLooker HandElbow;
+    public HandDelayLooker HandFK;
+    public float handLookSpeed = 10;
 
     [Header("--- Main2BattleIdle ---")]
     public float m2b_pivotOffset = 0.3f;
@@ -31,6 +34,10 @@ public class HandController : TargetController
     public Vector3 m2b_rotation2 = new Vector3(20, 180, -90);
     public float m2b_elbow = 60f;
     public float m2b_idle_elbow = 180f;
+    public float m2b_hangel = 30f;
+    public float m2b_vangel = 220f;
+    public float m2b_battle_h = 180f;
+    public float m2b_battle_v = 30f;
 
     public Vector3 m2b_tpOffset = new Vector3(0,0,0);
 
@@ -189,8 +196,13 @@ public class HandController : TargetController
         move.beReady();
     }
 
-    internal void LookToHandLook() {
-
+    internal void LookToHandLook(Vector3 upwards) {
+        Quaternion look = Quaternion.LookRotation(HandLook.transform.position - transform.position,
+                                                  upwards);
+        Quaternion r = Quaternion.Slerp(transform.rotation,
+                                        look,
+                                        1 - Mathf.Exp(-handLookSpeed * Time.deltaTime));
+        transform.rotation = r;
     }
 
     private void Update() {

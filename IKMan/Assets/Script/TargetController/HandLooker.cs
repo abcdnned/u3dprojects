@@ -29,7 +29,7 @@ public class HandLooker : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    protected void Update()
     {
         Vector3 f = Utils.forward(direction);
         Vector3 u = Utils.up(direction);
@@ -44,9 +44,12 @@ public class HandLooker : MonoBehaviour
         Transfer(Time.deltaTime);
     }
 
-    private void Transfer(float dt) {
+    protected virtual void Transfer(float dt) {
         if (Utils.AbsDiff(horizonAngel, hAd) > MIN_ANGEL_DIFF) {
             horizonAngel = Mathf.Lerp(horizonAngel, hAd, 1 - Mathf.Exp(-speed * dt));
+        }
+        if (Utils.AbsDiff(verticalAngel, vAd) > MIN_ANGEL_DIFF) {
+            verticalAngel = Mathf.Lerp(verticalAngel, vAd, 1 - Mathf.Exp(-speed * dt));
         }
     }
 }

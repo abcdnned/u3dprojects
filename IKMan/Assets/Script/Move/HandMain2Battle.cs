@@ -157,9 +157,10 @@ public class HandMain2Battle : HandMove
             parent.HandFK.init(duration,
                                   0,
                                   90);
+            parent.handHint.enable = false;
         } else if (state == 1) {
             normalizedTime += dt;
-            parent.LookToHandLook(-Utils.right(parent.body.transform));
+            parent.LookToHandLook(-parent.getArmDirection());
             if (normalizedTime > duration) {
                 state = 2;
                 initStep2();
@@ -174,16 +175,18 @@ public class HandMain2Battle : HandMove
                                       0,
                                       30);
             } else {
-                steper.step(dt);
+                // steper.step(dt);
+                parent.transform.position = parent.HandFK.transform.position;
             }
         } else if (state == 2) {
             normalizedTime += dt;
-            parent.LookToHandLook(Utils.forward(parent.body.transform) * -1);
+            parent.LookToHandLook(-parent.getArmDirection());
             if (normalizedTime > duration + duration2) {
                 state = 3;
                 return moveManager.ChangeMove(MoveNameConstants.MainHoldWeaponIdle);
             } else {
-                steper2.step(dt);
+                // steper2.step(dt);
+                parent.transform.position = parent.HandFK.transform.position;
             }
         }
         return this;

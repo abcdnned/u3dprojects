@@ -18,11 +18,13 @@ public class HandController : TargetController
     public float normalizedTime = -1f;
     [SerializeField] bool syncPair;
     public HandLooker handHint;
+    public float HintDis = 0.3f;
     public Transform arm;
 
     public HandDelayLooker HandLook;
     public HandDelayLooker HandElbow;
     public HandDelayLooker HandFK;
+    public Transform Shoulder;
     public float handLookSpeed = 10;
 
     [Header("--- Main2BattleIdle ---")]
@@ -207,5 +209,24 @@ public class HandController : TargetController
 
     private void Update() {
         move.move(Time.deltaTime);
+    }
+
+    public Vector3 getArmDirection() {
+        Vector3 r = HandFK.transform.position - HandElbow.transform.position;
+        return r.normalized;
+    }
+
+    public void updateHintByFK() {
+        Vector3 elbow = HandElbow.transform.position;
+        Vector3 hand = HandFK.transform.position;
+        Vector3 shoulder = Shoulder.transform.position;
+        Vector3 v1 = elbow - shoulder;
+        Vector3 v2 = elbow - hand;
+        Vector3 normal = Vector3.Cross(v1, v2);
+        float angel = Vector3.AngleBetween(v1, v2);
+        Quaternion rotation = Quaternion.AngleAxis(angel / 2, normal);
+        Vector3 forward = rotation * v2;
+        Vector3 offset = HintDis * forward.normalized;
+        handHint.transform.position = elbow + offset;
     }
 }

@@ -25,9 +25,10 @@ public class HandMainBattle2Idle : HandMain2Battle
             parent.HandFK.init(duration,
                                   0,
                                   90);
+            parent.handHint.enable = false;
         } else if (state == 1) {
             normalizedTime += dt;
-            parent.LookToHandLook(Utils.right(parent.body.transform));
+            parent.LookToHandLook(-parent.getArmDirection());
             if (normalizedTime > duration) {
                 state = 2;
                 parent.HandLook.setDuration(duration2);
@@ -40,19 +41,21 @@ public class HandMainBattle2Idle : HandMain2Battle
                                       0);
                 initStep2();
             } else {
-                steper.step(dt);
+                // steper.step(dt);
+                parent.transform.position = parent.HandFK.transform.position;
                 // parent.transform.rotation = parent.arm.rotation;
                 // rotater.rot(dt);
             }
         } else if (state == 2) {
-            parent.LookToHandLook(Vector3.up);
+            parent.LookToHandLook(-parent.getArmDirection());
             normalizedTime += dt;
 
             if (normalizedTime > duration + duration2) {
                 state = 3;
                 return moveManager.ChangeMove(MoveNameConstants.HandIdle);
             } else {
-                steper2.step(dt);
+                // steper2.step(dt);
+                parent.transform.position = parent.HandFK.transform.position;
                 // rotater2.rot(dt);
                 // statellite.rot(dt);
             }

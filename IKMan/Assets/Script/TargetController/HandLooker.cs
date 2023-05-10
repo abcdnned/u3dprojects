@@ -12,6 +12,7 @@ public class HandLooker : MonoBehaviour
     public float speed = 10;
     public float hAd = 0;
     public float vAd = 0;
+    public bool enable = true;
 
     public static float MIN_ANGEL_DIFF = 0.05f;
 
@@ -31,6 +32,7 @@ public class HandLooker : MonoBehaviour
     // Update is called once per frame
     protected void Update()
     {
+        if (!enable) return;
         Vector3 f = Utils.forward(direction);
         Vector3 u = Utils.up(direction);
         // Debug.DrawRay(sun.position, f, Color.blue);

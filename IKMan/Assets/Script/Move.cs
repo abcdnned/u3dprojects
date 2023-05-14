@@ -23,6 +23,10 @@ public class Move
 
     }
 
+    public virtual string getMoveType() {
+        return AdvanceIKController.IK;
+    }
+
     public Move(string n) {
         this.name = n;
     }
@@ -59,5 +63,8 @@ public class Move
 
     public virtual void init() {
     }
+    public virtual void finish() {
+    }
+
 
 }

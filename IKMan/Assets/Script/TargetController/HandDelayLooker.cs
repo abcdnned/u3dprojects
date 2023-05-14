@@ -2,8 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[ExecuteInEditMode]
 public class HandDelayLooker : HandLooker
 {
+    public float horizonAngel_lv2 = 0;
+    public float verticalAngel_lv2 = 0;
+    public float hAd_lv2 = 0;
+    public float vAd_lv2 = 0;
     public float normalizedTime = 0;
     public float duration = 0;
     private float initH = 0;

@@ -51,8 +51,7 @@ public class HandController : TargetController
     private Quaternion homeRotationDelta = Quaternion.identity;
 
     protected override void initMove() {
-        HandMovingMove handMovingMove = new HandMovingMove();
-        moveManager.addMove(handMovingMove);
+        moveManager.addMove(new HandMovingMove());
         moveManager.addMove(new HandIdleMove());
         moveManager.addMove(new MainHoldWeapon());
         moveManager.addMove(new HandMain2Battle());
@@ -204,7 +203,7 @@ public class HandController : TargetController
         Quaternion r = Quaternion.Slerp(transform.rotation,
                                         look,
                                         1 - Mathf.Exp(-handLookSpeed * Time.deltaTime));
-        transform.rotation = r;
+        transform.rotation = look;
     }
 
     private void Update() {
@@ -222,10 +221,13 @@ public class HandController : TargetController
         Vector3 shoulder = Shoulder.transform.position;
         Vector3 v1 = elbow - shoulder;
         Vector3 v2 = elbow - hand;
-        Vector3 normal = Vector3.Cross(v1, v2);
-        float angel = Vector3.AngleBetween(v1, v2);
+        Vector3 normal = Vector3.Cross(v2, v1);
+        float angel = Vector3.Angle(v1, v2);
         Quaternion rotation = Quaternion.AngleAxis(angel / 2, normal);
         Vector3 forward = rotation * v2;
+        Debug.DrawRay(elbow, v1, Color.red);
+        Debug.DrawRay(elbow, v2, Color.blue);
+        Debug.DrawRay(elbow, forward, Color.green);
         Vector3 offset = HintDis * forward.normalized;
         handHint.transform.position = elbow + offset;
     }

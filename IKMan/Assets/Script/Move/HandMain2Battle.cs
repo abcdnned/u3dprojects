@@ -26,6 +26,10 @@ public class HandMain2Battle : HandMove
     {
     }
 
+    public override string getMoveType() {
+        return AdvanceIKController.FK;
+    }
+
     public void initTargetRotation(float a, float b, float g) {
         alpha = a;
         beta = b;
@@ -61,16 +65,16 @@ public class HandMain2Battle : HandMove
 
     public override void beReady() {
         // Init steper
-        Vector3 wp1 = parent.transform.position;
+        Vector3 wp1 = handController.transform.position;
         Vector3 wp3 = targetPosition.position;
         Vector3 wp2 = getMoveCenter(wp1, wp3);
-        steper = new Steper(Utils.forwardFlat(parent.body.transform),
-                            Utils.right(parent.body.transform),
+        steper = new Steper(Utils.forwardFlat(handController.body.transform),
+                            Utils.right(handController.body.transform),
                             duration,
                             Steper.BEARZ,
-                            parent.body.transform,
+                            handController.body.transform,
                             0,
-                            parent.transform,
+                            handController.transform,
                             new Vector3[] {wp1, wp2, wp3});
         // Init rotater
         // end = Quaternion.Euler(alpha, beta, gamma);
@@ -81,16 +85,16 @@ public class HandMain2Battle : HandMove
 
     protected void initStep2() {
         // Init steper
-        Vector3 wp1 = parent.transform.position;
+        Vector3 wp1 = handController.transform.position;
         Vector3 wp3 = targetPosition2.position;
         Vector3 wp2 = getMoveCenter(wp1, wp3);
-        steper2 = new Steper(Utils.forwardFlat(parent.body.transform),
-                            Utils.right(parent.body.transform),
+        steper2 = new Steper(Utils.forwardFlat(handController.body.transform),
+                            Utils.right(handController.body.transform),
                             duration2,
                             Steper.BEARZ,
-                            parent.body.transform,
+                            handController.body.transform,
                             0,
-                            parent.transform,
+                            handController.transform,
                             new Vector3[] {wp1, wp2, wp3});
         // Init rotater
         // end = Quaternion.Euler(alpha2, beta2, gamma2);
@@ -103,7 +107,7 @@ public class HandMain2Battle : HandMove
     private Vector3 getMoveCenter(Vector3 wp1, Vector3 wp3)
     {
         Vector3 wp2 = (wp1 + wp3) / 2;
-        wp2 += pivotOffset * Utils.right(parent.body.transform) * lr;
+        wp2 += pivotOffset * Utils.right(handController.body.transform) * lr;
         return wp2;
     }
 
@@ -148,45 +152,47 @@ public class HandMain2Battle : HandMove
         }
         if (state == 0) {
             state = 1;
-            parent.HandLook.init(duration,
-                                 parent.m2b_hangel,
-                                 parent.m2b_vangel);
-            parent.HandElbow.init(duration,
+            handController.HandLook.init(duration,
+                                 handController.m2b_hangel,
+                                 handController.m2b_vangel);
+            handController.HandElbow.init(duration,
                                   90,
                                   0);
-            parent.HandFK.init(duration,
+            handController.HandFK.init(duration,
                                   0,
                                   90);
-            parent.handHint.enable = false;
+            handController.handHint.enable = false;
         } else if (state == 1) {
             normalizedTime += dt;
-            parent.LookToHandLook(-parent.getArmDirection());
+            handController.LookToHandLook(-handController.getArmDirection());
+            handController.updateHintByFK();
             if (normalizedTime > duration) {
                 state = 2;
                 initStep2();
-                parent.handHint.hAd = parent.m2b_elbow;
-                parent.HandLook.init(duration2,
-                                     parent.m2b_battle_h,
-                                     parent.m2b_battle_v);
-                parent.HandElbow.init(duration2,
+                handController.handHint.hAd = handController.m2b_elbow;
+                handController.HandLook.init(duration2,
+                                     handController.m2b_battle_h,
+                                     handController.m2b_battle_v);
+                handController.HandElbow.init(duration2,
                                       0,
                                       -60);
-                parent.HandFK.init(duration2,
+                handController.HandFK.init(duration2,
                                       0,
                                       30);
             } else {
                 // steper.step(dt);
-                parent.transform.position = parent.HandFK.transform.position;
+                handController.transform.position = handController.HandFK.transform.position;
             }
         } else if (state == 2) {
             normalizedTime += dt;
-            parent.LookToHandLook(-parent.getArmDirection());
+            handController.LookToHandLook(-handController.getArmDirection());
+            handController.updateHintByFK();
             if (normalizedTime > duration + duration2) {
                 state = 3;
                 return moveManager.ChangeMove(MoveNameConstants.MainHoldWeaponIdle);
             } else {
                 // steper2.step(dt);
-                parent.transform.position = parent.HandFK.transform.position;
+                handController.transform.position = handController.HandFK.transform.position;
             }
         }
         return this;

@@ -24,6 +24,8 @@ public class TargetController : MonoBehaviour {
     private Banner recentBanner;
     protected MoveManager moveManager;
 
+    public AdvanceIKController advanceIKController;
+
     private void Awake() {
         moveManager = new MoveManager(this);
         moveManager.addMove(new Move(MoveNameConstants.DirectMoving));

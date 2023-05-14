@@ -2,13 +2,13 @@ using UnityEngine;
 
 public class HandMove : Move
 {
-    protected HandController parent;
+    protected HandController handController;
     public HandMove(string name) : base(name)
     {
 
     }
     public override void init() {
-        parent = (HandController)targetController;
+        handController = (HandController)targetController;
         normalizedTime = 0;
         state = 0;
         subinit();

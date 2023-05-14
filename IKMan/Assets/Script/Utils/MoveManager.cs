@@ -45,6 +45,12 @@ public class MoveManager
         if (mov != null)
         {
             mov.init();
+            if (targetController.advanceIKController != null) {
+                targetController.advanceIKController.changeState(mov.getMoveType());
+            }
+            if (targetController.move != null) {
+                targetController.move.finish();
+            }
             targetController.move = mov;
         }
         return mov;

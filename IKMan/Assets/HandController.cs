@@ -87,6 +87,25 @@ public class HandController : TargetController
         homeRotationDelta = Quaternion.Inverse(handHome.rotation) * transform.rotation;
     }
 
+    protected void SyncIKSample(string sampleName, float duration) {
+        String elbow = IKSampleNames.Elbow + sampleName;
+        String hand = IKSampleNames.Hand + sampleName;
+        HandDelayLooker elbowLooker = GameObject.Find(elbow).GetComponent<HandDelayLooker>();
+        HandDelayLooker handLooker = GameObject.Find(hand).GetComponent<HandDelayLooker>();
+        SyncTwoHandLooker(elbowLooker, HandElbow);
+        SyncTwoHandLooker(handLooker, HandFK);
+        HandElbow.duration = duration;
+        HandFK.duration = duration;
+    }
+
+    protected void SyncTwoHandLooker(HandLooker source, HandLooker target) {
+        target.enable_lv2 = source.enable_lv2;
+        target.hAd = source.horizonAngel;
+        target.vAd = source.verticalAngel;
+        target.hAd_lv2 = source.horizonAngel_lv2;
+        target.vAd_lv2 = source.verticalAngel_lv2;
+    }
+
     IEnumerator MoveToHome(float duration, int isRightFoot)
     {
         sync();
@@ -96,6 +115,7 @@ public class HandController : TargetController
         Vector3 forward = Utils.forwardFlat(body.transform);
         Vector3 right = Utils.right(body.transform);
         Vector3[] Points = getEndPoint(body.transform, handHome.transform, plane, isRightFoot, isRightHand);
+        activeHandLooker(duration, isRightFoot);
         Vector3 endPoint = Points[0];
 
         Vector3 forward2 = (endPoint - transform.position).normalized;
@@ -230,5 +250,13 @@ public class HandController : TargetController
         Debug.DrawRay(elbow, forward, Color.green);
         Vector3 offset = HintDis * forward.normalized;
         handHint.transform.position = elbow + offset;
+    }
+
+    private void activeHandLooker(float duration, float isRightFoot) {
+        if (isRightFoot * isRightHand < 0) {
+            SyncIKSample(IKSampleNames.WALK_FRONT_SWING, duration);
+        } else {
+            SyncIKSample(IKSampleNames.WALK_BACK_SWING, duration);
+        }
     }
 }

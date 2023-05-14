@@ -5,14 +5,12 @@ using UnityEngine;
 [ExecuteInEditMode]
 public class HandDelayLooker : HandLooker
 {
-    public float horizonAngel_lv2 = 0;
-    public float verticalAngel_lv2 = 0;
-    public float hAd_lv2 = 0;
-    public float vAd_lv2 = 0;
     public float normalizedTime = 0;
     public float duration = 0;
     private float initH = 0;
     private float initV = 0;
+    private float initH_lv2 = 0;
+    private float initV_lv2 = 0;
     public Transform parent;
     public void setDuration(float t) {
         // Debug.Log(" set Duration " + t);
@@ -20,6 +18,8 @@ public class HandDelayLooker : HandLooker
         normalizedTime = 0;
         initH = horizonAngel;
         initV = verticalAngel;
+        initH_lv2 = horizonAngel_lv2;
+        initV_lv2 = verticalAngel_lv2;
     }
     public void init(float duration, float h, float v) {
         setDuration(duration);
@@ -45,6 +45,15 @@ public class HandDelayLooker : HandLooker
                 verticalAngel = Mathf.Lerp(initV, vAd, poc);
                 ran = true;
                 // Debug.Log(" v " + verticalAngel);
+            }
+            if (!enable_lv2) return;
+            if (Utils.AbsDiff(horizonAngel_lv2, hAd_lv2) > MIN_ANGEL_DIFF) {
+                horizonAngel_lv2 = Mathf.Lerp(initH_lv2, hAd_lv2, poc);
+                ran = true;
+            }
+            if (Utils.AbsDiff(verticalAngel_lv2, vAd_lv2) > MIN_ANGEL_DIFF) {
+                verticalAngel_lv2 = Mathf.Lerp(initV_lv2, vAd_lv2, poc);
+                ran = true;
             }
             if (!ran) {
                 duration = 0;

@@ -25,6 +25,10 @@ public class HandDelayLooker : HandLooker
         setDuration(duration);
         setAngel(h, v);
     }
+    public void init(float duration, float h, float v, float h2, float v2) {
+        setDuration(duration);
+        setAngel(h, v, h2, v2);
+    }
     override protected void Transfer(float dt) {
         if (parent != null) {
             Vector3 dir = transform.position - parent.position;

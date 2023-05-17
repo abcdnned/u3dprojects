@@ -90,15 +90,26 @@ public class HandController : TargetController
     protected void SyncIKSample(string sampleName, float duration) {
         String elbow = IKSampleNames.Elbow + sampleName;
         String hand = IKSampleNames.Hand + sampleName;
-        HandDelayLooker elbowLooker = GameObject.Find(elbow).GetComponent<HandDelayLooker>();
-        HandDelayLooker handLooker = GameObject.Find(hand).GetComponent<HandDelayLooker>();
-        SyncTwoHandLooker(elbowLooker, HandElbow);
-        SyncTwoHandLooker(handLooker, HandFK);
-        HandElbow.duration = duration;
-        HandFK.duration = duration;
+        Debug.Log(" elbow " + elbow);
+        Debug.Log(" hand " + hand);
+        HandDelayLooker elbowLooker = humanIKController.poseManager.handDelayLookerMap[elbow];
+        HandDelayLooker handLooker = humanIKController.poseManager.handDelayLookerMap[hand];
+        Debug.Log(" elbowLooker " + elbowLooker);
+        Debug.Log(" handLooker " + handLooker);
+        if (HandElbow != null && HandFK != null) {
+            HandElbow.setDuration(0.5f);
+            SyncTwoHandLooker(elbowLooker, HandElbow);
+            SyncTwoHandLooker(handLooker, HandFK);
+            Debug.Log(" duration " + duration);
+            // HandElbow.init(duration, elbowLooker.hAd, elbowLooker.vAd,
+            //                          elbowLooker.hAd_lv2, elbowLooker.vAd_lv2);
+            // HandFK.init(duration, handLooker.hAd, handLooker.vAd,
+            //                       handLooker.hAd_lv2, handLooker.vAd_lv2);
+        }
     }
 
     protected void SyncTwoHandLooker(HandLooker source, HandLooker target) {
+        if (source == null || target == null) return;
         target.enable_lv2 = source.enable_lv2;
         target.hAd = source.horizonAngel;
         target.vAd = source.verticalAngel;

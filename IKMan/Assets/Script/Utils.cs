@@ -118,7 +118,7 @@ public class Utils {
     }
     
     public static float AbsDiff(float a, float b) {
-        return Abs(Abs(a) - Abs(b));
+        return Abs(a - b);
     }
 
 }

@@ -28,10 +28,16 @@ public class HandLooker : MonoBehaviour
         hAd = horizonAngel;
         vAd = verticalAngel;
     }
-
     public void setAngel(float h, float v) {
         hAd = h;
         vAd = v;
+    }
+
+    public void setAngel(float h, float v, float h2, float v2) {
+        hAd = h;
+        vAd = v;
+        hAd_lv2 = h2;
+        vAd_lv2 = v2;
     }
 
     // Update is called once per frame

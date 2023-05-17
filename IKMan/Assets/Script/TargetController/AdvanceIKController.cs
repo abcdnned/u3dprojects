@@ -8,6 +8,8 @@ public class AdvanceIKController : MonoBehaviour
     public HandDelayLooker elbow;
     public HandDelayLooker hand;
 
+    public HandController handController;
+
     public Transform fk;
 
     public string state;
@@ -22,6 +24,7 @@ public class AdvanceIKController : MonoBehaviour
     {
         if (state == HALF_IK) {
             updateArmDirection();
+            handController.updateHintByFK();
         }
     }
     

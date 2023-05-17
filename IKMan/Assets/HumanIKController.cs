@@ -21,6 +21,8 @@ public class HumanIKController : MonoBehaviour
 
   public WalkPointer walkPointer;
 
+  public PoseManager poseManager;
+
   private Vector2 _movement;
   internal bool walking;
 

@@ -181,7 +181,7 @@ public class HandMain2Battle : HandMove
                                       30);
             } else {
                 // steper.step(dt);
-                handController.transform.position = handController.HandFK.transform.position;
+                // handController.transform.position = handController.HandFK.transform.position;
             }
         } else if (state == 2) {
             normalizedTime += dt;
@@ -192,7 +192,7 @@ public class HandMain2Battle : HandMove
                 return moveManager.ChangeMove(MoveNameConstants.MainHoldWeaponIdle);
             } else {
                 // steper2.step(dt);
-                handController.transform.position = handController.HandFK.transform.position;
+                // handController.transform.position = handController.HandFK.transform.position;
             }
         }
         return this;

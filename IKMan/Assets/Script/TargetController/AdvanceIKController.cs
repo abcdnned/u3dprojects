@@ -21,32 +21,53 @@ public class AdvanceIKController : MonoBehaviour
 
     public const string HALF_IK = "HALF_IK";
 
+    // FK for hint, IK for position
+    public const string FIK = "FK_IK";
+
+    public float FK_SPEED = 0.2f;
+
     void Update()
     {
         if (state == HALF_IK) {
             updateArmDirection();
             handController.updateHintByFK();
-            hint.enable = false;
-            hint.enable_lv2 = false;
         } else if (state == IK) {
-            hint.enable = true;
-            hint.enable_lv2 = true;
         } else if (state == FK) {
             handController.updateHintByFK();
-            hint.enable = false;
-            hint.enable_lv2 = false;
+            trackIKtoFK();
+        } else if (state == FIK) {
+            handController.updateHintByFK();
         }
     }
     
     public void changeState(string state) {
         this.state = state;
         if (state == HALF_IK) {
-            elbow.enabled = true;
-            hand.enabled = false;
-        } else {
-            elbow.enabled = true;
-            hand.enabled = true;
+            // elbow.enabled = true;
+            // hand.enabled = false;
+            hint.enable = false;
+            hint.enable_lv2 = false;
+        } else if (state == IK) {
+            // elbow.enabled = false;
+            // hand.enabled = false;
+            hint.enable = true;
+            hint.enable_lv2 = true;
+        } else if (state == FK) {
+            // elbow.enabled = true;
+            // hand.enabled = true;
+            hint.enable = false;
+            hint.enable_lv2 = false;
+        } else if (state == FIK) {
+            // elbow.enabled = true;
+            // hand.enabled = true;
+            hint.enable = false;
+            hint.enable_lv2 = false;
         }
+    }
+
+    private void trackIKtoFK() {
+        Vector3 target = Vector3.MoveTowards(fk.position, hand.transform.position, FK_SPEED);
+        Utils.deltaMove(fk, target);
     }
 
     private void updateArmDirection() {

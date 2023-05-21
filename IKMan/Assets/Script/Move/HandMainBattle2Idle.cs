@@ -46,7 +46,7 @@ public class HandMainBattle2Idle : HandMain2Battle
                 initStep2();
             } else {
                 // steper.step(dt);
-                handController.transform.position = handController.HandFK.transform.position;
+                // handController.transform.position = handController.HandFK.transform.position;
                 // parent.transform.rotation = parent.arm.rotation;
                 // rotater.rot(dt);
             }
@@ -60,7 +60,7 @@ public class HandMainBattle2Idle : HandMain2Battle
                 return moveManager.ChangeMove(MoveNameConstants.HandBattleIdle);
             } else {
                 // steper2.step(dt);
-                handController.transform.position = handController.HandFK.transform.position;
+                // handController.transform.position = handController.HandFK.transform.position;
                 // rotater2.rot(dt);
                 // statellite.rot(dt);
             }

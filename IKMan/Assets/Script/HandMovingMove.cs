@@ -14,6 +14,6 @@ public class HandMovingMove : HandMove
     }
 
     public override string getMoveType() {
-        return AdvanceIKController.HALF_IK;
+        return AdvanceIKController.IK;
     }
 }

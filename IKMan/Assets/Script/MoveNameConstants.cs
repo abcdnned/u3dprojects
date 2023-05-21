@@ -4,6 +4,7 @@ public class MoveNameConstants
     public static string idle = "idle";
     public static string HandMoving = "hand_moving";
     public static string HandIdle = "hand_idle";
+    public static string HandBattleIdle = "hand_battle_idle";
     public static string LegMoving = "leg_moving";
     public static string LegParentMove = "leg_parent_mvoe";
     public static string LegPutMove = "leg_put_moving";

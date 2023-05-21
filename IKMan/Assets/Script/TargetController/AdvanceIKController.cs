@@ -7,6 +7,7 @@ public class AdvanceIKController : MonoBehaviour
     public Transform shoulder;
     public HandDelayLooker elbow;
     public HandDelayLooker hand;
+    public HandLooker hint;
 
     public HandController handController;
 
@@ -25,6 +26,15 @@ public class AdvanceIKController : MonoBehaviour
         if (state == HALF_IK) {
             updateArmDirection();
             handController.updateHintByFK();
+            hint.enable = false;
+            hint.enable_lv2 = false;
+        } else if (state == IK) {
+            hint.enable = true;
+            hint.enable_lv2 = true;
+        } else if (state == FK) {
+            handController.updateHintByFK();
+            hint.enable = false;
+            hint.enable_lv2 = false;
         }
     }
     

@@ -32,7 +32,7 @@ public class HandMainBattle2Idle : HandMain2Battle
         } else if (state == 1) {
             normalizedTime += dt;
             handController.LookToHandLook(-handController.getArmDirection());
-            handController.updateHintByFK();
+            // handController.updateHintByFK();
             if (normalizedTime > duration) {
                 state = 2;
                 handController.HandLook.setDuration(duration2);
@@ -52,12 +52,12 @@ public class HandMainBattle2Idle : HandMain2Battle
             }
         } else if (state == 2) {
             handController.LookToHandLook(-handController.getArmDirection());
-            handController.updateHintByFK();
+            // handController.updateHintByFK();
             normalizedTime += dt;
 
             if (normalizedTime > duration + duration2) {
                 state = 3;
-                return moveManager.ChangeMove(MoveNameConstants.HandIdle);
+                return moveManager.ChangeMove(MoveNameConstants.HandBattleIdle);
             } else {
                 // steper2.step(dt);
                 handController.transform.position = handController.HandFK.transform.position;

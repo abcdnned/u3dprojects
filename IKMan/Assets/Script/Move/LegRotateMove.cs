@@ -4,6 +4,8 @@ using UnityEngine;
 public class LegRotateMove : LegMove
 {
     private Vector3 angelOffset;
+
+    private Transform pointer;
     public LegRotateMove() : base(MoveNameConstants.LegRotateMove) {
     }
 
@@ -18,9 +20,10 @@ public class LegRotateMove : LegMove
     public override Move move(float dt) {
         if (state == 0) {
             state = 1;
-            rotater = new Rotater(parent.body.transform, parent.transform,
-                                        duration,
-                                        angelOffset);
+            rotater = new Rotater(humanIKController.walkPointer.transform,
+                                  parent.transform,
+                                  duration,
+                                  angelOffset);
         }
         normalizedTime += dt;
         if (normalizedTime > duration) {
@@ -36,5 +39,9 @@ public class LegRotateMove : LegMove
     internal void setTargetPosition(Vector3 angelOffset)
     {
         this.angelOffset = angelOffset;
+    }
+
+    internal void setPointer(Transform pointer) {
+        this.pointer = pointer;
     }
 }

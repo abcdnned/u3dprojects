@@ -21,17 +21,24 @@ public class IdleStatus : AnyState
     }
     private (States, ActionStateMachine) Idle(Event e) {
         if (e.bgA == EVENT_BUTTON_R) {
-            humanIKController.updateAnchorPoints();
-            Vector3 leftPoint = humanIKController.battleIdleAnchorPoints[ANCHOR_LEFT_LEG];
-            Vector3 rightPoint = humanIKController.battleIdleAnchorPoints[ANCHOR_RIGHT_LEG];
+            // humanIKController.updateAnchorPoints();
+            // Vector3 leftPoint = humanIKController.battleIdleAnchorPoints[ANCHOR_LEFT_LEG];
+            // Vector3 rightPoint = humanIKController.battleIdleAnchorPoints[ANCHOR_RIGHT_LEG];
             humanIKController.walkPointer.lookCamera();
             humanIKController.headController.setMode(0);
-            Vector3 leftLegPosition = humanIKController.frontLeftLegStepper.transform.position;
-            leftLegPosition = Utils.snapTo(leftLegPosition, Vector3.up, 0);
+            // Vector3 leftLegPosition = humanIKController.frontLeftLegStepper.transform.position;
+            // leftLegPosition = Utils.snapTo(leftLegPosition, Vector3.up, 0);
             // humanIKController.frontLeftLegStepper.TryTransferDirectly(leftLegPosition,
             //                                                           humanIKController.bi_fontLegAngelOffset);
             // PrefabCreator.SpawnDebugger(rightPoint, "DebugBall", 5, 0.5f, null);
-            humanIKController.frontRightLegStepper.TryPutLeg(rightPoint, humanIKController.bi_backFootAngelOffset);
+            // humanIKController.frontRightLegStepper.TryPutLeg(rightPoint, humanIKController.bi_backFootAngelOffset,
+            //                                                  humanIKController.frontRightLegStepper.shortStepDuration);
+            humanIKController.TwoFootAssign(humanIKController.frontRightLegStepper.shortStepDuration,
+                                            HumanIKController.RIGHT_FOOT,
+                                            0.5f,
+                                            6,
+                                            45f,
+                                            90f);
             humanIKController.rightHand.TryGetGreatSword();
             WalkBalance wb = humanIKController.walkBalance;
             wb.TryBattleIdle();

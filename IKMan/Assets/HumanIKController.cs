@@ -60,6 +60,9 @@ public class HumanIKController : MonoBehaviour
 
     public static string EVENT_IDLE = "idle";
 
+    public static int RIGHT_FOOT = 0;
+    public static int LEFT_FOOT = 1;
+
     private void Start() {
     inputModule = GetComponent<InputModule>();
     inputModule.OnMoveDelegates += MovementInput;
@@ -151,5 +154,29 @@ public class HumanIKController : MonoBehaviour
   public void logHomeOffset() {
       leftHand.logHomeOffset();
       rightHand.logHomeOffset();
+  }
+
+  public void TwoFootAssign(float duration, int mainfoot,
+                            float footDis, int clock,
+                            float leftAngel, float rightAngel,
+                            Transform pointer) {
+      LegControllerType2 leg = mainfoot == RIGHT_FOOT ? frontRightLegStepper : frontLeftLegStepper;
+      Vector3 rootPoint = mainfoot == RIGHT_FOOT ? frontLeftLegStepper.transform.position : frontRightLegStepper.transform.position;
+      rootPoint = Utils.snapTo(rootPoint);
+      float angle = AnchorManager.clockAngel[clock];
+      Debug.Log(" angel " + angle);
+      Vector3 forward = Utils.forward(walkPointer.transform);
+      Debug.DrawLine(rootPoint, rootPoint + forward * 1, Color.yellow, 10);
+      forward = Quaternion.AngleAxis(angle, Vector3.up) * forward;
+      Debug.DrawLine(rootPoint, rootPoint + forward * 1, Color.yellow, 10);
+      Vector3 targetPoint = rootPoint + forward * footDis;
+      if (mainfoot == RIGHT_FOOT) {
+        frontRightLegStepper.TryPutLeg(targetPoint, rightAngel, duration);
+        frontLeftLegStepper.TryRotateLeg(leftAngel, duration);
+      } else if (mainfoot == LEFT_FOOT) {
+        frontLeftLegStepper.TryPutLeg(targetPoint, leftAngel, duration);
+        frontRightLegStepper.TryRotateLeg(rightAngel, duration);
+      }
+
   }
 }

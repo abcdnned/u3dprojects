@@ -7,6 +7,8 @@ public class LegPutMove : LegMove
 
     private Vector3 targetPosition;
     private Vector3 angelOffset;
+
+    private Transform pointer;
     public LegPutMove(bool isRightFoot) : base(MoveNameConstants.LegPutMove) {
         this.isRightFoot = isRightFoot;
     }
@@ -22,15 +24,16 @@ public class LegPutMove : LegMove
         Vector3 wp1 = target.position;
         Vector3 wp3 = targetPosition;
         Vector3 wp2 = Utils.GetMiddleLiftPoint(wp1, wp3, parent.shortStepLiftDistance);
-        steper = new Steper(Utils.forwardFlat(parent.body.transform),
-                            Utils.right(parent.body.transform),
+        Transform p = pointer == null ? parent.body.transform : pointer;
+        steper = new Steper(Utils.forwardFlat(p),
+                            Utils.right(p),
                             parent.shortStepDuration,
                             Steper.BEARZ,
-                            parent.body.transform,
+                            p,
                             0,
                             parent.transform,
                             new Vector3[] {wp1, wp2, wp3});
-        rotater = new Rotater(parent.body.transform, parent.transform,
+        rotater = new Rotater(humanIKController.walkPointer.transform, parent.transform,
                                     duration,
                                     angelOffset);
     }
@@ -80,5 +83,9 @@ public class LegPutMove : LegMove
     {
         targetPosition = wp3;
         this.angelOffset = angelOffset;
+    }
+
+    internal void setPointer(Transform pointer) {
+        this.pointer = pointer;
     }
 }

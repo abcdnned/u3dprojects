@@ -78,6 +78,7 @@
      <Compile Include="Assets/Script/Utils/Banner.cs" />
      <Compile Include="Assets/Script/Others/Auxiliary.cs" />
      <Compile Include="Assets/LegController.cs" />
+     <Compile Include="Assets/Script/Modules/AnchorManager.cs" />
      <Compile Include="Assets/Script/BattleIdleState.cs" />
      <Compile Include="Assets/Script/TargetController/PoseManager.cs" />
      <Compile Include="Assets/Script/HandleIdleMove.cs" />

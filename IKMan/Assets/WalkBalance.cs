@@ -198,7 +198,7 @@ public class WalkBalance : TargetController
         rightLeg.transform.SetParent(null);
         humanIKController.postUpdateTowHandPosition();
     }
-    internal void transferByTime(float angelOffset, float t) {
+    internal void transferByTime(float angelOffset, float t, bool moveLeg = true) {
         Vector3 forward = Utils.forwardFlat(target);
         Vector3 right = Utils.right(target);
         Quaternion tr = Quaternion.LookRotation(transferDir);       
@@ -209,13 +209,17 @@ public class WalkBalance : TargetController
             tr, 
             t
         );
-        leftLeg.transform.SetParent(target);
-        rightLeg.transform.SetParent(target);
+        if (moveLeg) {
+            leftLeg.transform.SetParent(target);
+            rightLeg.transform.SetParent(target);
+        }
         humanIKController.logHomeOffset();
         target.rotation = r;
         rotateCurrentDampDist(forward, right);
-        leftLeg.transform.SetParent(null);
-        rightLeg.transform.SetParent(null);
+        if (moveLeg) {
+            leftLeg.transform.SetParent(null);
+            rightLeg.transform.SetParent(null);
+        }
         humanIKController.postUpdateTowHandPosition();
     }
 

@@ -33,7 +33,7 @@ public class Hip2BattleIdleMove : Move
             return moveManager.ChangeMove(MoveNameConstants.HipBattleIdle);
         } else {
             parent.ReturnToCenter();
-            parent.transferByTime(parent.battleIdleAngelOffset, normalizedTime / duration);
+            parent.transferByTime(parent.battleIdleAngelOffset, normalizedTime / duration, false);
             // Debug.Log(" transferSpeed " + transferSpeed);
             parent.adjustHeight(h.y, Vector3.up, hipMoveSpeed);
             // Debug.Log(this.GetType().Name + " speed " + hipMoveSpeed);

@@ -672,12 +672,12 @@ public class LegControllerType2 : TargetController
         // Debug.Log(this.GetType().Name + " transfer notify ");
         // notifyBanner();
     }
-    public void TryPutLeg(Vector3 leftPoint, float angelOffset, float duration, Transform pointer = null)
+    public void TryPutLeg(Vector3 targetPoint, float angelOffset, float duration, Transform pointer = null)
     {
         sync();
         LegPutMove cm = (LegPutMove)moveManager.ChangeMove(MoveNameConstants.LegPutMove);
-        leftPoint = Utils.snapTo(leftPoint, Vector3.up, 0);
-        cm.setTargetPosition(leftPoint, new Vector3(angelOffset, 0, 0));
+        // leftPoint = Utils.snapTo(leftPoint, Vector3.up, 0);
+        cm.setTargetPosition(targetPoint, new Vector3(angelOffset, 0, 0));
         cm.duration = duration;
         cm.setPointer(pointer);
         cm.beReady();

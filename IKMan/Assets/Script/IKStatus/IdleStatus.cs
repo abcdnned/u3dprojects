@@ -35,7 +35,7 @@ public class IdleStatus : AnyState
             //                                                  humanIKController.frontRightLegStepper.shortStepDuration);
             humanIKController.TwoFootAssign(humanIKController.frontRightLegStepper.shortStepDuration,
                                             HumanIKController.RIGHT_FOOT,
-                                            0.5f,
+                                            .7f,
                                             6,
                                             45f,
                                             90f);

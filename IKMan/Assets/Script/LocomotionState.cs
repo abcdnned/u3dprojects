@@ -51,13 +51,13 @@ public class LocomotionState : AnyState {
     private (States, ActionStateMachine) Stopping(Event e)
     {
         if (legIdleChecker()) {
-            Debug.Log(this.GetType().Name + " stopWalingBanner checked ");
+            // Debug.Log(this.GetType().Name + " stopWalingBanner checked ");
             Vector3 direction = Utils.forwardFlat(humanIKController.body.transform);
             float leftDot = Vector3.Dot(humanIKController.frontLeftLegStepper.transform.position, direction);
             float rightDot = Vector3.Dot(humanIKController.frontRightLegStepper.transform.position, direction);
             if (!humanIKController.frontLeftLegStepper.move.IsLegMoving() && !humanIKController.frontRightLegStepper.move.IsLegMoving()
                 && (Mathf.Max(leftDot, rightDot) - Mathf.Min(leftDot, rightDot) > 0.2)) {
-                Debug.Log(this.GetType().Name + " need one foot transfer ");
+                // Debug.Log(this.GetType().Name + " need one foot transfer ");
                 if (leftDot < rightDot) {
                     humanIKController.frontLeftLegStepper.TryMove();
                     humanIKController.frontLeftLegStepper.handleEvent((HumanIKController.EVENT_STOP_WALKING));
@@ -78,7 +78,7 @@ public class LocomotionState : AnyState {
             humanIKController.frontRightLegStepper.TryMove();
             humanIKController.leftHand.handleEvent(e.eventId);
             humanIKController.rightHand.handleEvent(e.eventId);
-            Debug.Log(this.GetType().Name + " refresh ");
+            // Debug.Log(this.GetType().Name + " refresh ");
             // stopWalkingBanner.refresh();
             return (moveState, this);
         }
@@ -88,7 +88,7 @@ public class LocomotionState : AnyState {
     private (States, ActionStateMachine) Transfer(Event e)
     {
         if (allIdleCheck()) {
-            Debug.Log(this.GetType().Name + " transferBanner checked ");
+            // Debug.Log(this.GetType().Name + " transferBanner checked ");
             return (transferState, new IdleStatus(humanIKController));
         }
         return (transferState, this);

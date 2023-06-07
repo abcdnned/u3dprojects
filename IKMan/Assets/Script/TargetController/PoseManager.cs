@@ -13,7 +13,7 @@ public class PoseManager : MonoBehaviour
         HandDelayLooker[] handDelayLookers = GetComponentsInChildren<HandDelayLooker>();
         foreach (HandDelayLooker t in handDelayLookers) {
             handDelayLookerMap[t.name] = t;
-            Debug.Log(" regist " + handDelayLookerMap[t.name] + " " + t);
+            // Debug.Log(" regist " + handDelayLookerMap[t.name] + " " + t);
         }
     }
 

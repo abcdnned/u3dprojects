@@ -164,14 +164,14 @@ public class HumanIKController : MonoBehaviour
       Vector3 rootPoint = mainfoot == RIGHT_FOOT ? frontLeftLegStepper.transform.position : frontRightLegStepper.transform.position;
       rootPoint = Utils.snapTo(rootPoint);
       float angle = AnchorManager.clockAngel[clock];
-      Debug.Log(" angel " + angle);
+      // Debug.Log(" angel " + angle);
       Vector3 forward = Utils.forward(walkPointer.transform);
-      Debug.DrawLine(rootPoint, rootPoint + forward * 1, Color.yellow, 10);
+      // Debug.DrawLine(rootPoint, rootPoint + forward * 1, Color.yellow, 10);
       forward = Quaternion.AngleAxis(angle, Vector3.up) * forward;
-      Debug.DrawLine(rootPoint, rootPoint + forward * 1, Color.yellow, 10);
+      // Debug.DrawLine(rootPoint, rootPoint + forward * 1, Color.yellow, 10);
       Vector3 targetPoint = rootPoint + forward * footDis;
       if (mainfoot == RIGHT_FOOT) {
-        DrawUtils.drawBall(frontLeftLegStepper.transform.position, 5);
+        // DrawUtils.drawBall(frontLeftLegStepper.transform.position, 5);
         frontRightLegStepper.TryPutLeg(targetPoint, rightAngel, duration, walkPointer.transform);
         frontLeftLegStepper.TryRotateLeg(leftAngel, duration);
       } else if (mainfoot == LEFT_FOOT) {

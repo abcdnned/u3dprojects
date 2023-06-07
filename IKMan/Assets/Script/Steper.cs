@@ -74,7 +74,7 @@ public class Steper
             state = 1;
             lastPosition = wp[0];
             // Debug.DrawLine(wp[0], wp[0] + forward * 2, Color.red, 10);
-            Debug.DrawLine(wp[0], wp[wpCount - 1], Color.blue, 10);
+            // Debug.DrawLine(wp[0], wp[wpCount - 1], Color.blue, 10);
         }
         timeElapsed += dt;
         float poc = timeElapsed / duration;

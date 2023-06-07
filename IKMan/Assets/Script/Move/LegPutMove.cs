@@ -24,7 +24,7 @@ public class LegPutMove : LegMove
         Vector3 wp1 = target.position;
         Vector3 wp3 = targetPosition;
         Vector3 wp2 = Utils.GetMiddleLiftPoint(wp1, wp3, parent.shortStepLiftDistance);
-        DrawUtils.drawBall(targetPosition, 8);
+        // DrawUtils.drawBall(targetPosition, 8);
         Transform p = pointer == null ? parent.body.transform : pointer;
         steper = new Steper(Utils.forwardFlat(p),
                             Utils.right(p),

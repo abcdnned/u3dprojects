@@ -2680,8 +2680,8 @@ MonoBehaviour:
   m2b_rotation2: {x: 0, y: 90, z: -90}
   m2b_elbow: 60
   m2b_idle_elbow: 180
-  m2b_hangel: 90
-  m2b_vangel: 270
+  m2b_hangel: 80
+  m2b_vangel: 230
   m2b_battle_h: 90
   m2b_battle_v: 0
   m2b_tpOffset: {x: 0, y: 0, z: 0}

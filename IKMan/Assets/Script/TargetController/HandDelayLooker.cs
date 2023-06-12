@@ -24,15 +24,19 @@ public class HandDelayLooker : HandLooker
     public void init(float duration, float h, float v) {
         setDuration(duration);
         setAngel(h, v);
+        enable = true;
+        enable_lv2 = false;
     }
     public void init(float duration, float h, float v, float h2, float v2) {
         setDuration(duration);
         setAngel(h, v, h2, v2);
+        enable = true;
+        enable_lv2 = true;
     }
     override protected void Transfer(float dt) {
         if (parent != null) {
             Vector3 dir = transform.position - parent.position;
-            transform.rotation = Quaternion.LookRotation(dir);
+            transform.rotation = Quaternion.LookRotation(dir, direction.forward);
         }
         if (duration != 0) {
             bool ran = false;

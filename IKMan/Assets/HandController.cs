@@ -94,6 +94,7 @@ public class HandController : TargetController
         HandDelayLooker handLooker = humanIKController.poseManager.handDelayLookerMap[hand];
         if (HandElbow != null && HandFK != null) {
             HandElbow.setDuration(duration);
+            HandFK.setDuration(duration);
             SyncTwoHandLooker(elbowLooker, HandElbow);
             SyncTwoHandLooker(handLooker, HandFK);
             // HandElbow.init(duration, elbowLooker.hAd, elbowLooker.vAd,
@@ -152,6 +153,7 @@ public class HandController : TargetController
             Vector3 right3 = Utils.right(body.transform);
             timeElapsed += Time.deltaTime;
             steper1.step(Time.deltaTime);
+            LookToArmLook();
             if (timeElapsed >= duration) {
                 break;
             } 
@@ -231,6 +233,21 @@ public class HandController : TargetController
                                         1 - Mathf.Exp(-handLookSpeed * Time.deltaTime));
         transform.rotation = look;
     }
+    internal void LookToArmLook() {
+        if (HandFK == null || HandElbow == null) {
+            return;
+        }
+        Vector3 v1 = -getArmDirection();
+        Vector3 v2 = HandLook.transform.position - transform.position;
+        Quaternion rotate = Quaternion.AngleAxis(90, Vector3.Cross(v1, v2));
+        v1 = rotate * v1;
+        Quaternion look = Quaternion.LookRotation(v1,
+                                                  v2);
+        Quaternion r = Quaternion.Slerp(transform.rotation,
+                                        look,
+                                        1 - Mathf.Exp(-handLookSpeed * Time.deltaTime));
+        transform.rotation = look;
+    }
 
     private void Update() {
         move.move(Time.deltaTime);
@@ -259,6 +276,7 @@ public class HandController : TargetController
     }
 
     private void activeHandLooker(float duration, float isRightFoot) {
+        HandLook.init(0.1f, 0, 0);
         if (isRightFoot * isRightHand < 0) {
             SyncIKSample(IKSampleNames.WALK_FRONT_SWING, duration);
         } else {

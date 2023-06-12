@@ -7,13 +7,13 @@ public class HandMovingMove : HandMove
         // additional initialization code, if any
     }
     protected override void subinit() {
-        if (handController.HandElbow != null) {
-            handController.HandElbow.horizonAngel = 90;
-            handController.HandElbow.verticalAngel = -80;
-        }
+        // if (handController.HandElbow != null) {
+        //     handController.HandElbow.horizonAngel = 90;
+        //     handController.HandElbow.verticalAngel = -80;
+        // }
     }
 
     public override string getMoveType() {
-        return AdvanceIKController.IK;
+        return AdvanceIKController.FIK;
     }
 }

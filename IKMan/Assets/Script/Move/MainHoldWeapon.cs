@@ -3,8 +3,7 @@ using UnityEngine;
 public class MainHoldWeapon : HandMove
 {
     protected override void subinit() {
-        handController.handHint.hAd = 90f;
-        handController.handHint.horizonAngel = 90f;
+        handController.SyncIKSample(IKSampleNames.FETCH_GREAT_SWORD_2, .1f);
     }
     
     public MainHoldWeapon() : base(MoveNameConstants.MainHoldWeaponIdle)
@@ -14,5 +13,8 @@ public class MainHoldWeapon : HandMove
     public override Move move(float dt)
     {
         return this;
+    }
+    public override string getMoveType() {
+        return AdvanceIKController.FIK;
     }
 }

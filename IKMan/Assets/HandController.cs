@@ -87,16 +87,17 @@ public class HandController : TargetController
         homeRotationDelta = Quaternion.Inverse(handHome.rotation) * transform.rotation;
     }
 
-    protected void SyncIKSample(string sampleName, float duration) {
-        String elbow = IKSampleNames.Elbow + sampleName;
-        String hand = IKSampleNames.Hand + sampleName;
+    internal void SyncIKSample(string sampleName, float duration, bool horizon_mirror = false) {
+        Debug.Log(" isRightHand " + isRightHand);
+        String elbow = IKSampleNames.ELBOW + "_" + sampleName;
+        String hand = IKSampleNames.HAND + "_" + sampleName;
         HandDelayLooker elbowLooker = humanIKController.poseManager.handDelayLookerMap[elbow];
         HandDelayLooker handLooker = humanIKController.poseManager.handDelayLookerMap[hand];
         if (HandElbow != null && HandFK != null) {
             HandElbow.setDuration(duration);
             HandFK.setDuration(duration);
-            SyncTwoHandLooker(elbowLooker, HandElbow);
-            SyncTwoHandLooker(handLooker, HandFK);
+            SyncTwoHandLooker(elbowLooker, HandElbow, horizon_mirror);
+            SyncTwoHandLooker(handLooker, HandFK, horizon_mirror);
             // HandElbow.init(duration, elbowLooker.hAd, elbowLooker.vAd,
             //                          elbowLooker.hAd_lv2, elbowLooker.vAd_lv2);
             // HandFK.init(duration, handLooker.hAd, handLooker.vAd,
@@ -104,10 +105,10 @@ public class HandController : TargetController
         }
     }
 
-    protected void SyncTwoHandLooker(HandLooker source, HandLooker target) {
+    protected void SyncTwoHandLooker(HandLooker source, HandLooker target, bool horizon_mirror) {
         if (source == null || target == null) return;
         target.enable_lv2 = source.enable_lv2;
-        target.hAd = source.horizonAngel;
+        target.hAd = horizon_mirror ? -source.horizonAngel : source.horizonAngel;
         target.vAd = source.verticalAngel;
         target.hAd_lv2 = source.horizonAngel_lv2;
         target.vAd_lv2 = source.verticalAngel_lv2;
@@ -238,7 +239,8 @@ public class HandController : TargetController
             return;
         }
         Vector3 v1 = -getArmDirection();
-        Vector3 v2 = HandLook.transform.position - transform.position;
+        // Vector3 v2 = HandLook.transform.position - transform.position;
+        Vector3 v2 = -getBicepDirection();
         Quaternion rotate = Quaternion.AngleAxis(90, Vector3.Cross(v1, v2));
         v1 = rotate * v1;
         Quaternion look = Quaternion.LookRotation(v1,
@@ -255,6 +257,11 @@ public class HandController : TargetController
 
     public Vector3 getArmDirection() {
         Vector3 r = HandFK.transform.position - HandElbow.transform.position;
+        return r.normalized;
+    }
+
+    public Vector3 getBicepDirection() {
+        Vector3 r = HandElbow.transform.position - Shoulder.transform.position;
         return r.normalized;
     }
 
@@ -278,9 +285,9 @@ public class HandController : TargetController
     private void activeHandLooker(float duration, float isRightFoot) {
         HandLook.init(0.1f, 0, 0);
         if (isRightFoot * isRightHand < 0) {
-            SyncIKSample(IKSampleNames.WALK_FRONT_SWING, duration);
+            SyncIKSample(IKSampleNames.WALK_FRONT_SWING, duration, isRightHand == -1);
         } else {
-            SyncIKSample(IKSampleNames.WALK_BACK_SWING, duration);
+            SyncIKSample(IKSampleNames.WALK_BACK_SWING, duration, isRightHand == -1);
         }
     }
 }

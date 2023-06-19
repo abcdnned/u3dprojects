@@ -26,7 +26,7 @@ public class AdvanceIKController : MonoBehaviour
 
     public float FK_SPEED = 0.2f;
 
-    void Update()
+    private void LateUpdate()
     {
         if (state == HALF_IK) {
             updateArmDirection();

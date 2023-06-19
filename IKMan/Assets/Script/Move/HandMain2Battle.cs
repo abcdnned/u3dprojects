@@ -152,16 +152,17 @@ public class HandMain2Battle : HandMove
         }
         if (state == 0) {
             state = 1;
-            handController.HandLook.init(duration,
-                                 handController.m2b_hangel,
-                                 handController.m2b_vangel);
-            handController.HandElbow.init(duration,
-                                  90,
-                                  0);
-            handController.HandFK.init(duration,
-                                  0,
-                                  90);
-            handController.handHint.enable = false;
+            // handController.HandLook.init(duration,
+            //                      handController.m2b_hangel,
+            //                      handController.m2b_vangel);
+            // handController.HandElbow.init(duration,
+            //                       90,
+            //                       0);
+            // handController.HandFK.init(duration,
+            //                       0,
+            //                       90);
+            // handController.handHint.enable = false;
+            handController.SyncIKSample(IKSampleNames.FETCH_GREAT_SWORD_1, duration);
         } else if (state == 1) {
             normalizedTime += dt;
             handController.LookToHandLook(-handController.getArmDirection());
@@ -169,16 +170,17 @@ public class HandMain2Battle : HandMove
             if (normalizedTime > duration) {
                 state = 2;
                 initStep2();
-                handController.handHint.hAd = handController.m2b_elbow;
-                handController.HandLook.init(duration2,
-                                     handController.m2b_battle_h,
-                                     handController.m2b_battle_v);
-                handController.HandElbow.init(duration2,
-                                      0,
-                                      -60);
-                handController.HandFK.init(duration2,
-                                      0,
-                                      30);
+                // handController.handHint.hAd = handController.m2b_elbow;
+                // handController.HandLook.init(duration2,
+                //                      handController.m2b_battle_h,
+                //                      handController.m2b_battle_v);
+                // handController.HandElbow.init(duration2,
+                //                       0,
+                //                       -60);
+                // handController.HandFK.init(duration2,
+                //                       0,
+                //                       30);
+                handController.SyncIKSample(IKSampleNames.FETCH_GREAT_SWORD_2, duration);
             } else {
                 // steper.step(dt);
                 // handController.transform.position = handController.HandFK.transform.position;

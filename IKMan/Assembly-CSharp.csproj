@@ -74,6 +74,7 @@
      <Compile Include="Assets/Script/TargetController/HandLooker.cs" />
      <Compile Include="Assets/Lib/CustomEasingFunction.cs" />
      <Compile Include="Assets/WalkBalance.cs" />
+     <Compile Include="Assets/Script/TargetController/HandLookIKController.cs" />
      <Compile Include="Assets/Script/Move/HipBattleIdleMove.cs" />
      <Compile Include="Assets/Script/Utils/Banner.cs" />
      <Compile Include="Assets/Script/Others/Auxiliary.cs" />

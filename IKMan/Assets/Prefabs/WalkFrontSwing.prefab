@@ -26,8 +26,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3659879416173653220}
-  m_LocalRotation: {x: 0.48360518, y: 0.12698704, z: -0.071152546, w: 0.86309767}
-  m_LocalPosition: {x: 0.92811453, y: 0.047139406, z: 0.7050003}
+  m_LocalRotation: {x: 0.7044161, y: 0.061628424, z: 0.061628424, w: 0.70441604}
+  m_LocalPosition: {x: 0.9350939, y: 0.0075576305, z: 0.5550003}
   m_LocalScale: {x: -0.069499, y: -0.069499, z: -0.069499}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -109,6 +109,7 @@ MonoBehaviour:
   verticalAngel_lv2: 0
   hAd_lv2: 0
   vAd_lv2: 0
+  enable_lv2: 0
   offset: {x: 0, y: 0, z: 0}
   normalizedTime: 0
   duration: 0
@@ -242,7 +243,6 @@ GameObject:
   - component: {fileID: 3659879417288525154}
   - component: {fileID: 3659879417288525155}
   - component: {fileID: 3659879417288525152}
-  - component: {fileID: 3659879417288525159}
   m_Layer: 0
   m_Name: Hand_WalkFrontSwing
   m_TagString: Untagged
@@ -258,7 +258,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3659879417288525156}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.97323, y: -0.20872098, z: 0.8550005}
+  m_LocalPosition: {x: 0.98718834, y: -0.2878847, z: 0.5550003}
   m_LocalScale: {x: -0.069499, y: -0.069499, z: -0.069499}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -340,33 +340,8 @@ MonoBehaviour:
   verticalAngel_lv2: 0
   hAd_lv2: 0
   vAd_lv2: 0
+  enable_lv2: 0
   offset: {x: 0, y: 0, z: 0}
   normalizedTime: 0
   duration: 0
   parent: {fileID: 0}
---- !u!114 &3659879417288525159
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3659879417288525156}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5ce5fcc758ef473e84c4909b4990316, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sun: {fileID: 3659879416173653221}
-  direction: {fileID: 3659879416173653221}
-  distance: 0.3
-  horizonAngel: 0
-  verticalAngel: 0
-  speed: 10
-  hAd: 0
-  vAd: 0
-  enable: 1
-  horizonAngel_lv2: 0
-  verticalAngel_lv2: 0
-  hAd_lv2: 0
-  vAd_lv2: 0
-  offset: {x: 0, y: 0, z: 0}

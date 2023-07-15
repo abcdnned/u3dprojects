@@ -27,7 +27,7 @@ public class HeadController : TargetController
 
     public void setMode(int m) {
         mode = m;
-        Debug.Log(this.GetType().Name + " Set head track mode " + mode );
+        // Debug.Log(this.GetType().Name + " Set head track mode " + mode );
     }
 
     private void headTransfer(float angelOffset) {

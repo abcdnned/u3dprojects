@@ -42,6 +42,8 @@ public class HumanIKController : MonoBehaviour
 
   public float[] battleIdleAngelOffset = new float[30];
 
+  public Transform mainHandle;
+
   [Header("--- IDLE ---")]
   public Vector3[] idleAnchorPoints = new Vector3[10];
 

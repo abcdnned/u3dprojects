@@ -26,6 +26,8 @@ public class HandController : TargetController
     public HandDelayLooker HandFK;
     public Transform Shoulder;
     public float handLookSpeed = 10;
+    
+    public HandLookIKController handLookIKController;
 
     [Header("--- Main2BattleIdle ---")]
     public float m2b_pivotOffset = 0.3f;
@@ -88,7 +90,7 @@ public class HandController : TargetController
     }
 
     internal void SyncIKSample(string sampleName, float duration, bool horizon_mirror = false) {
-        Debug.Log(" isRightHand " + isRightHand);
+        // Debug.Log(" isRightHand " + isRightHand);
         String elbow = IKSampleNames.ELBOW + "_" + sampleName;
         String hand = IKSampleNames.HAND + "_" + sampleName;
         HandDelayLooker elbowLooker = humanIKController.poseManager.handDelayLookerMap[elbow];

@@ -123,7 +123,7 @@ public class WalkBalance : TargetController
         ActionStateMachine asm = humanIKController.currentStatus;
         if (asm.cs.name == IdleStatus.STATE_TOBATTLEIDLE
             || (asm.getName() == BattleIdleState.NAME && asm.cs.name != BattleIdleState.STATE_TO_IDLE)) {
-            expectLegDistance = battleLegDistance;
+            // expectLegDistance = battleLegDistance;
         } else {
             expectLegDistance = defaultLegDistance;
         }

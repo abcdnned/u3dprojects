@@ -163,6 +163,11 @@ public class HandMain2Battle : HandMove
             //                       90);
             // handController.handHint.enable = false;
             handController.SyncIKSample(IKSampleNames.FETCH_GREAT_SWORD_1, duration);
+            if (handController.handLookIKController != null) {
+                handController.handLookIKController.init(duration,
+                                                        humanIKController.mainHandle.position,
+                                                        humanIKController.body.transform);
+            }
         } else if (state == 1) {
             normalizedTime += dt;
             handController.LookToHandLook(-handController.getArmDirection());

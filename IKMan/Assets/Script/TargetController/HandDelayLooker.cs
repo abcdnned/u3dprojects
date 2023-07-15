@@ -5,10 +5,10 @@ using UnityEngine;
 [ExecuteInEditMode]
 public class HandDelayLooker : HandLooker
 {
-    public float normalizedTime = 0;
     public float duration = 0;
     private float initH = 0;
     private float initV = 0;
+
     private float initH_lv2 = 0;
     private float initV_lv2 = 0;
     public Transform parent;
@@ -21,6 +21,7 @@ public class HandDelayLooker : HandLooker
         initH_lv2 = horizonAngel_lv2;
         initV_lv2 = verticalAngel_lv2;
     }
+
     public void init(float duration, float h, float v) {
         setDuration(duration);
         setAngel(h, v);

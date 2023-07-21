@@ -19,6 +19,8 @@ public class HandLooker : MonoBehaviour
     public float hAd_lv2 = 0;
     public float vAd_lv2 = 0;
     public bool enable_lv2 = false;
+    
+    internal float initTime;
     private Vector3 lv2Normal = Vector3.zero;
     public HandLookIKController handLookIKController;
     public float normalizedTime = 0;
@@ -59,23 +61,23 @@ public class HandLooker : MonoBehaviour
         Vector3 lv1_pos = SphereRotationCalculator(f, u, horizonAngel, verticalAngel);
         if (enable_lv2) {
             // Calculate level 2
-            if (handLookIKController != null && handLookIKController.getIKSequence(this) == 1 && false) {
+            if (handLookIKController != null && handLookIKController.getIKSequence(this) == 1) {
                 // Utils.deltaMove(transform, lv1_pos);
                 Vector3 f2 = handLookIKController.getHandShoulderForward(lv1_pos);
-                Vector3 u2 = handLookIKController.getHandShoulderNormal();
+                Vector3 u2 = handLookIKController.getHandShoulderNormal(lv1_pos);
                 Vector3 lv2_pos = SphereRotationCalculator(f2, u2,
-                                                           handLookIKController.getRealTimeHorizonAngel(normalizedTime),
+                                                           handLookIKController.getRealTimeHorizonAngel(lv1_pos, normalizedTime),
                                                            0);
                 // Utils.deltaMove(transform, lv2_pos);
-                Utils.deltaMove(transform, lv1_pos);
-            } else if (handLookIKController != null && handLookIKController.getIKSequence(this) == 2 && false) {
-                Vector3 f2 = handLookIKController.getArmForward();
+                Utils.deltaMove(transform, lv2_pos);
+            } else if (handLookIKController != null && handLookIKController.getIKSequence(this) == 2) {
+                Vector3 f2 = handLookIKController.getArmForward(lv1_pos);
                 Vector3 u2 = handLookIKController.getArmNormal(lv1_pos);
                 Vector3 lv2_pos = SphereRotationCalculator(f2, u2,
                                                            handLookIKController.getRealTimeVerticalAngel(normalizedTime, lv1_pos),
                                                            0);
                 Utils.deltaMove(transform, lv2_pos);
-                Debug.DrawLine(lv2_pos, handLookIKController.shoulder.transform.position, Color.red, normalizedTime * 2);
+                // Debug.DrawLine(lv2_pos, handLookIKController.shoulder.transform.position, Color.red, normalizedTime * 2);
                 Debug.Log(" actuel dis " + Vector3.Distance(lv2_pos, handLookIKController.shoulder.position));
             } else {
                 Vector3 f2 = (lv1_pos - sun.position).normalized;

@@ -277,9 +277,9 @@ public class HandController : TargetController
         float angel = Vector3.Angle(v1, v2);
         Quaternion rotation = Quaternion.AngleAxis(angel / 2, normal);
         Vector3 forward = rotation * v2;
-        Debug.DrawRay(elbow, v1, Color.red);
-        Debug.DrawRay(elbow, v2, Color.blue);
-        Debug.DrawRay(elbow, forward, Color.green);
+        // Debug.DrawRay(elbow, v1, Color.red);
+        // Debug.DrawRay(elbow, v2, Color.blue);
+        // Debug.DrawRay(elbow, forward, Color.green);
         Vector3 offset = HintDis * forward.normalized;
         handHint.transform.position = elbow + offset;
     }

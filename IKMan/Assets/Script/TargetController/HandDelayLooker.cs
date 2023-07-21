@@ -15,6 +15,7 @@ public class HandDelayLooker : HandLooker
     public void setDuration(float t) {
         // Debug.Log(" set Duration " + t);
         duration = t;
+        initTime = Time.time;
         normalizedTime = 0;
         initH = horizonAngel;
         initV = verticalAngel;
@@ -41,7 +42,7 @@ public class HandDelayLooker : HandLooker
         }
         if (duration != 0) {
             bool ran = false;
-            normalizedTime += dt;
+            normalizedTime = Time.time - initTime;
             float poc = normalizedTime / duration;
             if (Utils.AbsDiff(horizonAngel, hAd) > MIN_ANGEL_DIFF) {
                 // Debug.Log(" poc " + poc);

@@ -170,7 +170,8 @@ public class HandMain2Battle : HandMove
             }
         } else if (state == 1) {
             normalizedTime += dt;
-            handController.LookToHandLook(-handController.getArmDirection());
+            handController.LookToArmLook();
+            // handController.LookToHandLook(-handController.getArmDirection());
             // handController.updateHintByFK();
             if (normalizedTime > duration) {
                 state = 2;
@@ -192,7 +193,8 @@ public class HandMain2Battle : HandMove
             }
         } else if (state == 2) {
             normalizedTime += dt;
-            handController.LookToHandLook(-handController.getArmDirection());
+            handController.LookToArmLook();
+            // handController.LookToHandLook(-handController.getArmDirection());
             // handController.updateHintByFK();
             if (normalizedTime > duration + duration2) {
                 state = 3;

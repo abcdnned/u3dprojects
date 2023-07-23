@@ -18,9 +18,9 @@ public class HandMainBattle2Idle : HandMain2Battle
         }
         if (state == 0) {
             state = 1;
-            handController.HandLook.setDuration(duration);
-            handController.HandLook.setAngel(handController.m2b_hangel,
-                                        handController.m2b_vangel);
+            // handController.HandLook.setDuration(duration);
+            // handController.HandLook.setAngel(handController.m2b_hangel,
+            //                             handController.m2b_vangel);
             handController.handHint.hAd = handController.m2b_idle_elbow;
             handController.HandElbow.init(duration,
                                   90,
@@ -31,12 +31,12 @@ public class HandMainBattle2Idle : HandMain2Battle
             handController.handHint.enable = false;
         } else if (state == 1) {
             normalizedTime += dt;
-            handController.LookToHandLook(-handController.getArmDirection());
+            // handController.LookToHandLook(-handController.getArmDirection());
             // handController.updateHintByFK();
             if (normalizedTime > duration) {
                 state = 2;
-                handController.HandLook.setDuration(duration2);
-                handController.HandLook.setAngel(0, 0);
+                // handController.HandLook.setDuration(duration2);
+                // handController.HandLook.setAngel(0, 0);
                 handController.HandElbow.init(duration2,
                                       90,
                                       -80);
@@ -51,7 +51,7 @@ public class HandMainBattle2Idle : HandMain2Battle
                 // rotater.rot(dt);
             }
         } else if (state == 2) {
-            handController.LookToHandLook(-handController.getArmDirection());
+            // handController.LookToHandLook(-handController.getArmDirection());
             // handController.updateHintByFK();
             normalizedTime += dt;
 

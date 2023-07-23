@@ -240,13 +240,13 @@ public class HandController : TargetController
         if (HandFK == null || HandElbow == null) {
             return;
         }
-        Vector3 v1 = -getArmDirection();
+        Vector3 v1 = getArmDirection();
         // Vector3 v2 = HandLook.transform.position - transform.position;
-        Vector3 v2 = -getBicepDirection();
-        Quaternion rotate = Quaternion.AngleAxis(90, Vector3.Cross(v1, v2));
+        Vector3 v2 = getBicepDirection();
+        Quaternion rotate = Quaternion.AngleAxis(90, Vector3.Cross(v2, v1));
         v1 = rotate * v1;
         Quaternion look = Quaternion.LookRotation(v1,
-                                                  v2);
+                                                  -getArmDirection());
         Quaternion r = Quaternion.Slerp(transform.rotation,
                                         look,
                                         1 - Mathf.Exp(-handLookSpeed * Time.deltaTime));
@@ -277,9 +277,11 @@ public class HandController : TargetController
         float angel = Vector3.Angle(v1, v2);
         Quaternion rotation = Quaternion.AngleAxis(angel / 2, normal);
         Vector3 forward = rotation * v2;
+        Debug.DrawLine(shoulder, elbow, Color.red);
+        Debug.DrawLine(hand, elbow, Color.blue);
         // Debug.DrawRay(elbow, v1, Color.red);
         // Debug.DrawRay(elbow, v2, Color.blue);
-        // Debug.DrawRay(elbow, forward, Color.green);
+        Debug.DrawRay(elbow, forward, Color.green);
         Vector3 offset = HintDis * forward.normalized;
         handHint.transform.position = elbow + offset;
     }

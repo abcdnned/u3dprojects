@@ -41,7 +41,7 @@ public class HandLookIKController : MonoBehaviour
         // DrawUtils.drawBall(handEnd, 5);
         initForward = (handEnd - shoulder.position).normalized;
         // Debug.DrawLine(handEnd, shoulder.position, Color.yellow, 20);
-        Debug.DrawLine(elbowEnd, shoulder.position, Color.yellow, 20);
+        // Debug.DrawLine(elbowEnd, shoulder.position, Color.yellow, 20);
         // float dis = Vector3.Distance(handEnd, shoulder.position);
         // this.target = Utils.copy(target);
         float targetDis = Vector3.Distance(target, shoulder.position);
@@ -96,9 +96,9 @@ public class HandLookIKController : MonoBehaviour
 
     public Vector3 getHandShoulderNormal(Vector3 lv1_pos) {
         Vector3 lv1arm = lv1_pos - shoulder.position;
-        Debug.DrawLine(lv1_pos, shoulder.position, Color.red, 0.1f);
+        // Debug.DrawLine(lv1_pos, shoulder.position, Color.red, 0.1f);
         Vector3 t = target - shoulder.position;
-        Debug.DrawLine(target, shoulder.position, Color.black, 0.1f);
+        // Debug.DrawLine(target, shoulder.position, Color.black, 0.1f);
         Vector3 normal1 = Vector3.Cross(t, lv1arm);
         Vector3 c1 = elbow.transform.position - shoulder.position; 
         Vector3 c2 = hand.transform.position - shoulder.position; 
@@ -106,8 +106,8 @@ public class HandLookIKController : MonoBehaviour
         float angle = bicep_target_angel;
         Debug.Log(" clv1arm " + angle);
         Vector3 lv2armdir = (Quaternion.AngleAxis(angle, normal1) * t).normalized * lv1arm.magnitude;
-        Debug.DrawLine(shoulder.position + lv2armdir, shoulder.position, Color.blue, 0.1f);
-        Debug.DrawLine(target, shoulder.position + lv2armdir, Color.green, 0.1f);
+        // Debug.DrawLine(shoulder.position + lv2armdir, shoulder.position, Color.blue, 0.1f);
+        // Debug.DrawLine(target, shoulder.position + lv2armdir, Color.green, 0.1f);
         Debug.Log(" elbow " + lv2armdir.magnitude);
         Debug.Log(" target " + t.magnitude);
         Debug.Log(" hand " + Vector3.Distance(target, shoulder.position + lv2armdir));

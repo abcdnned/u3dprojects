@@ -184,6 +184,7 @@ public class HandMain2Battle : HandMove
                 // handController.HandFK.init(duration2,
                 //                       0,
                 //                       30);
+                handController.finishFK();
                 handController.SyncIKSample(IKSampleNames.FETCH_GREAT_SWORD_2, duration);
             } else {
                 // steper.step(dt);

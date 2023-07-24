@@ -19,7 +19,7 @@ public class HandLooker : MonoBehaviour
     public float hAd_lv2 = 0;
     public float vAd_lv2 = 0;
     public bool enable_lv2 = false;
-    
+
     internal float initTime;
     private Vector3 lv2Normal = Vector3.zero;
     public HandLookIKController handLookIKController;
@@ -62,7 +62,7 @@ public class HandLooker : MonoBehaviour
         if (enable_lv2) {
             // Calculate level 2
             if (handLookIKController != null && handLookIKController.getIKSequence(this) == 1) {
-                Debug.Log(" seq1 ");
+                // Debug.Log(" seq1 ");
                 // Utils.deltaMove(transform, lv1_pos);
                 Vector3 f2 = handLookIKController.getHandShoulderForward(lv1_pos);
                 Vector3 u2 = handLookIKController.getHandShoulderNormal(lv1_pos);
@@ -72,7 +72,7 @@ public class HandLooker : MonoBehaviour
                 // Utils.deltaMove(transform, lv2_pos);
                 Utils.deltaMove(transform, lv2_pos);
             } else if (handLookIKController != null && handLookIKController.getIKSequence(this) == 2) {
-                Debug.Log(" seq2 ");
+                // Debug.Log(" seq2 ");
                 Vector3 f2 = handLookIKController.getArmForward(lv1_pos);
                 Vector3 u2 = handLookIKController.getArmNormal(lv1_pos);
                 Vector3 lv2_pos = SphereRotationCalculator(f2, u2,

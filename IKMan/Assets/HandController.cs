@@ -107,6 +107,11 @@ public class HandController : TargetController
         }
     }
 
+    internal void finishFK() {
+        HandElbow.finishFK();
+        HandFK.finishFK();
+    }
+
     protected void SyncTwoHandLooker(HandLooker source, HandLooker target, bool horizon_mirror) {
         if (source == null || target == null) return;
         target.enable_lv2 = source.enable_lv2;

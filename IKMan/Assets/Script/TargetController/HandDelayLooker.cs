@@ -35,6 +35,15 @@ public class HandDelayLooker : HandLooker
         enable = true;
         enable_lv2 = true;
     }
+    
+    internal void finishFK() {
+        horizonAngel = hAd;
+        verticalAngel = vAd;
+        if (enable_lv2) {
+            horizonAngel_lv2 = hAd_lv2;
+            verticalAngel_lv2 = vAd_lv2;
+        }
+    }
     override protected void Transfer(float dt) {
         if (parent != null) {
             Vector3 dir = transform.position - parent.position;

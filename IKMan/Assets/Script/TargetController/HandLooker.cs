@@ -19,7 +19,7 @@ public class HandLooker : MonoBehaviour
     public float hAd_lv2 = 0;
     public float vAd_lv2 = 0;
     public bool enable_lv2 = false;
-
+    
     internal float initTime;
     private Vector3 lv2Normal = Vector3.zero;
     public HandLookIKController handLookIKController;

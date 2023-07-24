@@ -163,4 +163,22 @@ public class HandLookIKController : MonoBehaviour
         }
         return 0;
     } 
+
+    internal void transferCurPosToLv1() {
+        tCpTL(elbow, elbow.transform.position - shoulder.position);
+        tCpTL(hand, hand.transform.position - elbow.transform.position);
+    }
+
+    private void tCpTL(HandLooker hdl, Vector3 dir) {
+        Vector3 normal = Vector3.Cross(hdl.direction.forward, hdl.direction.right);
+        Vector3 hdl_p = Vector3.ProjectOnPlane(dir, normal);
+        float h = Vector3.Angle(hdl.direction.forward, hdl_p);
+        Vector3 normal_v = Vector3.Cross(hdl_p, hdl.transform.up);
+        Vector3 hdl_v = Vector3.ProjectOnPlane(dir, normal_v);
+        float v = Vector3.Angle(hdl_p, hdl_v);
+
+        hdl.horizonAngel = h * (Vector3.Dot(normal, Vector3.Cross(hdl.direction.forward, hdl_p)) > 0 ? 1 : -1);
+        hdl.verticalAngel = v * (Vector3.Dot(normal_v, Vector3.Cross(hdl_p, hdl_v)) > 0 ? 1 : -1);
+    }
+
 }

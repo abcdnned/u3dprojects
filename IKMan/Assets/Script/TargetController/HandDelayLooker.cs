@@ -44,6 +44,7 @@ public class HandDelayLooker : HandLooker
             verticalAngel_lv2 = vAd_lv2;
         }
     }
+
     override protected void Transfer(float dt) {
         if (parent != null) {
             Vector3 dir = transform.position - parent.position;

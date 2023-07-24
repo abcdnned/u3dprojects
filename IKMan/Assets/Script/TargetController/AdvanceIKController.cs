@@ -68,6 +68,7 @@ public class AdvanceIKController : MonoBehaviour
     private void trackIKtoFK() {
         Vector3 target = Vector3.MoveTowards(fk.position, hand.transform.position, FK_SPEED);
         Utils.deltaMove(fk, target);
+        // Debug.Log(" trackIKtoFK ");
     }
 
     private void updateArmDirection() {

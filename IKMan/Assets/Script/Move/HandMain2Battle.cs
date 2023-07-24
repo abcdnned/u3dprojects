@@ -85,17 +85,17 @@ public class HandMain2Battle : HandMove
 
     protected void initStep2() {
         // Init steper
-        Vector3 wp1 = handController.transform.position;
-        Vector3 wp3 = targetPosition2.position;
-        Vector3 wp2 = getMoveCenter(wp1, wp3);
-        steper2 = new Steper(Utils.forwardFlat(handController.body.transform),
-                            Utils.right(handController.body.transform),
-                            duration2,
-                            Steper.BEARZ,
-                            handController.body.transform,
-                            0,
-                            handController.transform,
-                            new Vector3[] {wp1, wp2, wp3});
+        // Vector3 wp1 = handController.transform.position;
+        // Vector3 wp3 = targetPosition2.position;
+        // Vector3 wp2 = getMoveCenter(wp1, wp3);
+        // steper2 = new Steper(Utils.forwardFlat(handController.body.transform),
+        //                     Utils.right(handController.body.transform),
+        //                     duration2,
+        //                     Steper.BEARZ,
+        //                     handController.body.transform,
+        //                     0,
+        //                     handController.transform,
+        //                     new Vector3[] {wp1, wp2, wp3});
         // Init rotater
         // end = Quaternion.Euler(alpha2, beta2, gamma2);
         // rotater2 = new EularRotater(parent.body.transform, parent.transform,
@@ -147,9 +147,7 @@ public class HandMain2Battle : HandMove
     // }
 
     public override Move move(float dt) {
-        if (initStepCount < 5) {
-            throw new Exception("Please init first.");
-        }
+        normalizedTime += dt;
         if (state == 0) {
             state = 1;
             // handController.HandLook.init(duration,
@@ -168,14 +166,14 @@ public class HandMain2Battle : HandMove
                                                         humanIKController.mainHandle.position,
                                                         humanIKController.body.transform);
             }
-        } else if (state == 1) {
-            normalizedTime += dt;
+        }
+        if (state == 1) {
             handController.LookToArmLook();
             // handController.LookToHandLook(-handController.getArmDirection());
             // handController.updateHintByFK();
             if (normalizedTime > duration) {
                 state = 2;
-                initStep2();
+                // initStep2();
                 // handController.handHint.hAd = handController.m2b_elbow;
                 // handController.HandLook.init(duration2,
                 //                      handController.m2b_battle_h,
@@ -191,8 +189,8 @@ public class HandMain2Battle : HandMove
                 // steper.step(dt);
                 // handController.transform.position = handController.HandFK.transform.position;
             }
-        } else if (state == 2) {
-            normalizedTime += dt;
+        }
+        if (state == 2) {
             handController.LookToArmLook();
             // handController.LookToHandLook(-handController.getArmDirection());
             // handController.updateHintByFK();

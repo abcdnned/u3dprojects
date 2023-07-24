@@ -62,6 +62,7 @@ public class HandLooker : MonoBehaviour
         if (enable_lv2) {
             // Calculate level 2
             if (handLookIKController != null && handLookIKController.getIKSequence(this) == 1) {
+                Debug.Log(" seq1 ");
                 // Utils.deltaMove(transform, lv1_pos);
                 Vector3 f2 = handLookIKController.getHandShoulderForward(lv1_pos);
                 Vector3 u2 = handLookIKController.getHandShoulderNormal(lv1_pos);
@@ -71,6 +72,7 @@ public class HandLooker : MonoBehaviour
                 // Utils.deltaMove(transform, lv2_pos);
                 Utils.deltaMove(transform, lv2_pos);
             } else if (handLookIKController != null && handLookIKController.getIKSequence(this) == 2) {
+                Debug.Log(" seq2 ");
                 Vector3 f2 = handLookIKController.getArmForward(lv1_pos);
                 Vector3 u2 = handLookIKController.getArmNormal(lv1_pos);
                 Vector3 lv2_pos = SphereRotationCalculator(f2, u2,
@@ -78,7 +80,7 @@ public class HandLooker : MonoBehaviour
                                                            0);
                 Utils.deltaMove(transform, lv2_pos);
                 // Debug.DrawLine(lv2_pos, handLookIKController.shoulder.transform.position, Color.red, normalizedTime * 2);
-                Debug.Log(" actuel dis " + Vector3.Distance(lv2_pos, handLookIKController.shoulder.position));
+                // Debug.Log(" actuel dis " + Vector3.Distance(lv2_pos, handLookIKController.shoulder.position));
             } else {
                 Vector3 f2 = (lv1_pos - sun.position).normalized;
                 Vector3 u2 = Vector3.Cross(f, f2);
@@ -94,7 +96,7 @@ public class HandLooker : MonoBehaviour
         Vector3 f = Utils.forward(dir ?? direction);
         Vector3 u = Utils.up(dir ?? direction);
         if (!realTime) {
-            Debug.Log(" hv " + hAd + " " + vAd);
+            // Debug.Log(" hv " + hAd + " " + vAd);
             return SphereRotationCalculator(f, u, hAd, vAd, sunpos);
         }
         return SphereRotationCalculator(f, u, horizonAngel, verticalAngel, sunpos);

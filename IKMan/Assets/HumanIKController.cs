@@ -14,8 +14,6 @@ public class HumanIKController : MonoBehaviour
 
   public HandController rightHand;
   [SerializeField] public WalkBalance walkBalance;
-  public Transform weaponHandle;
-  public Transform weaponReadyHandle;
 
   public HeadController headController;
 
@@ -42,7 +40,12 @@ public class HumanIKController : MonoBehaviour
 
   public float[] battleIdleAngelOffset = new float[30];
 
+  [Header("--- Weapon ---")]
   public Transform mainHandle;
+  public GameObject weapon;
+
+  [Header("--- Attachment ---")]
+  public GameObject attchment_rightHand;
 
   [Header("--- IDLE ---")]
   public Vector3[] idleAnchorPoints = new Vector3[10];

@@ -208,28 +208,19 @@ public class HandController : TargetController
         StartCoroutine(MoveToHome(duration, Mathf.FloorToInt(isRightFoot)));
     }
 
-    internal void TryGetGreatSword()
+    internal void TryGetGreatSword(GameObject greateSword, GameObject hand)
     {
         HandMain2Battle move = (HandMain2Battle)moveManager.ChangeMove(MoveNameConstants.HandMain2Battle);
-        move.initTargetRotation(m2b_rotation.x, m2b_rotation.y, m2b_rotation.z);
-        move.initTargetRotation2(m2b_rotation2.x, m2b_rotation2.y, m2b_rotation2.z);
-        move.initBasic(m2b_duration, m2b_duration2,
-                       humanIKController.weaponHandle,
-                       humanIKController.weaponReadyHandle,
-                       1, m2b_pivotOffset);
-        move.initHint(handHint.transform);
+        move.initBasic(m2b_duration, m2b_duration2, greateSword, hand
+                       );
         move.beReady();
     }
 
-    internal void TryReturnSword() {
+    internal void TryReturnSword(GameObject greateSword, GameObject attachPoint) {
         HandMainBattle2Idle move = (HandMainBattle2Idle)moveManager.ChangeMove(MoveNameConstants.HandMainBattle2Idle);
-        move.initTargetRotation(m2b_rotation.x, m2b_rotation.y, m2b_rotation.z);
-        move.initTargetRotation2(0,0,0);
         move.initBasic(m2b_duration, m2b_duration2,
-                       humanIKController.weaponHandle,
-                       humanIKController.rightHand.handHome,
-                       1, m2b_pivotOffset);
-        move.initHint(handHint.transform);
+                       greateSword, attachPoint
+                       );
         move.beReady();
     }
 

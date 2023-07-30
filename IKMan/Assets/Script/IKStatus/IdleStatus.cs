@@ -39,7 +39,8 @@ public class IdleStatus : AnyState
                                             6,
                                             45f,
                                             90f);
-            humanIKController.rightHand.TryGetGreatSword();
+            humanIKController.rightHand.TryGetGreatSword(humanIKController.weapon,
+                                                         humanIKController.attchment_rightHand);
             WalkBalance wb = humanIKController.walkBalance;
             wb.TryBattleIdle();
             return (toBattleIdleState, this);

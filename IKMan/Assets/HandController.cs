@@ -25,6 +25,9 @@ public class HandController : TargetController
     public HandDelayLooker HandElbow;
     public HandDelayLooker HandFK;
     public Transform Shoulder;
+
+    public Transform LocalHand;
+    public TimeValue<Vector3> handRotation = new TimeValue<Vector3>();
     public float handLookSpeed = 10;
     
     public HandLookIKController handLookIKController;
@@ -59,6 +62,7 @@ public class HandController : TargetController
         moveManager.addMove(new HandMain2Battle());
         moveManager.addMove(new HandMainBattle2Idle());
         moveManager.ChangeMove(MoveNameConstants.HandIdle);
+        handRotation.init(Vector3.zero, Vector3.zero, 0.1f, (v1, v2, t) => Vector3.Lerp(v1, v2, t));
     }
 
     private Vector3[] getEndPoint(Transform body, Transform home, Vector3 up, int isRightFoot, int isRightHand) {
@@ -251,6 +255,7 @@ public class HandController : TargetController
 
     private void Update() {
         move.move(Time.deltaTime);
+        updateHandLocalRotation();
     }
 
     public Vector3 getArmDirection() {
@@ -288,6 +293,19 @@ public class HandController : TargetController
             SyncIKSample(IKSampleNames.WALK_FRONT_SWING, duration, isRightHand == -1);
         } else {
             SyncIKSample(IKSampleNames.WALK_BACK_SWING, duration, isRightHand == -1);
+        }
+    }
+
+    internal void twistTwist(Vector3 v, float duration) {
+        // Debug.Log(" twist " + v);
+        handRotation.init(LocalHand.localEulerAngles, v, duration, (v1, v2, t) => Vector3.Lerp(v1, v2, t));
+    }
+
+    private void updateHandLocalRotation() {
+        if (!handRotation.overdue()) {
+            Vector3 r = handRotation.getValue();
+            // Debug.Log(" r " + r);
+            LocalHand.localEulerAngles = r;
         }
     }
 }

@@ -42,8 +42,9 @@ public class HandMain2Battle : HandMove
             if (normalizedTime > duration) {
                 state = 2;
                 handController.handLookIKController.transferCurPosToLv1();
-                handController.SyncIKSample(IKSampleNames.FETCH_GREAT_SWORD_2, duration);
+                handController.SyncIKSample(IKSampleNames.FETCH_GREAT_SWORD_2, duration2);
                 switchJoint(greateSworad, hand);
+                handController.twistTwist(new Vector3(0, 106, 0), duration2);
             } else {
             }
         }

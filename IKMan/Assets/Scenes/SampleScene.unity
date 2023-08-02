@@ -303,11 +303,23 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    m_TransformParent: {fileID: 1468558464}
+    m_TransformParent: {fileID: 954523363}
     m_Modifications:
     - target: {fileID: 2760850321047497132, guid: 1714f1f97dfb64f20ba43984b8b7d297, type: 3}
       propertyPath: m_RootOrder
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2760850321047497132, guid: 1714f1f97dfb64f20ba43984b8b7d297, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.7171109
+      objectReference: {fileID: 0}
+    - target: {fileID: 2760850321047497132, guid: 1714f1f97dfb64f20ba43984b8b7d297, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.68684435
+      objectReference: {fileID: 0}
+    - target: {fileID: 2760850321047497132, guid: 1714f1f97dfb64f20ba43984b8b7d297, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.68684435
       objectReference: {fileID: 0}
     - target: {fileID: 2760850321047497132, guid: 1714f1f97dfb64f20ba43984b8b7d297, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1455,12 +1467,12 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 766194160}
-  m_LocalRotation: {x: -0, y: 0.7071068, z: 0.7071068, w: 0}
-  m_LocalPosition: {x: 0, y: 0.18, z: 0}
-  m_LocalScale: {x: -0.08075443, y: -0.080754414, z: -0.080754414}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.8000001, z: 0}
+  m_LocalScale: {x: -2.0188608, y: -0.80754405, z: -0.80754405}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1468558464}
+  m_Father: {fileID: 954523363}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!23 &766194162
@@ -3148,11 +3160,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 8539669551902912349, guid: 1714f1f97dfb64f20ba43984b8b7d297, type: 3}
   m_PrefabInstance: {fileID: 421820674}
   m_PrefabAsset: {fileID: 0}
---- !u!4 &1320383228 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 2760850321047497132, guid: 1714f1f97dfb64f20ba43984b8b7d297, type: 3}
-  m_PrefabInstance: {fileID: 421820674}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1357481758
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3469,8 +3476,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 954523363}
-  - {fileID: 766194161}
-  - {fileID: 1320383228}
   m_Father: {fileID: 0}
   m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -3512,6 +3517,7 @@ MonoBehaviour:
   HandElbow: {fileID: 675571744}
   HandFK: {fileID: 1670437565}
   Shoulder: {fileID: 690986648}
+  LocalHand: {fileID: 954523363}
   handLookSpeed: 10
   handLookIKController: {fileID: 690986649}
   m2b_pivotOffset: 0.3
@@ -5100,6 +5106,7 @@ MonoBehaviour:
   HandElbow: {fileID: 639927204}
   HandFK: {fileID: 1031458532}
   Shoulder: {fileID: 1580219231}
+  LocalHand: {fileID: 1140490782}
   handLookSpeed: 10
   handLookIKController: {fileID: 0}
   m2b_pivotOffset: 0.3

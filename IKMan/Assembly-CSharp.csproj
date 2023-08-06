@@ -107,6 +107,8 @@
      <Compile Include="Assets/Script/TargetController/HeadController.cs" />
      <Compile Include="Assets/Script/TargetController.cs" />
      <Compile Include="Assets/Script/Modules/CameraModule.cs" />
+     <Compile Include="Assets/MoveTo.cs" />
+     <Compile Include="Assets/Script/Pyhsics/JointTrouq.cs" />
     <Reference Include="UnityEngine">
         <HintPath>/Users/i519418/software/u3d/2021.3.16f1c1/Unity.app/Contents/Managed/UnityEngine/UnityEngine.dll</HintPath>
     </Reference>

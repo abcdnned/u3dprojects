@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class PrefabCreator
 {
+    internal static string prefabSavePath = "Prefabs/";
 
     public static string POSITION_HELPER = "PositionHelper";
 
@@ -15,4 +16,15 @@ public class PrefabCreator
         GameObject.Destroy(instance, liveTime);
         return instance;
     }
+
+    public static GameObject CreatePrefab(Vector3 position, string prefabName, Transform parent = null)
+    {
+
+        GameObject prefab = Resources.Load<GameObject>(prefabSavePath + prefabName);
+        GameObject instance = GameObject.Instantiate(prefab, position, Quaternion.identity);
+        instance.transform.SetParent(parent);
+        return instance;
+    }
+
+
 }

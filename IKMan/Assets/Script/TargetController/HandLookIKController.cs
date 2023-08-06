@@ -101,8 +101,9 @@ public class HandLookIKController : MonoBehaviour
         Vector3 t = target.position - shoulder.position;
         // Debug.DrawLine(target, shoulder.position, Color.black, 0.1f);
         Vector3 normal1 = Vector3.Cross(t, lv1arm);
-        Vector3 c1 = elbow.transform.position - shoulder.position; 
-        Vector3 c2 = hand.transform.position - shoulder.position; 
+        // return normal1;
+        // Vector3 c1 = elbow.transform.position - shoulder.position; 
+        // Vector3 c2 = hand.transform.position - shoulder.position; 
         // float angle = Vector3.Angle(c1, c2);
         float angle = bicep_target_angel;
         // Debug.Log(" clv1arm " + angle);
@@ -152,6 +153,7 @@ public class HandLookIKController : MonoBehaviour
 
     public int getIKSequence(HandLooker check) {
         if (duration <= 0 || poc > duration) {
+            // Debug.Log(" ikseq 0 ");
             return 0;
         }
         if (check == elbow) {

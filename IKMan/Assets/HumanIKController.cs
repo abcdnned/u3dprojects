@@ -33,8 +33,8 @@ public class HumanIKController : MonoBehaviour
   [Header("--- BATTLE_IDLE ---")]
   public float bi_footAngel = 15f;
   public float bi_footDistance = 0.3f;
-  public float bi_backFootAngelOffset = 95f;
-  public float bi_fontLegAngelOffset = 10f;
+  // public float bi_backFootAngelOffset = 95f;
+  // public float bi_fontLegAngelOffset = 10f;
   // public float bi_footTurnDuration = 0.5f;
   public Vector3[] battleIdleAnchorPoints = new Vector3[10];
 
@@ -46,6 +46,8 @@ public class HumanIKController : MonoBehaviour
 
   [Header("--- Attachment ---")]
   public GameObject attchment_rightHand;
+
+  public GameObject weaponReady;
 
   [Header("--- IDLE ---")]
   public Vector3[] idleAnchorPoints = new Vector3[10];

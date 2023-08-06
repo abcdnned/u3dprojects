@@ -24,7 +24,8 @@ public class AdvanceIKController : MonoBehaviour
     // FK for hint, IK for position
     public const string FIK = "FK_IK";
 
-    public float FK_SPEED = 0.2f;
+    // public float FK_SPEED = 0.2f;
+    public float FK_SPEED = 200f;
 
     private void LateUpdate()
     {
@@ -66,8 +67,10 @@ public class AdvanceIKController : MonoBehaviour
     }
 
     private void trackIKtoFK() {
-        Vector3 target = Vector3.MoveTowards(fk.position, hand.transform.position, FK_SPEED);
+        Vector3 target = hand.transform.position;
         Utils.deltaMove(fk, target);
+        // DrawUtils.drawBall(target, Time.deltaTime);
+        // fk.position = target;
         // Debug.Log(" trackIKtoFK ");
     }
 

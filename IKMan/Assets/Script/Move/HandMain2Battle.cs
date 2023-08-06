@@ -43,6 +43,11 @@ public class HandMain2Battle : HandMove
                 state = 2;
                 handController.handLookIKController.transferCurPosToLv1();
                 handController.SyncIKSample(IKSampleNames.FETCH_GREAT_SWORD_2, duration2);
+                if (handController.handLookIKController != null) {
+                    handController.handLookIKController.init(duration2,
+                                                            humanIKController.weaponReady.transform.position,
+                                                            humanIKController.body.transform);
+                }
                 switchJoint(greateSworad, hand);
                 handController.twistTwist(new Vector3(0, 106, 0), duration2);
             } else {
@@ -51,6 +56,7 @@ public class HandMain2Battle : HandMove
         if (state == 2) {
             handController.LookToArmLook();
             if (normalizedTime > duration + duration2) {
+                handController.handLookIKController.transferCurPosToLv1();
                 state = 3;
                 return moveManager.ChangeMove(MoveNameConstants.MainHoldWeaponIdle);
             }
@@ -62,7 +68,7 @@ public class HandMain2Battle : HandMove
         Vector3 direction = Utils.up(hand.transform);
         Quaternion quaternion = Quaternion.LookRotation(direction, Utils.forward(hand.transform));
         gs.transform.rotation = quaternion;
-        Debug.Log(" adjust sword ");
+        // Debug.Log(" adjust sword ");
     }
 
     private void switchJoint(GameObject gs, GameObject hand) {
@@ -76,13 +82,13 @@ public class HandMain2Battle : HandMove
         newJoint.axis = new Vector3(1,0,0);
         newJoint.swingAxis = new Vector3(0,0,-1);
         SoftJointLimit l = new SoftJointLimit();
-        l.limit = 0;
+        l.limit = -5;
         newJoint.lowTwistLimit = l;
         SoftJointLimit h = new SoftJointLimit();
-        h.limit = 0;
+        h.limit = 5;
         newJoint.highTwistLimit = h;
         SoftJointLimit s1 = new SoftJointLimit();
-        s1.limit = 0f;
+        s1.limit = 20f;
         newJoint.swing1Limit = s1;
         SoftJointLimit s2 = new SoftJointLimit();
         s2.limit = 0f;

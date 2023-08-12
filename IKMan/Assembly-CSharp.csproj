@@ -88,12 +88,14 @@
      <Compile Include="Assets/Script/LegController3.cs" />
      <Compile Include="Assets/Script/Move/HipHeightChangeMove.cs" />
      <Compile Include="Assets/Script/Modules/InputModule.cs" />
+     <Compile Include="Assets/Script/Pyhsics/JointTrouq.cs" />
      <Compile Include="Assets/Script/Utils/IKSampleNames.cs" />
      <Compile Include="Assets/Script/QuaternionExtensions.cs" />
      <Compile Include="Assets/Script/Move/HipMove.cs" />
      <Compile Include="Assets/VelocityController.cs" />
      <Compile Include="Assets/Script/MoveNameConstants.cs" />
      <Compile Include="Assets/Script/SteperBuilder.cs" />
+     <Compile Include="Assets/MoveTo.cs" />
      <Compile Include="Assets/Script/LegMovingMove.cs" />
      <Compile Include="Assets/Script/Move/HipWalkPoseMove.cs" />
      <Compile Include="Assets/Script/Utils/EularRotater.cs" />
@@ -107,8 +109,7 @@
      <Compile Include="Assets/Script/TargetController/HeadController.cs" />
      <Compile Include="Assets/Script/TargetController.cs" />
      <Compile Include="Assets/Script/Modules/CameraModule.cs" />
-     <Compile Include="Assets/MoveTo.cs" />
-     <Compile Include="Assets/Script/Pyhsics/JointTrouq.cs" />
+     <Compile Include="Assets/Script/Utils/EnhanceCharacterJoint.cs" />
     <Reference Include="UnityEngine">
         <HintPath>/Users/i519418/software/u3d/2021.3.16f1c1/Unity.app/Contents/Managed/UnityEngine/UnityEngine.dll</HintPath>
     </Reference>

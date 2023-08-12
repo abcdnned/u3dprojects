@@ -696,6 +696,11 @@ MonoBehaviour:
   handLookIKController: {fileID: 0}
   normalizedTime: 0
   offset: {x: 0, y: 0, z: 0}
+--- !u!1 &574882221 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7424958367739687586, guid: 6068059da1c7d4f9aa0e6fb288668479, type: 3}
+  m_PrefabInstance: {fileID: 928838175}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &602237406
 GameObject:
   m_ObjectHideFlags: 0
@@ -3738,6 +3743,7 @@ MonoBehaviour:
   walkBalance: {fileID: 1491158321}
   headController: {fileID: 1491158326}
   walkPointer: {fileID: 690505575}
+  spin1: {fileID: 574882221}
   poseManager: {fileID: 1939476855}
   bi_footAngel: -10
   bi_footDistance: 0.65

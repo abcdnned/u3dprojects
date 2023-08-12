@@ -19,6 +19,8 @@ public class HumanIKController : MonoBehaviour
 
   public WalkPointer walkPointer;
 
+  public GameObject spin1;
+
   public PoseManager poseManager;
 
   private Vector2 _movement;

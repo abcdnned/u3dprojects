@@ -32,15 +32,18 @@ public class HumanIKController : MonoBehaviour
   public const int ANCHOR_LEFT_HAND = 2;
   public const int ANCHOR_RIGHT_HAND = 3;
 
-  [Header("--- BATTLE_IDLE ---")]
+  [Header("--- BATTLE ---")]
   public float bi_footAngel = 15f;
   public float bi_footDistance = 0.3f;
   // public float bi_backFootAngelOffset = 95f;
   // public float bi_fontLegAngelOffset = 10f;
   // public float bi_footTurnDuration = 0.5f;
+  public float swingRadius = 0.6f;
   public Vector3[] battleIdleAnchorPoints = new Vector3[10];
 
   public float[] battleIdleAngelOffset = new float[30];
+
+  internal CharacterJoint poleJoint;
 
   [Header("--- Weapon ---")]
   public Transform mainHandle;
@@ -57,6 +60,10 @@ public class HumanIKController : MonoBehaviour
   internal ActionStateMachine currentStatus;
 
   private ReadTrigger TriggerR = new ReadTrigger(false);
+  private ReadTrigger TriggerLeftClick = new ReadTrigger(false);
+  private ReadTrigger TriggerRightClick = new ReadTrigger(false);
+
+
 
 
   // Only allow diagonal leg pairs to step together
@@ -66,6 +73,8 @@ public class HumanIKController : MonoBehaviour
     public static string EVENT_STOP_WALKING_NOW = "stopWalkingNow";
     public static string EVENT_KEEP_WALKING = "keepWalking";
     public static string EVENT_BUTTON_R = "buttonR";
+    public static string EVENT_LEFT_CLICK = "leftClick";
+    public static string EVENT_RIGHT_CLICK = "rightClick";
 
     public static string EVENT_IDLE = "idle";
 
@@ -76,6 +85,8 @@ public class HumanIKController : MonoBehaviour
     inputModule = GetComponent<InputModule>();
     inputModule.OnMoveDelegates += MovementInput;
     inputModule.OnButtonRDelegates += ButtonR;
+    inputModule.OnLeftArmDelegates += LeftClick;
+    inputModule.OnRightArmDelegates += RightClick;
     initStatus();
     
   }
@@ -145,6 +156,10 @@ public class HumanIKController : MonoBehaviour
     if (TriggerR.read()) {
       bga = EVENT_BUTTON_R;
       // Debug.Log(this.GetType().Name + " bga set ");
+    } else if (TriggerLeftClick.read()) {
+      bga = EVENT_LEFT_CLICK;
+    } else if (TriggerRightClick.read()) {
+      bga = EVENT_RIGHT_CLICK;
     }
     Event ikEvent = new Event();
     ikEvent.bgA = bga;
@@ -188,5 +203,13 @@ public class HumanIKController : MonoBehaviour
         frontRightLegStepper.TryRotateLeg(rightAngel, duration);
       }
 
+  }
+
+  private void LeftClick(float value) {
+    TriggerLeftClick.set();
+  }
+
+  private void RightClick(float value) {
+    TriggerRightClick.set();
   }
 }

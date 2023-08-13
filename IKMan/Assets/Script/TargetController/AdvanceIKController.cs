@@ -23,6 +23,7 @@ public class AdvanceIKController : MonoBehaviour
 
     // FK for hint, IK for position
     public const string FIK = "FK_IK";
+    public const string FIK_ADVANCE = "FK_IK_ADVANCE";
 
     // public float FK_SPEED = 0.2f;
     public float FK_SPEED = 200f;

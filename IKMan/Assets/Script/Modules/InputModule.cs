@@ -23,6 +23,18 @@ public class InputModule : MonoBehaviour {
         OnButtonRDelegates?.Invoke();
     }
 
+    public delegate void onLeftArmDelegate(float armWeight);
+    public onLeftArmDelegate OnLeftArmDelegates { get; set; }
+    public void OnLeftArm(InputValue value) {
+        OnLeftArmDelegates?.Invoke(value.Get<float>());
+    }
+
+    public delegate void onRightArmDelegate(float armWeight);
+    public onRightArmDelegate OnRightArmDelegates { get; set; }
+    public void OnRightArm(InputValue value) {
+        OnRightArmDelegates?.Invoke(value.Get<float>());
+    }
+
     void Start() {
     }
 

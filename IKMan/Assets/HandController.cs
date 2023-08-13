@@ -61,6 +61,7 @@ public class HandController : TargetController
         moveManager.addMove(new MainHoldWeapon());
         moveManager.addMove(new HandMain2Battle());
         moveManager.addMove(new HandMainBattle2Idle());
+        moveManager.addMove(new HandSwingMove());
         moveManager.ChangeMove(MoveNameConstants.HandIdle);
         handRotation.init(Vector3.zero, Vector3.zero, 0.1f, (v1, v2, t) => Vector3.Lerp(v1, v2, t));
     }
@@ -307,5 +308,10 @@ public class HandController : TargetController
             // Debug.Log(" r " + r);
             LocalHand.localEulerAngles = r;
         }
+    }
+
+    public void TryLeftSwing() {
+        HandSwingMove move = (HandSwingMove)moveManager.ChangeMove(MoveNameConstants.HandSwingMove);
+        move.init(humanIKController.poleJoint, transform);
     }
 }

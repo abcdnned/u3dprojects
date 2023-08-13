@@ -28,6 +28,7 @@ public class HandDelayLooker : HandLooker
         setAngel(h, v);
         enable = true;
         enable_lv2 = false;
+        Debug.Log(" init ");
     }
     public void init(float duration, float h, float v, float h2, float v2) {
         setDuration(duration);

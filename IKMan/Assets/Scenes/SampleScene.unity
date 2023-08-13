@@ -3747,6 +3747,7 @@ MonoBehaviour:
   poseManager: {fileID: 1939476855}
   bi_footAngel: -10
   bi_footDistance: 0.65
+  swingRadius: 0.6
   battleIdleAnchorPoints:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}

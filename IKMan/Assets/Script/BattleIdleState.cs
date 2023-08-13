@@ -8,9 +8,12 @@ public class BattleIdleState : AnyState
     public const string NAME = "BattleIdleState";
     public const string STATE_BATTLE = "battleState";
     public const string STATE_TO_IDLE = "toIdleTransfer";
+    public const string STATE_OCCUPY = "occupyState";
     private States battleIdleState;
 
     private States toIdleTransfer;
+
+    private States occupyState;
 
     public BattleIdleState(HumanIKController humanIKController) : base(humanIKController)
     {
@@ -20,6 +23,7 @@ public class BattleIdleState : AnyState
     {
         battleIdleState = new States(STATE_BATTLE, BattleIdle);
         toIdleTransfer = new States(STATE_TO_IDLE, ToIdleTransfer);
+        occupyState = new States(STATE_OCCUPY, Occupy);
         cs = battleIdleState; ;
     }
 
@@ -28,10 +32,10 @@ public class BattleIdleState : AnyState
         if (e.bgA == EVENT_BUTTON_R)
         {
             humanIKController.updateAnchorPoints();
-            Vector3 leftPoint = humanIKController.idleAnchorPoints[ANCHOR_LEFT_LEG];
-            Vector3 rightPoint = humanIKController.idleAnchorPoints[ANCHOR_RIGHT_LEG];
-            leftPoint = Utils.snapTo(leftPoint, Vector3.up, 0);
-            rightPoint = Utils.snapTo(rightPoint, Vector3.up, 0);
+            // Vector3 leftPoint = humanIKController.idleAnchorPoints[ANCHOR_LEFT_LEG];
+            // Vector3 rightPoint = humanIKController.idleAnchorPoints[ANCHOR_RIGHT_LEG];
+            // leftPoint = Utils.snapTo(leftPoint, Vector3.up, 0);
+            // rightPoint = Utils.snapTo(rightPoint, Vector3.up, 0);
             // humanIKController.frontLeftLegStepper.TryRotateLeg(0);
             humanIKController.frontRightLegStepper.TryPutLeg(getReturnRightPosition(), 0,
                                                              humanIKController.frontRightLegStepper.shortStepDuration);
@@ -41,6 +45,11 @@ public class BattleIdleState : AnyState
             humanIKController.rightHand.TryReturnSword(humanIKController.weapon,
                                                        humanIKController.attchment_rightHand);
             return (toIdleTransfer, this);
+        }
+        else if (e.bgA == EVENT_LEFT_CLICK)
+        {
+            humanIKController.rightHand.TryLeftSwing();
+            return (occupyState, this);
         }
         return (battleIdleState, this);
     }
@@ -60,6 +69,15 @@ public class BattleIdleState : AnyState
             return (null, new IdleStatus(humanIKController));
         }
         return (toIdleTransfer, this);
+    }
+
+    private (States, ActionStateMachine) Occupy(Event e)
+    {
+        if (allIdleCheck())
+        {
+            return (null, this);
+        }
+        return (occupyState, this);
     }
 
 

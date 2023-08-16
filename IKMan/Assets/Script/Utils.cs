@@ -122,12 +122,12 @@ public class Utils {
     }
 
     public static void JointSetLimit(CharacterJoint joint, float l, float h, float s1 = 0, float s2 = 0) {
-        SoftJointLimit ll = new SoftJointLimit();
-        ll.limit = l;
-        joint.lowTwistLimit = ll;
         SoftJointLimit hl = new SoftJointLimit();
         hl.limit = h;
         joint.highTwistLimit = hl;
+        SoftJointLimit ll = new SoftJointLimit();
+        ll.limit = l;
+        joint.lowTwistLimit = ll;
         SoftJointLimit s1l = new SoftJointLimit();
         s1l.limit = s1;
         joint.swing1Limit = s1l;

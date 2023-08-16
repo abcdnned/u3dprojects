@@ -29,7 +29,8 @@ public class HandSwingMove : HandMove
     }
 
     private void swingToLeft(CharacterJoint joint) {
-        Utils.JointSetLimit(joint, 42, 45);
+        Debug.Log(" swingToLeft ");
+        Utils.JointSetLimit(joint, 87, 90);
     }
 
 }

@@ -75,6 +75,7 @@ public class BattleIdleState : AnyState
     {
         if (allIdleCheck())
         {
+            Debug.Log(" exit occupy ");
             return (null, this);
         }
         return (occupyState, this);

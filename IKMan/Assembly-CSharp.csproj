@@ -47,6 +47,7 @@
      <Compile Include="Assets/Script/Utils/MoveManager.cs" />
      <Compile Include="Assets/Script/Steper.cs" />
      <Compile Include="Assets/Follow.cs" />
+     <Compile Include="Assets/Script/Utils/EnhanceCharacterJoint.cs" />
      <Compile Include="Assets/Script/Rotater.cs" />
      <Compile Include="Assets/Script/Utils/StatelliteRotater.cs" />
      <Compile Include="Assets/Script/Move/MainHoldWeapon.cs" />
@@ -64,6 +65,7 @@
      <Compile Include="Assets/Lib/EasingFunction.cs" />
      <Compile Include="Assets/Lib/IKComponentRotation.cs" />
      <Compile Include="Assets/Script/Move/HandMain2Battle.cs" />
+     <Compile Include="Assets/Script/Move/MoveConstants.cs" />
      <Compile Include="Assets/Script/Event.cs" />
      <Compile Include="Assets/Script/Move/HipIdleMove.cs" />
      <Compile Include="Assets/Script/IKStatus/IdleStatus.cs" />
@@ -83,6 +85,7 @@
      <Compile Include="Assets/Script/Modules/AnchorManager.cs" />
      <Compile Include="Assets/Script/Weapon/WeaponRef.cs" />
      <Compile Include="Assets/Script/BattleIdleState.cs" />
+     <Compile Include="Assets/Script/Move/HandSwingMove.cs" />
      <Compile Include="Assets/Script/TargetController/PoseManager.cs" />
      <Compile Include="Assets/Script/HandleIdleMove.cs" />
      <Compile Include="Assets/Script/LegController3.cs" />
@@ -109,9 +112,6 @@
      <Compile Include="Assets/Script/TargetController/HeadController.cs" />
      <Compile Include="Assets/Script/TargetController.cs" />
      <Compile Include="Assets/Script/Modules/CameraModule.cs" />
-     <Compile Include="Assets/Script/Utils/EnhanceCharacterJoint.cs" />
-     <Compile Include="Assets/Script/Move/MoveConstants.cs" />
-     <Compile Include="Assets/Script/Move/HandSwingMove.cs" />
     <Reference Include="UnityEngine">
         <HintPath>/Users/i519418/software/u3d/2021.3.16f1c1/Unity.app/Contents/Managed/UnityEngine/UnityEngine.dll</HintPath>
     </Reference>

@@ -54,7 +54,8 @@ public class HandController : TargetController
     private Vector3 homeOffset = Vector3.zero;
 
     private Quaternion homeRotationDelta = Quaternion.identity;
-
+    public float armLookRotationH = 0;
+    public float armLookRotationV = 0;
     protected override void initMove() {
         moveManager.addMove(new HandMovingMove());
         moveManager.addMove(new HandIdleMove());
@@ -252,6 +253,10 @@ public class HandController : TargetController
                                         look,
                                         1 - Mathf.Exp(-handLookSpeed * Time.deltaTime));
         transform.rotation = look;
+        Quaternion hr = Quaternion.AngleAxis(armLookRotationH, transform.right);
+        transform.rotation = hr * transform.rotation;
+        Quaternion vr = Quaternion.AngleAxis(armLookRotationV, transform.up);
+        transform.rotation = vr * transform.rotation;
     }
 
     private void Update() {
@@ -312,6 +317,6 @@ public class HandController : TargetController
 
     public void TryLeftSwing() {
         HandSwingMove move = (HandSwingMove)moveManager.ChangeMove(MoveNameConstants.HandSwingMove);
-        move.init(humanIKController.poleJoint, transform);
+        move.init(humanIKController.poleJoint, transform, humanIKController.walkPointer.transform.forward, 20f);
     }
 }

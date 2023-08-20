@@ -55,7 +55,7 @@ public class HandLookIKController : MonoBehaviour
         // double lv1Angel = calculateTargetVerticalAngel(elbow.distance,
         //                                                hand.distance,
         //                                                Vector3.Distance(handEnd, shoulder.position));
-        Debug.DrawLine(finalTarget, shoulder.position, Color.blue, 8);
+        // Debug.DrawLine(finalTarget, shoulder.position, Color.blue, 8);
         this.target = PrefabCreator.SpawnDebugger(finalTarget, PrefabCreator.POSITION_HELPER,
                                                   duration * PrefabCreator.DEFAULT_LIVE, 1, body).transform;
         double lv2Angel = calculateAngelC(elbow.distance,
@@ -152,7 +152,7 @@ public class HandLookIKController : MonoBehaviour
     }
 
     public int getIKSequence(HandLooker check) {
-        if (duration <= 0 || poc > duration) {
+        if (duration <= 0 || poc > duration || target == null) {
             // Debug.Log(" ikseq 0 ");
             return 0;
         }

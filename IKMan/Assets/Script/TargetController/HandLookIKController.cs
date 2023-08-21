@@ -29,11 +29,11 @@ public class HandLookIKController : MonoBehaviour
 
     public float poc;
 
-    public void init(float duration, Vector3 target, Transform body) {
+    public void init(float duration, Vector3 target, Transform body, Transform target_transform = null) {
         this.body = body;
         initBodyForward = Utils.forward(body);
         Vector3 elbowEnd = elbow.SphereLv1PositionCalculator(shoulder.position);
-        Transform helper = PrefabCreator.SpawnDebugger(elbowEnd, "ElbowEndHelper", 2, 1, null).transform;
+        Transform helper = PrefabCreator.SpawnDebugger(elbowEnd, "ElbowEndHelper", Time.deltaTime, 1, null).transform;
         Vector3 dir = elbowEnd - shoulder.position;
         helper.rotation = Quaternion.LookRotation(dir, elbow.direction.forward);
         Vector3 handEnd = hand.SphereLv1PositionCalculator(elbowEnd, false, helper);
@@ -45,19 +45,16 @@ public class HandLookIKController : MonoBehaviour
         // float dis = Vector3.Distance(handEnd, shoulder.position);
         // this.target = Utils.copy(target);
         float targetDis = Vector3.Distance(target, shoulder.position);
-        // Debug.DrawLine(target, shoulder.position, Color.blue, 8);
         if (targetDis > elbow.distance + hand.distance - 0.002f) {
             targetDis = elbow.distance + hand.distance - 0.002f;
         }
-        // Debug.Log(" oritinDis " + Vector3.Distance(target, shoulder.position));
-        // Debug.Log(" targetDis " + targetDis);
         Vector3 finalTarget = shoulder.position + targetDis * (target - shoulder.position).normalized;
-        // double lv1Angel = calculateTargetVerticalAngel(elbow.distance,
-        //                                                hand.distance,
-        //                                                Vector3.Distance(handEnd, shoulder.position));
-        // Debug.DrawLine(finalTarget, shoulder.position, Color.blue, 8);
-        this.target = PrefabCreator.SpawnDebugger(finalTarget, PrefabCreator.POSITION_HELPER,
-                                                  duration * PrefabCreator.DEFAULT_LIVE, 1, body).transform;
+        if (target_transform != null) {
+            this.target = target_transform;
+        } else {
+            this.target = PrefabCreator.SpawnDebugger(finalTarget, PrefabCreator.POSITION_HELPER,
+                                                    duration * PrefabCreator.DEFAULT_LIVE, 1, body).transform;
+        }
         double lv2Angel = calculateAngelC(elbow.distance,
                                                                  hand.distance,
                                                                  targetDis);

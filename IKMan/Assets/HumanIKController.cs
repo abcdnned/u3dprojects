@@ -63,6 +63,8 @@ public class HumanIKController : MonoBehaviour
   private ReadTrigger TriggerLeftClick = new ReadTrigger(false);
   private ReadTrigger TriggerRightClick = new ReadTrigger(false);
 
+  [Header("--- Character Properties ---")]
+  public float swingStrength = 200;
 
 
 

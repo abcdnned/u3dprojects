@@ -33,6 +33,7 @@ public class HandSwingMove : HandMove
         if (state == 0) {
             state++;
             swingToLeft(joint);
+            normalizedTime = 0;
         } 
         if (state == 1) {
             if (normalizedTime > duration) {
@@ -40,23 +41,31 @@ public class HandSwingMove : HandMove
             } else {
                 handController.handLookIKController.init(Time.deltaTime,
                                                         handTransform.position,
-                                                        humanIKController.body.transform);
-                (float, float) sha = swingHandAngle();
-                handController.armLookRotationH = sha.Item1;
-                handController.armLookRotationV = sha.Item2;
+                                                        humanIKController.body.transform,
+                                                        handTransform);
+                // (float, float) sha = swingHandAngle();
+                // handController.armLookRotationH = sha.Item1;
+                // handController.armLookRotationV = sha.Item2;
                 // handController.LookToArmLook();
+                Rigidbody rigidbody = joint.GetComponent<Rigidbody>();
+                Vector3 swingTorque = new Vector3(0, -humanIKController.swingStrength, 0);
+                rigidbody.AddTorque(swingTorque, ForceMode.Acceleration);
             }
         }
         if (state == 2) {
+            handController.handLookIKController.transferCurPosToLv1();
             Debug.Log(" swing end ");
-
+            state++;
         }
         return this;
     }
 
     private void swingToLeft(CharacterJoint joint) {
         Debug.Log(" swingToLeft ");
-        Utils.JointSetLimit(joint, 87, joint.highTwistLimit.limit);
+        float hl = 110f;
+        Utils.JointSetLimit(joint, joint.lowTwistLimit.limit, hl);
+        // Debug.Log(" max angular velocity " + rigidbody.maxAngularVelocity);
+        // rigidbody.maxAngularVelocity = humanIKController.swingStrength;
     }
 
     private (float, float) swingHandAngle() {

@@ -317,6 +317,6 @@ public class HandController : TargetController
 
     public void TryLeftSwing() {
         HandSwingMove move = (HandSwingMove)moveManager.ChangeMove(MoveNameConstants.HandSwingMove);
-        move.init(humanIKController.poleJoint, transform, humanIKController.walkPointer.transform.forward, 20f);
+        move.init(humanIKController.poleJoint, transform, humanIKController.walkPointer.transform.forward, 200f);
     }
 }

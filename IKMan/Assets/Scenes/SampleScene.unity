@@ -452,7 +452,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 892835283910397784, guid: 13f555e30c2664bab92b70509e0b7658, type: 3}
       propertyPath: m_RootOrder
-      value: 17
+      value: 16
       objectReference: {fileID: 0}
     - target: {fileID: 892835283910397784, guid: 13f555e30c2664bab92b70509e0b7658, type: 3}
       propertyPath: m_LocalPosition.x
@@ -665,7 +665,7 @@ Transform:
   m_Children:
   - {fileID: 718217258}
   m_Father: {fileID: 0}
-  m_RootOrder: 16
+  m_RootOrder: 17
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &511821150
 MonoBehaviour:
@@ -956,7 +956,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sun: {fileID: 690986648}
   direction: {fileID: 928838177}
-  distance: 0.3
+  distance: 0.35
   horizonAngel: 90
   verticalAngel: -90
   speed: 10
@@ -1543,7 +1543,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 892835283910397784, guid: 13f555e30c2664bab92b70509e0b7658, type: 3}
       propertyPath: m_RootOrder
-      value: 15
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 892835283910397784, guid: 13f555e30c2664bab92b70509e0b7658, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1925,7 +1925,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8373280027460653653, guid: d85106c71bac3477a9357fd61c957e56, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.016
+      value: 0.96599996
       objectReference: {fileID: 0}
     - target: {fileID: 8373280027460653653, guid: d85106c71bac3477a9357fd61c957e56, type: 3}
       propertyPath: m_LocalPosition.z
@@ -3812,6 +3812,7 @@ MonoBehaviour:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
+  swingStrength: 100
 --- !u!54 &1491158314
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -4742,7 +4743,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8373280027460653653, guid: d85106c71bac3477a9357fd61c957e56, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.56600004
+      value: 0.49599996
       objectReference: {fileID: 0}
     - target: {fileID: 8373280027460653653, guid: d85106c71bac3477a9357fd61c957e56, type: 3}
       propertyPath: m_LocalPosition.z
@@ -4797,7 +4798,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sun: {fileID: 675571748}
   direction: {fileID: 675571748}
-  distance: 0.45
+  distance: 0.47
   horizonAngel: 0
   verticalAngel: 0
   speed: 10
@@ -5458,7 +5459,7 @@ Transform:
   m_Children:
   - {fileID: 981381480}
   m_Father: {fileID: 0}
-  m_RootOrder: 14
+  m_RootOrder: 15
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1969551726
 MonoBehaviour:

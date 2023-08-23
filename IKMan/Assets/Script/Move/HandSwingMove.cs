@@ -7,6 +7,8 @@ public class HandSwingMove : HandMove
 
     internal CharacterJoint joint;
 
+    internal CharacterJoint handJoint;
+
     internal Vector3 midDirection;
 
     internal Quaternion midDirectionOffset;
@@ -16,9 +18,12 @@ public class HandSwingMove : HandMove
     {
     }
 
-    public void init(CharacterJoint joint, Transform handTransform, Vector3 midDirection, float duration) {
+    public void init(CharacterJoint joint,
+                     CharacterJoint handJoint,
+                     Transform handTransform, Vector3 midDirection, float duration) {
         this.duration = duration;
         this.joint = joint;
+        this.handJoint = handJoint;
         this.handTransform = handTransform;
         this.midDirection = midDirection;
         Debug.DrawRay(joint.transform.position, midDirection, Color.black, 5);
@@ -50,6 +55,7 @@ public class HandSwingMove : HandMove
                 Rigidbody rigidbody = joint.GetComponent<Rigidbody>();
                 Vector3 swingTorque = new Vector3(0, -humanIKController.swingStrength, 0);
                 rigidbody.AddTorque(swingTorque, ForceMode.Acceleration);
+                handJoint.GetComponent<Rigidbody>().AddTorque(swingTorque / 2, ForceMode.Acceleration);
             }
         }
         if (state == 2) {
@@ -62,8 +68,9 @@ public class HandSwingMove : HandMove
 
     private void swingToLeft(CharacterJoint joint) {
         Debug.Log(" swingToLeft ");
-        float hl = 110f;
+        float hl = 170f;
         Utils.JointSetLimit(joint, joint.lowTwistLimit.limit, hl);
+        Utils.JointSetLimit(handJoint, -20, 20);
         // Debug.Log(" max angular velocity " + rigidbody.maxAngularVelocity);
         // rigidbody.maxAngularVelocity = humanIKController.swingStrength;
     }

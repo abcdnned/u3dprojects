@@ -23,8 +23,8 @@ public class MainHoldWeapon : HandMove
         newJoint.axis = new Vector3(0,0,-1);
         newJoint.swingAxis = new Vector3(-1,0,0);
         SoftJointLimitSpring twistSpring = new SoftJointLimitSpring();
-        twistSpring.spring = MoveConstants.spring;
-        twistSpring.damper = MoveConstants.damper;
+        // twistSpring.spring = MoveConstants.spring;
+        // twistSpring.damper = MoveConstants.damper;
         newJoint.twistLimitSpring = twistSpring;
         SoftJointLimit l = new SoftJointLimit();
         l.limit = -45;
@@ -51,6 +51,35 @@ public class MainHoldWeapon : HandMove
         handDelayLooker.hAd = 0;
         handDelayLooker.verticalAngel = 90;
         handDelayLooker.vAd = 90;
+
+        humanIKController.attchment_rightHand.transform.SetParent(null);
+        humanIKController.attchment_rightHand.GetComponent<Rigidbody>().isKinematic = false;
+        Quaternion rot = Quaternion.LookRotation(pole.transform.up, -pole.transform.forward);
+        humanIKController.attchment_rightHand.transform.rotation = rot;
+        CharacterJoint hand_joint = humanIKController.attchment_rightHand.AddComponent<CharacterJoint>();
+        hand_joint.connectedBody = pole.GetComponent<Rigidbody>();
+        hand_joint.anchor = new Vector3(0,0,0);
+        hand_joint.autoConfigureConnectedAnchor = false;
+        hand_joint.connectedAnchor = new Vector3(0, 2.0f, 0);
+        hand_joint.axis = new Vector3(0,1,0);
+        hand_joint.swingAxis = new Vector3(-1,0,0);
+        Utils.JointSetLimit(hand_joint, -0, 0);
+
+        GameObject gs = humanIKController.weapon;
+        CharacterJoint weapon_joint = gs.GetComponent<CharacterJoint>();
+        GameObject.Destroy(weapon_joint);
+        Quaternion gs_rot = Quaternion.LookRotation(-hand_joint.transform.forward,
+                                                    hand_joint.transform.right);
+        gs.transform.rotation = gs_rot;
+        weapon_joint = gs.AddComponent<CharacterJoint>();
+        weapon_joint.anchor = humanIKController.mainHandle.localPosition;
+        weapon_joint.connectedBody = humanIKController.attchment_rightHand.GetComponent<Rigidbody>();
+        weapon_joint.autoConfigureConnectedAnchor = false;
+        weapon_joint.axis = new Vector3(1,0,0);
+        weapon_joint.swingAxis = new Vector3(0,0,-1);
+        Utils.JointSetLimit(weapon_joint, 0, 0, 0);
+
+        // Debug.Log("hold subinit finish");
     }
     
     public MainHoldWeapon() : base(MoveNameConstants.MainHoldWeaponIdle)

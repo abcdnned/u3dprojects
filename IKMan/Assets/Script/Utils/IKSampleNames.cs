@@ -8,4 +8,8 @@ public class IKSampleNames
 
     public static string FETCH_GREAT_SWORD_1 = "FetchGreatSword_1";
     public static string FETCH_GREAT_SWORD_2 = "FetchGreatSword_2";
+    public static string IDLE_SAMPLE = "IdleSample";
+
+    public static string SWING_RIGHT_HAND_ON_LEFT = "Swing_RightHandOnLeft";
+
 }

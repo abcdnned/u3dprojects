@@ -33,18 +33,8 @@ public class HandController : TargetController
     public HandLookIKController handLookIKController;
 
     [Header("--- Main2BattleIdle ---")]
-    public float m2b_pivotOffset = 0.3f;
-    public float m2b_pivotOffset2 = 0.5f;
     public float m2b_duration = 0.2f;
     public float m2b_duration2 = 0.2f;
-    public Vector3 m2b_rotation = new Vector3(-220, -70, 0);
-    public Vector3 m2b_rotation2 = new Vector3(20, 180, -90);
-    public float m2b_elbow = 60f;
-    public float m2b_idle_elbow = 180f;
-    public float m2b_hangel = 30f;
-    public float m2b_vangel = 220f;
-    public float m2b_battle_h = 180f;
-    public float m2b_battle_v = 30f;
 
     public Vector3 m2b_tpOffset = new Vector3(0,0,0);
 
@@ -63,6 +53,7 @@ public class HandController : TargetController
         moveManager.addMove(new HandMain2Battle());
         moveManager.addMove(new HandMainBattle2Idle());
         moveManager.addMove(new HandSwingMove());
+        moveManager.addMove(new HandConsonant2Battle());
         moveManager.ChangeMove(MoveNameConstants.HandIdle);
         handRotation.init(Vector3.zero, Vector3.zero, 0.1f, (v1, v2, t) => Vector3.Lerp(v1, v2, t));
     }
@@ -111,11 +102,6 @@ public class HandController : TargetController
             // HandFK.init(duration, handLooker.hAd, handLooker.vAd,
             //                       handLooker.hAd_lv2, handLooker.vAd_lv2);
         }
-    }
-
-    internal void finishFK() {
-        HandElbow.finishFK();
-        HandFK.finishFK();
     }
 
     protected void SyncTwoHandLooker(HandLooker source, HandLooker target, bool horizon_mirror) {
@@ -220,6 +206,12 @@ public class HandController : TargetController
         move.initBasic(m2b_duration, m2b_duration2, greateSword, hand
                        );
         move.beReady();
+    }
+
+    internal void TryGetGreatSwordConsonant() {
+        Debug.Log(" try get gs consonant ");
+        HandConsonant2Battle move = (HandConsonant2Battle)moveManager.ChangeMove(MoveNameConstants.HandConsonant2Battle);
+        move.initBasic(m2b_duration, m2b_duration2);
     }
 
     internal void TryReturnSword(GameObject greateSword, GameObject attachPoint) {

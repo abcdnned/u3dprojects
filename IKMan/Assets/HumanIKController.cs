@@ -47,6 +47,7 @@ public class HumanIKController : MonoBehaviour
 
   [Header("--- Weapon ---")]
   public Transform mainHandle;
+  public Transform consonantHandle;
   public GameObject weapon;
 
   [Header("--- Attachment ---")]

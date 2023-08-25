@@ -108,6 +108,7 @@
      <Compile Include="Assets/Script/SMInput.cs" />
      <Compile Include="Assets/Script/TargetController/HandDelayLooker.cs" />
      <Compile Include="Assets/Script/Move/LegPutMove.cs" />
+     <Compile Include="Assets/Script/Move/HandConsonant2Battle.cs" />
      <Compile Include="Assets/Script/AnyState.cs" />
      <Compile Include="Assets/Script/TargetController/HeadController.cs" />
      <Compile Include="Assets/Script/TargetController.cs" />

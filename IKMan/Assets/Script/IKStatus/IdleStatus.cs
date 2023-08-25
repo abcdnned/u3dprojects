@@ -41,6 +41,7 @@ public class IdleStatus : AnyState
                                             90f);
             humanIKController.rightHand.TryGetGreatSword(humanIKController.weapon,
                                                          humanIKController.attchment_rightHand);
+            humanIKController.leftHand.TryGetGreatSwordConsonant();
             WalkBalance wb = humanIKController.walkBalance;
             wb.TryBattleIdle();
             return (toBattleIdleState, this);
@@ -60,6 +61,7 @@ public class IdleStatus : AnyState
 
     private (States, ActionStateMachine) ToBattleIdle(Event e) {
         if (allIdleCheck()) {
+            Debug.Log(" change to battle idle status ");
             humanIKController.headController.setMode(3);
             return (null, new BattleIdleState(humanIKController));
         }

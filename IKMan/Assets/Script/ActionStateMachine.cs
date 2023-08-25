@@ -39,10 +39,10 @@ public class ActionStateMachine {
 
     public bool allIdleCheck()
     {
-        return humanIKController.leftHand.move.name.Contains("idle")
-               && humanIKController.rightHand.move.name.Contains("idle")
-               && humanIKController.frontLeftLegStepper.move.name.Contains("idle")
-               && humanIKController.frontRightLegStepper.move.name.Contains("idle");
+        return humanIKController.leftHand.move.isIdle()
+               && humanIKController.rightHand.move.isIdle()
+               && humanIKController.frontLeftLegStepper.move.isIdle()
+               && humanIKController.frontRightLegStepper.move.isIdle();
     }
 
     public bool legMovingCheck() {
@@ -53,8 +53,8 @@ public class ActionStateMachine {
     // check if only the two legs are idle
     public bool legIdleChecker()
     {
-        return humanIKController.frontLeftLegStepper.move.name.Contains("idle")
-               && humanIKController.frontRightLegStepper.move.name.Contains("idle");
+        return humanIKController.frontLeftLegStepper.move.isIdle()
+               && humanIKController.frontRightLegStepper.move.isIdle();
     }
 
 }

@@ -88,7 +88,12 @@ public class MainHoldWeapon : HandMove
 
     public override Move move(float dt)
     {
+        state++;
         return this;
+    }
+
+    public override bool stateFinish() {
+        return state > 0;
     }
     public override string getMoveType() {
         return AdvanceIKController.FIK;

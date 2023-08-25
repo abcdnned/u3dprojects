@@ -37,13 +37,9 @@ public class HandDelayLooker : HandLooker
         enable_lv2 = true;
     }
     
-    internal void finishFK() {
-        horizonAngel = hAd;
-        verticalAngel = vAd;
-        if (enable_lv2) {
-            horizonAngel_lv2 = hAd_lv2;
-            verticalAngel_lv2 = vAd_lv2;
-        }
+    internal void finishIKFKTransfer() {
+        hAd = horizonAngel;
+        vAd = verticalAngel;
     }
 
     override protected void Transfer(float dt) {
@@ -55,6 +51,13 @@ public class HandDelayLooker : HandLooker
             bool ran = false;
             normalizedTime = Time.time - initTime;
             float poc = normalizedTime / duration;
+            if (poc > 1 && (normalizedTime - Time.deltaTime) / duration < 1) {
+                Debug.Log(" finish fk ");
+                if (handLookIKController != null) {
+                    handLookIKController.transferCurPosToLv1();
+                    finishIKFKTransfer();
+                }
+            }
             if (Utils.AbsDiff(horizonAngel, hAd) > MIN_ANGEL_DIFF) {
                 // Debug.Log(" poc " + poc);
                 horizonAngel = Mathf.Lerp(initH, hAd, poc);

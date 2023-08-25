@@ -15,7 +15,7 @@ public class HandMainBattle2Idle : HandMain2Battle
     public override Move move(float dt) {
         if (state == 0) {
             state = 1;
-            handController.handHint.hAd = handController.m2b_idle_elbow;
+            // handController.handHint.hAd = handController.m2b_idle_elbow;
             handController.HandElbow.init(duration,
                                   90,
                                   0);

@@ -28,9 +28,12 @@ public class HandLookIKController : MonoBehaviour
     public float duration;
 
     public float poc;
+    private bool continueTrackAfterFinish = false;
+    private const float BEND = 0.002f;
 
-    public void init(float duration, Vector3 target, Transform body, Transform target_transform = null) {
+    public void init(float duration, Vector3 target, Transform body, Transform target_transform = null, bool c = false) {
         this.body = body;
+        continueTrackAfterFinish = c;
         initBodyForward = Utils.forward(body);
         Vector3 elbowEnd = elbow.SphereLv1PositionCalculator(shoulder.position);
         Transform helper = PrefabCreator.SpawnDebugger(elbowEnd, "ElbowEndHelper", Time.deltaTime, 1, null).transform;
@@ -45,8 +48,8 @@ public class HandLookIKController : MonoBehaviour
         // float dis = Vector3.Distance(handEnd, shoulder.position);
         // this.target = Utils.copy(target);
         float targetDis = Vector3.Distance(target, shoulder.position);
-        if (targetDis > elbow.distance + hand.distance - 0.002f) {
-            targetDis = elbow.distance + hand.distance - 0.002f;
+        if (targetDis > elbow.distance + hand.distance - BEND) {
+            targetDis = elbow.distance + hand.distance - BEND;
         }
         Vector3 finalTarget = shoulder.position + targetDis * (target - shoulder.position).normalized;
         if (target_transform != null) {
@@ -55,11 +58,11 @@ public class HandLookIKController : MonoBehaviour
             this.target = PrefabCreator.SpawnDebugger(finalTarget, PrefabCreator.POSITION_HELPER,
                                                     duration * PrefabCreator.DEFAULT_LIVE, 1, body).transform;
         }
-        double lv2Angel = calculateAngelC(elbow.distance,
-                                                                 hand.distance,
-                                                                 targetDis);
+        // double lv2Angel = calculateAngelC(elbow.distance,
+        //                                                          hand.distance,
+        //                                                          targetDis);
         // targetVerticalAngel = (float)(lv2Angel - lv1Angel);
-        targetVerticalAngel = 180 - (float)lv2Angel;
+        // targetVerticalAngel = 180 - (float)lv2Angel;
         bicep_target_angel = calculateAngelC(elbow.distance, targetDis, hand.distance);
         initNormal = Vector3.Cross(handEnd - shoulder.position, finalTarget - shoulder.position);
         // Debug.DrawLine(shoulder.position + initNormal * 5, shoulder.position, Color.black, 8);
@@ -72,6 +75,15 @@ public class HandLookIKController : MonoBehaviour
 
     private void Update() {
         poc += Time.deltaTime;
+    }
+
+    private Vector3 NormalizeTargetPosition(Vector3 target) {
+        float targetDis = Vector3.Distance(target, shoulder.position);
+        if (targetDis > elbow.distance + hand.distance - BEND) {
+            targetDis = elbow.distance + hand.distance - BEND;
+        }
+        Vector3 finalTarget = shoulder.position + targetDis * (target - shoulder.position).normalized;
+        return finalTarget;
     }
 // Vector3 currentOffset = arm.transform.InverseTransformPoint(hand.transform.position);
 // Vector3 desiredOffset = arm.transform.InverseTransformPoint(box.transform.position);
@@ -95,13 +107,16 @@ public class HandLookIKController : MonoBehaviour
     public Vector3 getHandShoulderNormal(Vector3 lv1_pos) {
         Vector3 lv1arm = lv1_pos - shoulder.position;
         // Debug.DrawLine(lv1_pos, shoulder.position, Color.red, 0.1f);
-        Vector3 t = target.position - shoulder.position;
-        // Debug.DrawLine(target, shoulder.position, Color.black, 0.1f);
+        Vector3 t = NormalizeTargetPosition(target.position) - shoulder.position;
+        // Debug.DrawLine(NormalizeTargetPosition(target.position), shoulder.position, Color.black, Time.deltaTime);
         Vector3 normal1 = Vector3.Cross(t, lv1arm);
         // return normal1;
         // Vector3 c1 = elbow.transform.position - shoulder.position; 
         // Vector3 c2 = hand.transform.position - shoulder.position; 
         // float angle = Vector3.Angle(c1, c2);
+        if (target != null) {
+            updateBicepTargetAngel();
+        }
         float angle = bicep_target_angel;
         // Debug.Log(" clv1arm " + angle);
         Vector3 lv2armdir = (Quaternion.AngleAxis(angle, normal1) * t).normalized * lv1arm.magnitude;
@@ -113,13 +128,14 @@ public class HandLookIKController : MonoBehaviour
         return Vector3.Cross(lv1arm, lv2armdir);
     }
 
+
     public Vector3 getArmForward(Vector3 lv1_pos) {
         return (lv1_pos - elbow.transform.position).normalized;
     }
 
     public Vector3 getArmNormal(Vector3 lv1_pos) {
         Vector3 c = lv1_pos - elbow.transform.position;
-        Vector3 t = target.position - elbow.transform.position;
+        Vector3 t = NormalizeTargetPosition(target.position) - elbow.transform.position;
         // Vector3 arm = (lv1_pos - elbow.transform.position).normalized;
         // Vector3 bicep = (elbow.transform.position - shoulder.position).normalized;
         // return Vector3.Cross(bicep, arm);
@@ -128,9 +144,12 @@ public class HandLookIKController : MonoBehaviour
 
     internal float getRealTimeHorizonAngel(Vector3 lv1_pos, float normalizedTime) {
         Vector3 lv1arm = lv1_pos - shoulder.position;
-        Vector3 t = target.position - shoulder.position;
+        Vector3 t = NormalizeTargetPosition(target.position) - shoulder.position;
         Vector3 normal1 = Vector3.Cross(t, lv1arm);
         Vector3 c = hand.transform.position - shoulder.position; 
+        if (target != null) {
+            updateBicepTargetAngel();
+        }
         float angle = bicep_target_angel;
         Vector3 lv2armdir = Quaternion.AngleAxis(angle, normal1) * t;
         float ta = Vector3.Angle(lv1arm, lv2armdir);
@@ -144,14 +163,18 @@ public class HandLookIKController : MonoBehaviour
         // Debug.Log(" targetVerticalAngel " + targetVerticalAngel);
         // return Mathf.Lerp(Vector3.Angle(bicep, arm), targetVerticalAngel, normalizedTime / duration);
         Vector3 c = lv1_pos - elbow.transform.position;
-        Vector3 t = target.position - elbow.transform.position;
+        Vector3 t = NormalizeTargetPosition(target.position) - elbow.transform.position;
         return Mathf.Lerp(0, Vector3.Angle(c, t), normalizedTime / duration);
     }
 
     public int getIKSequence(HandLooker check) {
         if (duration <= 0 || poc > duration || target == null) {
+            if (poc > duration && continueTrackAfterFinish && target != null) {
+
+            } else {
+                return 0;
+            }
             // Debug.Log(" ikseq 0 ");
-            return 0;
         }
         if (check == elbow) {
             // Debug.Log(" ikseq 1 ");
@@ -180,4 +203,13 @@ public class HandLookIKController : MonoBehaviour
         hdl.verticalAngel = v * (Vector3.Dot(normal_v, Vector3.Cross(hdl_p, hdl_v)) > 0 ? 1 : -1);
     }
 
+    private void updateBicepTargetAngel()
+    {
+        // Debug.Log(" update bicep targetAngel ");
+        float targetDis = Vector3.Distance(target.position, shoulder.position);
+        if (targetDis > elbow.distance + hand.distance - BEND) {
+            targetDis = elbow.distance + hand.distance - BEND;
+        }
+        bicep_target_angel = calculateAngelC(elbow.distance, targetDis, hand.distance);
+    }
 }

@@ -66,5 +66,13 @@ public class Move
     public virtual void finish() {
     }
 
+    public virtual bool stateFinish() {
+        return state > 100;
+    }
+
+    public bool isIdle() {
+        return name.Contains("idle") || stateFinish();
+    }
+
 
 }

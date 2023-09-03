@@ -37,7 +37,7 @@ public class HandLooker : MonoBehaviour
     public void setAngel(float h, float v) {
         hAd = h;
         vAd = v;
-        Debug.Log(" vAd " + vAd);
+        // Debug.Log(" vAd " + vAd);
         hAd_lv2 = 0;
         vAd_lv2 = 0;
         // enable_lv2 = false;

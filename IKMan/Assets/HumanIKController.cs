@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(AnimationProperties))]
 public class HumanIKController : MonoBehaviour
 {
   [Header("--- BODY PART ---")]
@@ -67,17 +68,24 @@ public class HumanIKController : MonoBehaviour
   [Header("--- Character Properties ---")]
   public float swingStrength = 200;
 
+  internal AnimationProperties animationProperties;
+
+  [Header("--- Input ---")]
+  internal bool sprintFlag;
+
+  internal bool jumpFlag;
+
 
 
   // Only allow diagonal leg pairs to step together
 
   private InputModule inputModule;
     public static string EVENT_STOP_WALKING = "stopWalking";
-    public static string EVENT_STOP_WALKING_NOW = "stopWalkingNow";
     public static string EVENT_KEEP_WALKING = "keepWalking";
     public static string EVENT_BUTTON_R = "buttonR";
     public static string EVENT_LEFT_CLICK = "leftClick";
     public static string EVENT_RIGHT_CLICK = "rightClick";
+    public static string EVENT_HARD_STOP_WALKING = "hardStopWalking";
 
     public static string EVENT_IDLE = "idle";
 
@@ -90,8 +98,10 @@ public class HumanIKController : MonoBehaviour
     inputModule.OnButtonRDelegates += ButtonR;
     inputModule.OnLeftArmDelegates += LeftClick;
     inputModule.OnRightArmDelegates += RightClick;
+    // inputModule.OnLeftShiftDelegates += OnLeftShift;
+    inputModule.OnSpaceDelegates += SpaceClick;
+    animationProperties = GetComponent<AnimationProperties>();
     initStatus();
-    
   }
 
   public void initStatus() {
@@ -168,6 +178,9 @@ public class HumanIKController : MonoBehaviour
     ikEvent.bgA = bga;
     ikEvent.eventId = eva;
     ActionStateMachine oldState = currentStatus;
+    if (inputModule.getInputController().Player.LeftShift.phase == UnityEngine.InputSystem.InputActionPhase.Performed) {
+      sprintFlag = true;
+    }
     currentStatus = currentStatus.handleEvent(ikEvent);
     // if (oldState != currentStatus) {
     //   Debug.Log(oldState.getName() + "status changed to " + currentStatus.getName());
@@ -214,5 +227,15 @@ public class HumanIKController : MonoBehaviour
 
   private void RightClick(float value) {
     TriggerRightClick.set();
+  }
+  // private void OnLeftShift() {
+  //   sprintFlag = true;
+  // }
+  private void SpaceClick() {
+    jumpFlag = true;
+  }
+  private void LateUpdate() {
+      sprintFlag =false;
+      jumpFlag = false;
   }
 }

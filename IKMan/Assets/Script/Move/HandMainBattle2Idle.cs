@@ -16,10 +16,10 @@ public class HandMainBattle2Idle : HandMain2Battle
         if (state == 0) {
             state = 1;
             // handController.handHint.hAd = handController.m2b_idle_elbow;
-            handController.HandElbow.init(duration,
+            handController.MiddleNode.init(duration,
                                   90,
                                   0);
-            handController.HandFK.init(duration,
+            handController.EndNode.init(duration,
                                   0,
                                   90);
             handController.handHint.enable = false;
@@ -27,10 +27,10 @@ public class HandMainBattle2Idle : HandMain2Battle
             normalizedTime += dt;
             if (normalizedTime > duration) {
                 state = 2;
-                handController.HandElbow.init(duration2,
+                handController.MiddleNode.init(duration2,
                                       90,
                                       -80);
-                handController.HandFK.init(duration2,
+                handController.EndNode.init(duration2,
                                       -10,
                                       -10);
             }

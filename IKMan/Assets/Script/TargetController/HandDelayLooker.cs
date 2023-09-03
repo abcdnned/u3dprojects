@@ -28,7 +28,7 @@ public class HandDelayLooker : HandLooker
         setAngel(h, v);
         enable = true;
         enable_lv2 = false;
-        Debug.Log(" init ");
+        // Debug.Log(" init ");
     }
     public void init(float duration, float h, float v, float h2, float v2) {
         setDuration(duration);
@@ -52,8 +52,8 @@ public class HandDelayLooker : HandLooker
             normalizedTime = Time.time - initTime;
             float poc = normalizedTime / duration;
             if (poc > 1 && (normalizedTime - Time.deltaTime) / duration < 1) {
-                Debug.Log(" finish fk ");
-                if (handLookIKController != null) {
+                // Debug.Log(" finish fk ");
+                if (handLookIKController != null && handLookIKController.getIKSequence(this) > 0) {
                     handLookIKController.transferCurPosToLv1();
                     finishIKFKTransfer();
                 }

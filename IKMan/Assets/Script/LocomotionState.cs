@@ -12,6 +12,10 @@ public class LocomotionState : AnyState {
     private States stoppingState;
     private States transferState;
 
+    private GameObject movingSphere;
+
+    private Vector3 offset;
+
     public LocomotionState(HumanIKController humanIKController) : base(humanIKController)
     {
     }
@@ -25,12 +29,35 @@ public class LocomotionState : AnyState {
     private (States, ActionStateMachine) Move(Event e)
     {
         if (e.eventId.Equals(HumanIKController.EVENT_KEEP_WALKING)) {
-            humanIKController.frontRightLegStepper.handleEvent((HumanIKController.EVENT_KEEP_WALKING));
-            humanIKController.frontLeftLegStepper.TryMove();
-            humanIKController.frontRightLegStepper.TryMove();
-            humanIKController.leftHand.handleEvent(e.eventId);
-            humanIKController.rightHand.handleEvent(e.eventId);
+            if (humanIKController.sprintFlag) {
+                if (movingSphere == null) {
+                    Vector3 p = Utils.copy(humanIKController.transform.position);
+                    p.y = 0.55f;
+                    movingSphere = PrefabCreator.CreatePrefab(p, "MovingSphere");
+                    movingSphere.GetComponent<MovingSphere>().humanIKController = humanIKController;
+                    offset = humanIKController.transform.position - movingSphere.transform.position;
+                }
+                if (humanIKController.frontLeftLegStepper.move.IsLegMoving()) {
+                    humanIKController.frontLeftLegStepper.handleEvent((HumanIKController.EVENT_HARD_STOP_WALKING));
+                }
+                if (humanIKController.frontRightLegStepper.move.IsLegMoving()) {
+                    humanIKController.frontRightLegStepper.handleEvent((HumanIKController.EVENT_HARD_STOP_WALKING));
+                }
+                humanIKController.walkBalance.TryRun(movingSphere.gameObject, offset);
+                humanIKController.leftHand.TryRun();
+                humanIKController.rightHand.TryRun();
+                humanIKController.frontLeftLegStepper.TryRun(0);
+                humanIKController.frontRightLegStepper.TryRun(2 * humanIKController.animationProperties.runHalfDuration);
+            } else {
+                destoryMovingSphere();
+                humanIKController.frontRightLegStepper.handleEvent((HumanIKController.EVENT_KEEP_WALKING));
+                humanIKController.frontLeftLegStepper.TryMove();
+                humanIKController.frontRightLegStepper.TryMove();
+                humanIKController.leftHand.handleEvent(e.eventId);
+                humanIKController.rightHand.handleEvent(e.eventId);
+            }
         } else if (e.eventId.Equals(HumanIKController.EVENT_STOP_WALKING)) {
+            destoryMovingSphere();
             if (humanIKController.frontLeftLegStepper.move.IsLegMoving()) {
                 humanIKController.frontLeftLegStepper.handleEvent((HumanIKController.EVENT_STOP_WALKING));
             } else {
@@ -153,6 +180,13 @@ public class LocomotionState : AnyState {
 
     public override void handleInput(SMInput smInput) {
 
+    }
+
+    private void destoryMovingSphere() {
+        if (movingSphere != null) {
+            GameObject.Destroy(movingSphere);
+            movingSphere = null;
+        }
     }
 
 }

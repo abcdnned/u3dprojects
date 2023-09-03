@@ -25,4 +25,7 @@ public class MoveNameConstants
     public static string HandMainBattle2Idle = "hand_main_battle_2_idle_moving";
     public static string MainHoldWeaponIdle = "hand_main_hold_weapon_idle";
     public static string HandSwingMove = "hand_swing";
+    public static string LegRunMove = "leg_run";
+    public static string HandRunMove = "hand_run";
+    public static string HipRunMove = "hip_run";
 }

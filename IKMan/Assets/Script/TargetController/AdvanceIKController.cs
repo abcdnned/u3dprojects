@@ -28,17 +28,33 @@ public class AdvanceIKController : MonoBehaviour
     // public float FK_SPEED = 0.2f;
     public float FK_SPEED = 200f;
 
+    [SerializeField]
+    float HintDis = 0.3f;
+    
+
     private void LateUpdate()
     {
         if (state == HALF_IK) {
             updateArmDirection();
-            handController.updateHintByFK();
+            if (handController == null) {
+                updateHintByFK();
+            } else {
+                handController.updateHintByFK();
+            }
         } else if (state == IK) {
         } else if (state == FK) {
-            handController.updateHintByFK();
+            if (handController == null) {
+                updateHintByFK();
+            } else {
+                handController.updateHintByFK();
+            }
             trackIKtoFK();
         } else if (state == FIK) {
-            handController.updateHintByFK();
+            if (handController == null) {
+                updateHintByFK();
+            } else {
+                handController.updateHintByFK();
+            }
         }
     }
     
@@ -84,5 +100,24 @@ public class AdvanceIKController : MonoBehaviour
     public Vector3 getArmDirection() {
         Vector3 r = fk.position - elbow.transform.position;
         return r.normalized;
+    }
+
+    public void updateHintByFK() {
+        Vector3 elbow = this.elbow.transform.position;
+        Vector3 hand = this.hand.transform.position;
+        Vector3 shoulder = this.shoulder.position;
+        Vector3 v1 = elbow - shoulder;
+        Vector3 v2 = elbow - hand;
+        Vector3 normal = Vector3.Cross(v2, v1);
+        float angel = Vector3.Angle(v1, v2);
+        Quaternion rotation = Quaternion.AngleAxis(angel / 2, normal);
+        Vector3 forward = rotation * v2;
+        Debug.DrawLine(shoulder, elbow, Color.red);
+        Debug.DrawLine(hand, elbow, Color.blue);
+        // Debug.DrawRay(elbow, v1, Color.red);
+        // Debug.DrawRay(elbow, v2, Color.blue);
+        Debug.DrawRay(elbow, forward, Color.green);
+        Vector3 offset = HintDis * forward.normalized;
+        hint.transform.position = elbow + offset;
     }
 }

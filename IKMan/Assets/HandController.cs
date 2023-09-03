@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HandController : TargetController
+public class HandController : TwoNodeController
 {
     public Transform handHome;
     [SerializeField] float moveDuration = 0.2f;
@@ -22,9 +22,6 @@ public class HandController : TargetController
     public Transform arm;
 
     public HandDelayLooker HandLook;
-    public HandDelayLooker HandElbow;
-    public HandDelayLooker HandFK;
-    public Transform Shoulder;
 
     public Transform LocalHand;
     public TimeValue<Vector3> handRotation = new TimeValue<Vector3>();
@@ -54,6 +51,7 @@ public class HandController : TargetController
         moveManager.addMove(new HandMainBattle2Idle());
         moveManager.addMove(new HandSwingMove());
         moveManager.addMove(new HandConsonant2Battle());
+        moveManager.addMove(new HandRunMove());
         moveManager.ChangeMove(MoveNameConstants.HandIdle);
         handRotation.init(Vector3.zero, Vector3.zero, 0.1f, (v1, v2, t) => Vector3.Lerp(v1, v2, t));
     }
@@ -84,33 +82,6 @@ public class HandController : TargetController
         float y = Vector3.Dot(mathOffset, handHome.up);
         homeOffset = new Vector3(x, y, z);
         homeRotationDelta = Quaternion.Inverse(handHome.rotation) * transform.rotation;
-    }
-
-    internal void SyncIKSample(string sampleName, float duration, bool horizon_mirror = false) {
-        // Debug.Log(" isRightHand " + isRightHand);
-        String elbow = IKSampleNames.ELBOW + "_" + sampleName;
-        String hand = IKSampleNames.HAND + "_" + sampleName;
-        HandDelayLooker elbowLooker = humanIKController.poseManager.handDelayLookerMap[elbow];
-        HandDelayLooker handLooker = humanIKController.poseManager.handDelayLookerMap[hand];
-        if (HandElbow != null && HandFK != null) {
-            HandElbow.setDuration(duration);
-            HandFK.setDuration(duration);
-            SyncTwoHandLooker(elbowLooker, HandElbow, horizon_mirror);
-            SyncTwoHandLooker(handLooker, HandFK, horizon_mirror);
-            // HandElbow.init(duration, elbowLooker.hAd, elbowLooker.vAd,
-            //                          elbowLooker.hAd_lv2, elbowLooker.vAd_lv2);
-            // HandFK.init(duration, handLooker.hAd, handLooker.vAd,
-            //                       handLooker.hAd_lv2, handLooker.vAd_lv2);
-        }
-    }
-
-    protected void SyncTwoHandLooker(HandLooker source, HandLooker target, bool horizon_mirror) {
-        if (source == null || target == null) return;
-        target.enable_lv2 = source.enable_lv2;
-        target.hAd = horizon_mirror ? -source.horizonAngel : source.horizonAngel;
-        target.vAd = source.verticalAngel;
-        target.hAd_lv2 = source.horizonAngel_lv2;
-        target.vAd_lv2 = source.verticalAngel_lv2;
     }
 
     IEnumerator MoveToHome(float duration, int isRightFoot)
@@ -231,7 +202,7 @@ public class HandController : TargetController
         transform.rotation = look;
     }
     internal void LookToArmLook() {
-        if (HandFK == null || HandElbow == null) {
+        if (EndNode == null || MiddleNode == null) {
             return;
         }
         Vector3 v1 = getArmDirection();
@@ -257,19 +228,19 @@ public class HandController : TargetController
     }
 
     public Vector3 getArmDirection() {
-        Vector3 r = HandFK.transform.position - HandElbow.transform.position;
+        Vector3 r = EndNode.transform.position - MiddleNode.transform.position;
         return r.normalized;
     }
 
     public Vector3 getBicepDirection() {
-        Vector3 r = HandElbow.transform.position - Shoulder.transform.position;
+        Vector3 r = MiddleNode.transform.position - ParentNode.transform.position;
         return r.normalized;
     }
 
     public void updateHintByFK() {
-        Vector3 elbow = HandElbow.transform.position;
-        Vector3 hand = HandFK.transform.position;
-        Vector3 shoulder = Shoulder.transform.position;
+        Vector3 elbow = MiddleNode.transform.position;
+        Vector3 hand = EndNode.transform.position;
+        Vector3 shoulder = ParentNode.transform.position;
         Vector3 v1 = elbow - shoulder;
         Vector3 v2 = elbow - hand;
         Vector3 normal = Vector3.Cross(v2, v1);
@@ -312,5 +283,9 @@ public class HandController : TargetController
         move.init(humanIKController.poleJoint,
                   humanIKController.attchment_rightHand.GetComponent<CharacterJoint>(),
                   transform, humanIKController.walkPointer.transform.forward, 2f);
+    }
+
+    public void TryRun() {
+        moveManager.ChangeMove(MoveNameConstants.HandRunMove);
     }
 }

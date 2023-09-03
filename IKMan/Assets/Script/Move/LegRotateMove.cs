@@ -11,7 +11,7 @@ public class LegRotateMove : LegMove
 
     protected override void subinit()
     {
-        duration = parent.shortStepDuration;
+        duration = legController.shortStepDuration;
     }
 
     Rotater rotater;
@@ -21,7 +21,7 @@ public class LegRotateMove : LegMove
         if (state == 0) {
             state = 1;
             rotater = new Rotater(humanIKController.walkPointer.transform,
-                                  parent.transform,
+                                  legController.transform,
                                   duration,
                                   angelOffset);
         }

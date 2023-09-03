@@ -15,12 +15,25 @@ public class InputModule : MonoBehaviour {
 
     public delegate void onButtonRDelegate();
     public onButtonRDelegate OnButtonRDelegates { get; set; }
+    public delegate void onLeftShiftDelegate();
+    public onLeftShiftDelegate OnLeftShiftDelegates { get; set; }
+    public delegate void onSpaceDelegate();
+    public onSpaceDelegate OnSpaceDelegates { get; set; }
+    InputController inputActions;
     public void OnMove(InputValue value) {
         OnMoveDelegates?.Invoke(value.Get<Vector2>());
     }
 
     public void OnButtonR() {
         OnButtonRDelegates?.Invoke();
+    }
+
+    public void OnLeftShift() {
+        OnLeftShiftDelegates?.Invoke();
+    }
+
+    public void OnSpace() {
+        OnSpaceDelegates?.Invoke();
     }
 
     public delegate void onLeftArmDelegate(float armWeight);
@@ -35,9 +48,21 @@ public class InputModule : MonoBehaviour {
         OnRightArmDelegates?.Invoke(value.Get<float>());
     }
 
+    private void Awake() {
+        if (inputActions == null) {
+            inputActions = new InputController();
+        }
+        inputActions.Enable();
+    }
+
+    internal InputController getInputController() {
+        return inputActions;
+    }
+
     void Start() {
     }
 
     void Update() {
     }
+
 }

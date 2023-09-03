@@ -116,6 +116,7 @@ public class WalkBalance : TargetController
         moveManager.addMove(new HipBattleIdleMove());
         moveManager.addMove(new Hip2IdleMove());
         moveManager.addMove(new HipHeightChangeMove());
+        moveManager.addMove(new HipRunMove());
         moveManager.ChangeMove(MoveNameConstants.HipIdle);
     }
     
@@ -261,6 +262,11 @@ public class WalkBalance : TargetController
         HipHeightChangeMove m = (HipHeightChangeMove)moveManager.ChangeMove(MoveNameConstants.HipHeightChangeMove);
         m.targetRotation = targetRotation;
         m.groundHeight = targetHeight;
+    }
+
+    public void TryRun(GameObject movingSphere, Vector3 offset) {
+        HipRunMove m = (HipRunMove)moveManager.ChangeMove(MoveNameConstants.HipRunMove);
+        m.init(movingSphere, offset);
     }
 
 

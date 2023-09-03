@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LegControllerType2 : TargetController
+public class LegControllerType2 : TwoNodeController
 {
     // The position and rotation we want to stay in range of
     [SerializeField] public Transform homeTransform;
@@ -61,6 +61,7 @@ public class LegControllerType2 : TargetController
     private ReadTrigger walkingStop = new ReadTrigger(false);
     private ReadTrigger transferStand = new ReadTrigger(false);
     private ReadTrigger lastStep = new ReadTrigger(false);
+    private ReadTrigger hardStop = new ReadTrigger(false);
 
     private Banner recentBanner;
 
@@ -81,6 +82,7 @@ public class LegControllerType2 : TargetController
         moveManager.addMove(new LegMovingMove());
         moveManager.addMove(new LegPutMove(isRightFoot == 1));
         moveManager.addMove(new LegRotateMove());
+        moveManager.addMove(new LegRunMove());
         moveManager.ChangeMove(MoveNameConstants.LegIdle);
         stepCount = 0;
     }
@@ -94,7 +96,7 @@ public class LegControllerType2 : TargetController
         Vector3 target = walkPointer.transform.position + d * 1f;
         target += r * Mathf.Abs(feetBetween) * isRightFoot;
         target.y = 0.7f;
-        hint.position = target;
+        // hint.position = target;
         move.move(Time.deltaTime);
     }
 
@@ -384,6 +386,11 @@ public class LegControllerType2 : TargetController
                 // } else {
                 //     Debug.Log(this.GetType().Name + " normalize " + move.normalizedTime);
                 //     Debug.Log(this.GetType().Name + " walkingStopTime " + walkingStopTime.getTime());
+            }
+            if (hardStop.read()) {
+                // Debug.Log(" hardStop ");
+                transferStand.clear();
+                break;
             }
             yield return null;
         }
@@ -688,5 +695,18 @@ public class LegControllerType2 : TargetController
         LegRotateMove cm = (LegRotateMove)moveManager.ChangeMove(MoveNameConstants.LegRotateMove);
         cm.setTargetPosition(new Vector3(angelOffset, 0, 0));
         cm.duration = duration;
+    }
+
+    public override void handleEvent(string eventId) {
+        if (eventId == HumanIKController.EVENT_HARD_STOP_WALKING) {
+            hardStop.set();
+        } else {
+            base.handleEvent(eventId);
+        }
+    }
+
+    public void TryRun(float offsetTime) {
+        LegRunMove move = (LegRunMove)moveManager.ChangeMove(MoveNameConstants.LegRunMove);
+        move.initBasic(humanIKController.animationProperties.runHalfDuration, Time.deltaTime, offsetTime);
     }
 }

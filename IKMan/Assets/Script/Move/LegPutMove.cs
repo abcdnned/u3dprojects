@@ -15,26 +15,26 @@ public class LegPutMove : LegMove
 
     protected override void subinit()
     {
-        duration = parent.shortStepDuration;
+        duration = legController.shortStepDuration;
         
     }
     public override void beReady()
     {
-        Transform target = parent.transform;
+        Transform target = legController.transform;
         Vector3 wp1 = target.position;
         Vector3 wp3 = targetPosition;
-        Vector3 wp2 = Utils.GetMiddleLiftPoint(wp1, wp3, parent.shortStepLiftDistance);
+        Vector3 wp2 = Utils.GetMiddleLiftPoint(wp1, wp3, legController.shortStepLiftDistance);
         // DrawUtils.drawBall(targetPosition, 8);
-        Transform p = pointer == null ? parent.body.transform : pointer;
+        Transform p = pointer == null ? legController.body.transform : pointer;
         steper = new Steper(Utils.forwardFlat(p),
                             Utils.right(p),
-                            parent.shortStepDuration,
+                            legController.shortStepDuration,
                             Steper.BEARZ,
                             p,
                             0,
-                            parent.transform,
+                            legController.transform,
                             new Vector3[] {wp1, wp2, wp3});
-        rotater = new Rotater(p, parent.transform,
+        rotater = new Rotater(p, legController.transform,
                                     duration,
                                     angelOffset);
     }

@@ -43,6 +43,10 @@ public class HandController : TwoNodeController
     private Quaternion homeRotationDelta = Quaternion.identity;
     public float armLookRotationH = 0;
     public float armLookRotationV = 0;
+    private ReadTrigger hardStop = new ReadTrigger(false);
+
+
+
     protected override void initMove() {
         moveManager.addMove(new HandMovingMove());
         moveManager.addMove(new HandIdleMove());
@@ -128,6 +132,9 @@ public class HandController : TwoNodeController
             if (timeElapsed >= duration) {
                 break;
             } 
+            if (hardStop.read()) {
+                break;
+            }
             yield return null;
             walkingStopTime.countDown(Time.deltaTime);
             if (timeElapsed >= 0 && walkingStopTime.check()) {
@@ -137,15 +144,17 @@ public class HandController : TwoNodeController
             }
         }
         while (timeElapsed < duration);
-        if (walkingStopTime.getTime() > 0) {
-            postWalkingTrigger.set();
-        }
-        normalizedTime = -1;
-        moveManager.ChangeMove(MoveNameConstants.HandIdle);
-        if (postWalkingTrigger.read()) {
-            TryTransferDirectly(handHome.transform, swingBackDF);
-        } else {
-            // notifyBanner();
+        if (move.name == MoveNameConstants.HandMoving) {
+            if (walkingStopTime.getTime() > 0) {
+                postWalkingTrigger.set();
+            }
+            normalizedTime = -1;
+            moveManager.ChangeMove(MoveNameConstants.HandIdle);
+            if (postWalkingTrigger.read()) {
+                TryTransferDirectly(handHome.transform, swingBackDF);
+            } else {
+                // notifyBanner();
+            }
         }
     }
 
@@ -223,7 +232,7 @@ public class HandController : TwoNodeController
     }
 
     private void Update() {
-        move.move(Time.deltaTime);
+        // move.move(Time.deltaTime);
         updateHandLocalRotation();
     }
 
@@ -285,7 +294,18 @@ public class HandController : TwoNodeController
                   transform, hic.walkPointer.transform.forward, 2f);
     }
 
-    public void TryRun() {
-        moveManager.ChangeMove(MoveNameConstants.HandRunMove);
+    public void TryRun(float offset, float initTime) {
+        if (!(move is HandRunMove)) {
+            HandRunMove move = (HandRunMove)moveManager.ChangeMove(MoveNameConstants.HandRunMove);
+            Debug.Log(name + " initTime " + initTime);
+            move.initBasic(hic.ap.runHalfDuration, initTime, offset);
+        }
+    }
+    public override void handleEvent(string eventId) {
+        if (eventId == HumanIKController.EVENT_HARD_STOP_WALKING) {
+            hardStop.set();
+        } else {
+            base.handleEvent(eventId);
+        }
     }
 }

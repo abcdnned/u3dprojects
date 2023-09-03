@@ -39,11 +39,17 @@ public class MoveManager
             return null;
         }
     }
-    public Move ChangeMove(string moveName)
+    public Move ChangeMove(string moveName, bool alwaysNew = true)
     {
         Move mov = getMove(moveName);
         if (mov != null)
         {
+            // check move exists
+            if (!alwaysNew) {
+                if (targetController.move.name == moveName) {
+                    return targetController.move;
+                }
+            }
             mov.init();
             if (targetController.advanceIKController != null) {
                 targetController.advanceIKController.changeState(mov.getMoveType());
@@ -52,8 +58,9 @@ public class MoveManager
                 targetController.move.finish();
             }
             targetController.move = mov;
+            // Debug.Log(" change mvoe " + targetController.move.name);
         }
-        return mov;
+        return targetController.move;
     }
 
 }

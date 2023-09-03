@@ -182,6 +182,11 @@ public class HumanIKController : MonoBehaviour
       sprintFlag = true;
     }
     currentStatus = currentStatus.handleEvent(ikEvent);
+
+    leftHand.move.move(Time.deltaTime);
+    frontLeftLegStepper.move.move(Time.deltaTime);
+    rightHand.move.move(Time.deltaTime);
+    frontRightLegStepper.move.move(Time.deltaTime);
     // if (oldState != currentStatus) {
     //   Debug.Log(oldState.getName() + "status changed to " + currentStatus.getName());
     // }

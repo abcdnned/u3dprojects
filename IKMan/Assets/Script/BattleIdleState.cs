@@ -31,24 +31,24 @@ public class BattleIdleState : AnyState
     {
         if (e.bgA == EVENT_BUTTON_R)
         {
-            humanIKController.updateAnchorPoints();
+            hic.updateAnchorPoints();
             // Vector3 leftPoint = humanIKController.idleAnchorPoints[ANCHOR_LEFT_LEG];
             // Vector3 rightPoint = humanIKController.idleAnchorPoints[ANCHOR_RIGHT_LEG];
             // leftPoint = Utils.snapTo(leftPoint, Vector3.up, 0);
             // rightPoint = Utils.snapTo(rightPoint, Vector3.up, 0);
             // humanIKController.frontLeftLegStepper.TryRotateLeg(0);
-            humanIKController.frontRightLegStepper.TryPutLeg(getReturnRightPosition(), 0,
-                                                             humanIKController.frontRightLegStepper.shortStepDuration);
+            hic.frontRightLegStepper.TryPutLeg(getReturnRightPosition(), 0,
+                                                             hic.frontRightLegStepper.shortStepDuration);
             // WalkBalance wb = humanIKController.walkBalance;
             // wb.TryRotate(0, wb.idleHipH);
-            humanIKController.headController.setMode(1);
-            humanIKController.rightHand.TryReturnSword(humanIKController.weapon,
-                                                       humanIKController.attchment_rightHand);
+            hic.headController.setMode(1);
+            hic.rightHand.TryReturnSword(hic.weapon,
+                                                       hic.attchment_rightHand);
             return (toIdleTransfer, this);
         }
         else if (e.bgA == EVENT_LEFT_CLICK)
         {
-            humanIKController.rightHand.TryLeftSwing();
+            hic.rightHand.TryLeftSwing();
             return (occupyState, this);
         }
         return (battleIdleState, this);
@@ -56,9 +56,9 @@ public class BattleIdleState : AnyState
 
     private Vector3 getReturnRightPosition()
     {
-        Vector3 leftPoint = humanIKController.idleAnchorPoints[ANCHOR_LEFT_LEG];
-        Vector3 rightPoint = humanIKController.idleAnchorPoints[ANCHOR_RIGHT_LEG];
-        Vector3 currentLeft = humanIKController.frontLeftLegStepper.transform.position;
+        Vector3 leftPoint = hic.idleAnchorPoints[ANCHOR_LEFT_LEG];
+        Vector3 rightPoint = hic.idleAnchorPoints[ANCHOR_RIGHT_LEG];
+        Vector3 currentLeft = hic.frontLeftLegStepper.transform.position;
         return currentLeft + (rightPoint - leftPoint);
     }
 
@@ -66,7 +66,7 @@ public class BattleIdleState : AnyState
     {
         if (allIdleCheck())
         {
-            return (null, new IdleStatus(humanIKController));
+            return (null, new IdleStatus(hic));
         }
         return (toIdleTransfer, this);
     }

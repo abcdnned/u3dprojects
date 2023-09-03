@@ -10,11 +10,11 @@ using UnityEngine.InputSystem;
 public class ActionStateMachine {
     // ---------- EXTERNAL INPUT ----------
     protected ActionStateMachine previousState;
-    protected HumanIKController humanIKController;
+    protected HumanIKController hic;
     internal States cs;
 
     public ActionStateMachine(HumanIKController humanIKController) {
-        this.humanIKController = humanIKController;
+        this.hic = humanIKController;
     }
 
     public void setPreviousState(ActionStateMachine previousState) {
@@ -39,22 +39,22 @@ public class ActionStateMachine {
 
     public bool allIdleCheck()
     {
-        return humanIKController.leftHand.move.isIdle()
-               && humanIKController.rightHand.move.isIdle()
-               && humanIKController.frontLeftLegStepper.move.isIdle()
-               && humanIKController.frontRightLegStepper.move.isIdle();
+        return hic.leftHand.move.isIdle()
+               && hic.rightHand.move.isIdle()
+               && hic.frontLeftLegStepper.move.isIdle()
+               && hic.frontRightLegStepper.move.isIdle();
     }
 
     public bool legMovingCheck() {
-        return humanIKController.frontLeftLegStepper.move.name.Contains("moving")
-               || humanIKController.frontRightLegStepper.move.name.Contains("moving");
+        return hic.frontLeftLegStepper.move.name.Contains("moving")
+               || hic.frontRightLegStepper.move.name.Contains("moving");
     }
 
     // check if only the two legs are idle
     public bool legIdleChecker()
     {
-        return humanIKController.frontLeftLegStepper.move.isIdle()
-               && humanIKController.frontRightLegStepper.move.isIdle();
+        return hic.frontLeftLegStepper.move.isIdle()
+               && hic.frontRightLegStepper.move.isIdle();
     }
 
 }

@@ -86,19 +86,19 @@ public class LegControllerType2 : TwoNodeController
         moveManager.ChangeMove(MoveNameConstants.LegIdle);
         stepCount = 0;
     }
-    private void Update() {
-        Vector3 d = transform.forward;
-        Vector3 r = transform.right;
-        r.y = 0;
-        r.Normalize();
-        d.y = 0;
-        d.Normalize();
-        Vector3 target = walkPointer.transform.position + d * 1f;
-        target += r * Mathf.Abs(feetBetween) * isRightFoot;
-        target.y = 0.7f;
+    // private void Update() {
+    //     Vector3 d = transform.forward;
+    //     Vector3 r = transform.right;
+    //     r.y = 0;
+    //     r.Normalize();
+    //     d.y = 0;
+    //     d.Normalize();
+    //     Vector3 target = walkPointer.transform.position + d * 1f;
+    //     target += r * Mathf.Abs(feetBetween) * isRightFoot;
+    //     target.y = 0.7f;
         // hint.position = target;
-        move.move(Time.deltaTime);
-    }
+    //     move.move(Time.deltaTime);
+    // }
 
     private Vector3[] getEndPoint(Transform target, float pairProjectDis, Vector3 plane) {
         Vector3 forward = walkPointer.transform.forward;
@@ -396,14 +396,16 @@ public class LegControllerType2 : TwoNodeController
         }
         while (timeElapsed < duration);
 
-        move.normalizedTime = -1;
-        if (transferStand.read()) {
-            TryTransferStand();
-            // Debug.Log(this.GetType().Name + " transferStand ");
-        } else {
-            moveManager.ChangeMove(MoveNameConstants.LegIdle);
-            // Debug.Log(this.GetType().Name + " direct finish ");
-            // notifyBanner();
+        if (move.name == MoveNameConstants.LegMoving) {
+            move.normalizedTime = -1;
+            if (transferStand.read()) {
+                TryTransferStand();
+                // Debug.Log(this.GetType().Name + " transferStand ");
+            } else {
+                moveManager.ChangeMove(MoveNameConstants.LegIdle);
+                // Debug.Log(this.GetType().Name + " direct finish ");
+                // notifyBanner();
+            }
         }
     }
 
@@ -705,8 +707,11 @@ public class LegControllerType2 : TwoNodeController
         }
     }
 
-    public void TryRun(float offsetTime) {
-        LegRunMove move = (LegRunMove)moveManager.ChangeMove(MoveNameConstants.LegRunMove);
-        move.initBasic(hic.ap.runHalfDuration, Time.deltaTime, offsetTime);
+    public void TryRun(float offsetTime, float initTime) {
+        if (!(move is LegRunMove)) {
+            LegRunMove move = (LegRunMove)moveManager.ChangeMove(MoveNameConstants.LegRunMove);
+            Debug.Log(name + " initTime " + initTime);
+            move.initBasic(hic.ap.runHalfDuration, initTime, offsetTime);
+        }
     }
 }

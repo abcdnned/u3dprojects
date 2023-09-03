@@ -29,47 +29,48 @@ public class LocomotionState : AnyState {
     private (States, ActionStateMachine) Move(Event e)
     {
         if (e.eventId.Equals(HumanIKController.EVENT_KEEP_WALKING)) {
-            if (humanIKController.sprintFlag) {
+            if (hic.sprintFlag) {
                 if (movingSphere == null) {
-                    Vector3 p = Utils.copy(humanIKController.transform.position);
+                    Vector3 p = Utils.copy(hic.transform.position);
                     p.y = 0.55f;
                     movingSphere = PrefabCreator.CreatePrefab(p, "MovingSphere");
-                    movingSphere.GetComponent<MovingSphere>().humanIKController = humanIKController;
-                    offset = humanIKController.transform.position - movingSphere.transform.position;
+                    movingSphere.GetComponent<MovingSphere>().humanIKController = hic;
+                    offset = hic.transform.position - movingSphere.transform.position;
                 }
-                if (humanIKController.frontLeftLegStepper.move.IsLegMoving()) {
-                    humanIKController.frontLeftLegStepper.handleEvent((HumanIKController.EVENT_HARD_STOP_WALKING));
+                if (hic.frontLeftLegStepper.move.IsLegMoving()) {
+                    hic.frontLeftLegStepper.handleEvent((HumanIKController.EVENT_HARD_STOP_WALKING));
                 }
-                if (humanIKController.frontRightLegStepper.move.IsLegMoving()) {
-                    humanIKController.frontRightLegStepper.handleEvent((HumanIKController.EVENT_HARD_STOP_WALKING));
+                if (hic.frontRightLegStepper.move.IsLegMoving()) {
+                    hic.frontRightLegStepper.handleEvent((HumanIKController.EVENT_HARD_STOP_WALKING));
                 }
-                humanIKController.walkBalance.TryRun(movingSphere.gameObject, offset);
-                humanIKController.leftHand.TryRun();
-                humanIKController.rightHand.TryRun();
-                humanIKController.frontLeftLegStepper.TryRun(0);
-                humanIKController.frontRightLegStepper.TryRun(2 * humanIKController.ap.runHalfDuration);
+                hic.walkBalance.TryRun(movingSphere.gameObject, offset);
+                float t = Time.time;
+                hic.leftHand.TryRun(hic.ap.runHalfDuration * 2, t);
+                hic.rightHand.TryRun(0, t);
+                hic.frontLeftLegStepper.TryRun(0, t);
+                hic.frontRightLegStepper.TryRun(2 * hic.ap.runHalfDuration, t);
             } else {
                 destoryMovingSphere();
-                humanIKController.frontRightLegStepper.handleEvent((HumanIKController.EVENT_KEEP_WALKING));
-                humanIKController.frontLeftLegStepper.TryMove();
-                humanIKController.frontRightLegStepper.TryMove();
-                humanIKController.leftHand.handleEvent(e.eventId);
-                humanIKController.rightHand.handleEvent(e.eventId);
+                hic.frontRightLegStepper.handleEvent((HumanIKController.EVENT_KEEP_WALKING));
+                hic.frontLeftLegStepper.TryMove();
+                hic.frontRightLegStepper.TryMove();
+                hic.leftHand.handleEvent(e.eventId);
+                hic.rightHand.handleEvent(e.eventId);
             }
         } else if (e.eventId.Equals(HumanIKController.EVENT_STOP_WALKING)) {
             destoryMovingSphere();
-            if (humanIKController.frontLeftLegStepper.move.IsLegMoving()) {
-                humanIKController.frontLeftLegStepper.handleEvent((HumanIKController.EVENT_STOP_WALKING));
+            if (hic.frontLeftLegStepper.move.IsLegMoving()) {
+                hic.frontLeftLegStepper.handleEvent((HumanIKController.EVENT_STOP_WALKING));
             } else {
-                humanIKController.frontLeftLegStepper.handleEvent((HumanIKController.EVENT_STOP_WALKING));
+                hic.frontLeftLegStepper.handleEvent((HumanIKController.EVENT_STOP_WALKING));
             }
-            if (humanIKController.frontRightLegStepper.move.IsLegMoving()) {
-                humanIKController.frontRightLegStepper.handleEvent((HumanIKController.EVENT_STOP_WALKING));
+            if (hic.frontRightLegStepper.move.IsLegMoving()) {
+                hic.frontRightLegStepper.handleEvent((HumanIKController.EVENT_STOP_WALKING));
             } else {
-                humanIKController.frontRightLegStepper.handleEvent((HumanIKController.EVENT_STOP_WALKING));
+                hic.frontRightLegStepper.handleEvent((HumanIKController.EVENT_STOP_WALKING));
             }
-            humanIKController.leftHand.handleEvent(e.eventId);
-            humanIKController.rightHand.handleEvent(e.eventId);
+            hic.leftHand.handleEvent(e.eventId);
+            hic.rightHand.handleEvent(e.eventId);
             return (stoppingState, this);
         }
         return (moveState, this);
@@ -79,32 +80,32 @@ public class LocomotionState : AnyState {
     {
         if (legIdleChecker()) {
             // Debug.Log(this.GetType().Name + " stopWalingBanner checked ");
-            Vector3 direction = Utils.forwardFlat(humanIKController.body.transform);
-            float leftDot = Vector3.Dot(humanIKController.frontLeftLegStepper.transform.position, direction);
-            float rightDot = Vector3.Dot(humanIKController.frontRightLegStepper.transform.position, direction);
-            if (!humanIKController.frontLeftLegStepper.move.IsLegMoving() && !humanIKController.frontRightLegStepper.move.IsLegMoving()
+            Vector3 direction = Utils.forwardFlat(hic.body.transform);
+            float leftDot = Vector3.Dot(hic.frontLeftLegStepper.transform.position, direction);
+            float rightDot = Vector3.Dot(hic.frontRightLegStepper.transform.position, direction);
+            if (!hic.frontLeftLegStepper.move.IsLegMoving() && !hic.frontRightLegStepper.move.IsLegMoving()
                 && (Mathf.Max(leftDot, rightDot) - Mathf.Min(leftDot, rightDot) > 0.2)) {
                 // Debug.Log(this.GetType().Name + " need one foot transfer ");
                 if (leftDot < rightDot) {
-                    humanIKController.frontLeftLegStepper.TryMove();
-                    humanIKController.frontLeftLegStepper.handleEvent((HumanIKController.EVENT_STOP_WALKING));
+                    hic.frontLeftLegStepper.TryMove();
+                    hic.frontLeftLegStepper.handleEvent((HumanIKController.EVENT_STOP_WALKING));
                 } else {
-                    humanIKController.frontRightLegStepper.TryMove();
-                    humanIKController.frontRightLegStepper.handleEvent((HumanIKController.EVENT_STOP_WALKING));
+                    hic.frontRightLegStepper.TryMove();
+                    hic.frontRightLegStepper.handleEvent((HumanIKController.EVENT_STOP_WALKING));
                 }
-                humanIKController.leftHand.handleEvent((HumanIKController.EVENT_STOP_WALKING));
-                humanIKController.rightHand.handleEvent((HumanIKController.EVENT_STOP_WALKING));
+                hic.leftHand.handleEvent((HumanIKController.EVENT_STOP_WALKING));
+                hic.rightHand.handleEvent((HumanIKController.EVENT_STOP_WALKING));
                 return (transferState, this);
             } else {
-                return (stoppingState, new IdleStatus(humanIKController));
+                return (stoppingState, new IdleStatus(hic));
             }
         }
         else if (e.eventId.Equals(HumanIKController.EVENT_KEEP_WALKING)) {
-            humanIKController.frontRightLegStepper.handleEvent((HumanIKController.EVENT_KEEP_WALKING));
-            humanIKController.frontLeftLegStepper.TryMove();
-            humanIKController.frontRightLegStepper.TryMove();
-            humanIKController.leftHand.handleEvent(e.eventId);
-            humanIKController.rightHand.handleEvent(e.eventId);
+            hic.frontRightLegStepper.handleEvent((HumanIKController.EVENT_KEEP_WALKING));
+            hic.frontLeftLegStepper.TryMove();
+            hic.frontRightLegStepper.TryMove();
+            hic.leftHand.handleEvent(e.eventId);
+            hic.rightHand.handleEvent(e.eventId);
             // Debug.Log(this.GetType().Name + " refresh ");
             // stopWalkingBanner.refresh();
             return (moveState, this);
@@ -116,7 +117,7 @@ public class LocomotionState : AnyState {
     {
         if (allIdleCheck()) {
             // Debug.Log(this.GetType().Name + " transferBanner checked ");
-            return (transferState, new IdleStatus(humanIKController));
+            return (transferState, new IdleStatus(hic));
         }
         return (transferState, this);
     }

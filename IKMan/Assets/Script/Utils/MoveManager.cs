@@ -16,7 +16,7 @@ public class MoveManager
     {
         move.targetController = this.targetController;
         move.moveManager = this;
-        move.humanIKController = targetController.humanIKController;
+        move.humanIKController = targetController.hic;
         Moves[move.name] = move;
     }
 

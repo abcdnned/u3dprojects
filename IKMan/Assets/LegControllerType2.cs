@@ -234,7 +234,7 @@ public class LegControllerType2 : TwoNodeController
     {
         sync();
         moveManager.ChangeMove(MoveNameConstants.LegMoving);
-        Vector2 m = humanIKController.getMovement();
+        Vector2 m = hic.getMovement();
         Vector3 targetDir = Utils.forwardFlat(cameraModule.Camera.transform) * m.y + Utils.right(cameraModule.Camera.transform) * m.x;
         // Debug.Log(this.GetType().Name + " td " + targetDir);
         // cameraFollower.setDir(targetDir);
@@ -302,8 +302,8 @@ public class LegControllerType2 : TwoNodeController
                     lastPosition = startPoint;
                     init1 = true;
                     float handDuration = moveDuration - (moveDuration * preStartMovingDistance);
-                    humanIKController.leftHand.TryMove(handDuration, isRightFoot);
-                    humanIKController.rightHand.TryMove(handDuration, isRightFoot);
+                    hic.leftHand.TryMove(handDuration, isRightFoot);
+                    hic.rightHand.TryMove(handDuration, isRightFoot);
                 }
                 float poc = Mathf.Lerp(0, 1, move.normalizedTime / stage1);
                 Vector3 targetPosition =
@@ -707,6 +707,6 @@ public class LegControllerType2 : TwoNodeController
 
     public void TryRun(float offsetTime) {
         LegRunMove move = (LegRunMove)moveManager.ChangeMove(MoveNameConstants.LegRunMove);
-        move.initBasic(humanIKController.animationProperties.runHalfDuration, Time.deltaTime, offsetTime);
+        move.initBasic(hic.ap.runHalfDuration, Time.deltaTime, offsetTime);
     }
 }

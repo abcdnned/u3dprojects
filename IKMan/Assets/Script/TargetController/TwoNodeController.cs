@@ -12,8 +12,8 @@ public class TwoNodeController : TargetController
         // Debug.Log(" isRightHand " + isRightHand);
         String elbow = IKSampleNames.ELBOW + "_" + sampleName;
         String hand = IKSampleNames.HAND + "_" + sampleName;
-        HandDelayLooker elbowLooker = humanIKController.poseManager.handDelayLookerMap[elbow];
-        HandDelayLooker handLooker = humanIKController.poseManager.handDelayLookerMap[hand];
+        HandDelayLooker elbowLooker = hic.poseManager.handDelayLookerMap[elbow];
+        HandDelayLooker handLooker = hic.poseManager.handDelayLookerMap[hand];
         if (MiddleNode != null && EndNode != null) {
             MiddleNode.setDuration(duration);
             EndNode.setDuration(duration);

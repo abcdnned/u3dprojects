@@ -280,9 +280,9 @@ public class HandController : TwoNodeController
 
     public void TryLeftSwing() {
         HandSwingMove move = (HandSwingMove)moveManager.ChangeMove(MoveNameConstants.HandSwingMove);
-        move.init(humanIKController.poleJoint,
-                  humanIKController.attchment_rightHand.GetComponent<CharacterJoint>(),
-                  transform, humanIKController.walkPointer.transform.forward, 2f);
+        move.init(hic.poleJoint,
+                  hic.attchment_rightHand.GetComponent<CharacterJoint>(),
+                  transform, hic.walkPointer.transform.forward, 2f);
     }
 
     public void TryRun() {

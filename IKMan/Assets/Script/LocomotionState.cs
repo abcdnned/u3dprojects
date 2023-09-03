@@ -47,7 +47,7 @@ public class LocomotionState : AnyState {
                 humanIKController.leftHand.TryRun();
                 humanIKController.rightHand.TryRun();
                 humanIKController.frontLeftLegStepper.TryRun(0);
-                humanIKController.frontRightLegStepper.TryRun(2 * humanIKController.animationProperties.runHalfDuration);
+                humanIKController.frontRightLegStepper.TryRun(2 * humanIKController.ap.runHalfDuration);
             } else {
                 destoryMovingSphere();
                 humanIKController.frontRightLegStepper.handleEvent((HumanIKController.EVENT_KEEP_WALKING));

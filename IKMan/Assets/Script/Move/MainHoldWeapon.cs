@@ -5,8 +5,8 @@ public class MainHoldWeapon : HandMove
 
     protected override void subinit() {
         Debug.Log(" MainHoldeWeapon ");
-        Vector3 readyPos = handController.humanIKController.weaponReady.transform.position;
-        Vector3 spin1 = handController.humanIKController.spin1.transform.position;
+        Vector3 readyPos = handController.hic.weaponReady.transform.position;
+        Vector3 spin1 = handController.hic.spin1.transform.position;
         GameObject polePivot = PrefabCreator.CreatePrefab(new Vector3(spin1.x, readyPos.y, spin1.z),
                                "WeaponHandler");
         polePivot.transform.rotation = Quaternion.LookRotation(humanIKController.transform.forward,

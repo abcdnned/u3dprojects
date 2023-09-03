@@ -11,7 +11,7 @@ public class TargetController : MonoBehaviour {
     protected ReadTrigger stopWalkingTrigger = new ReadTrigger(false);
     protected ReadTrigger idleTrigger = new ReadTrigger(false);
     public WalkPointer walkPointer;
-    public HumanIKController humanIKController;
+    public HumanIKController hic;
 
     public const float DEFAULT_DURATION_FACTOR = 0.5f;
     public bool Recover;

@@ -68,7 +68,7 @@ public class HumanIKController : MonoBehaviour
   [Header("--- Character Properties ---")]
   public float swingStrength = 200;
 
-  internal AnimationProperties animationProperties;
+  internal AnimationProperties ap;
 
   [Header("--- Input ---")]
   internal bool sprintFlag;
@@ -100,7 +100,7 @@ public class HumanIKController : MonoBehaviour
     inputModule.OnRightArmDelegates += RightClick;
     // inputModule.OnLeftShiftDelegates += OnLeftShift;
     inputModule.OnSpaceDelegates += SpaceClick;
-    animationProperties = GetComponent<AnimationProperties>();
+    ap = GetComponent<AnimationProperties>();
     initStatus();
   }
 

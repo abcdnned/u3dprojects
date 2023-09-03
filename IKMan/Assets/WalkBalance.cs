@@ -67,13 +67,13 @@ public class WalkBalance : TargetController
         Vector3 dist = new Vector3(center.x, target.position.y, center.z);
         dist += Utils.forwardFlat(transform) * overshoot;
         dist = new Vector3(dist.x, target.position.y, dist.z);
-        humanIKController.logHomeOffset();
+        hic.logHomeOffset();
         target.position = Vector3.Lerp(
                                     target.position,
                                     dist,
                                     1 - Mathf.Exp(-returnCenterSpeed * Time.deltaTime)
                                 );
-        humanIKController.postUpdateTowHandPosition();
+        hic.postUpdateTowHandPosition();
     }
 
     void Update()
@@ -82,7 +82,7 @@ public class WalkBalance : TargetController
             // Debug.Log(this.GetType().Name + " walking ");
             moveManager.ChangeMove(MoveNameConstants.HipDamp);
             keepBalanceWhenWalking();
-        } else if (humanIKController.currentStatus.legIdleChecker()) {
+        } else if (hic.currentStatus.legIdleChecker()) {
             moveManager.ChangeMove(MoveNameConstants.HipIdle);
             // ReturnToCenter();
         }
@@ -93,9 +93,9 @@ public class WalkBalance : TargetController
             move = move.move(Time.deltaTime);
         }
         // Update rotation based on camera.
-        if (humanIKController.currentStatus.getName() == LocomotionState.NAME
-            && humanIKController.currentStatus.cs.name == LocomotionState.STATE_MOVE) {
-            Vector2 m = humanIKController.getMovement();
+        if (hic.currentStatus.getName() == LocomotionState.NAME
+            && hic.currentStatus.cs.name == LocomotionState.STATE_MOVE) {
+            Vector2 m = hic.getMovement();
             Vector3 dir = Utils.forwardFlat(cam) * m.y + Utils.right(cam) * m.x;
             updateTransferDirection(dir);
             transfer(0);
@@ -121,7 +121,7 @@ public class WalkBalance : TargetController
     }
     
     internal void adjustLegDistance() {
-        ActionStateMachine asm = humanIKController.currentStatus;
+        ActionStateMachine asm = hic.currentStatus;
         if (asm.cs.name == IdleStatus.STATE_TOBATTLEIDLE
             || (asm.getName() == BattleIdleState.NAME && asm.cs.name != BattleIdleState.STATE_TO_IDLE)) {
             // expectLegDistance = battleLegDistance;
@@ -192,12 +192,12 @@ public class WalkBalance : TargetController
         );
         leftLeg.transform.SetParent(target);
         rightLeg.transform.SetParent(target);
-        humanIKController.logHomeOffset();
+        hic.logHomeOffset();
         target.rotation = r;
         rotateCurrentDampDist(forward, right);
         leftLeg.transform.SetParent(null);
         rightLeg.transform.SetParent(null);
-        humanIKController.postUpdateTowHandPosition();
+        hic.postUpdateTowHandPosition();
     }
     internal void transferByTime(float angelOffset, float t, bool moveLeg = true) {
         Vector3 forward = Utils.forwardFlat(target);
@@ -214,14 +214,14 @@ public class WalkBalance : TargetController
             leftLeg.transform.SetParent(target);
             rightLeg.transform.SetParent(target);
         }
-        humanIKController.logHomeOffset();
+        hic.logHomeOffset();
         target.rotation = r;
         rotateCurrentDampDist(forward, right);
         if (moveLeg) {
             leftLeg.transform.SetParent(null);
             rightLeg.transform.SetParent(null);
         }
-        humanIKController.postUpdateTowHandPosition();
+        hic.postUpdateTowHandPosition();
     }
 
     internal void transfer(float angelOffset) {
@@ -241,11 +241,11 @@ public class WalkBalance : TargetController
         Vector3 delta = tp - lastDampStart;
         dampSum += delta.magnitude;
         dampCount++;
-        humanIKController.logHomeOffset();
+        hic.logHomeOffset();
         transform.position += forward2 * Vector3.Dot(delta, forward2)
                                 + right2 * Vector3.Dot(delta, right2)
                                 + Vector3.zero * Vector3.Dot(delta, plane);
-        humanIKController.postUpdateTowHandPosition();
+        hic.postUpdateTowHandPosition();
         lastDampStart = target.position;
         Debug.DrawLine(target.position, dampDist, Color.red, Time.deltaTime);
         Debug.DrawLine(target.position, left.position, Color.blue, Time.deltaTime);

@@ -27,7 +27,6 @@ public class HandController : TwoNodeController
     public TimeValue<Vector3> handRotation = new TimeValue<Vector3>();
     public float handLookSpeed = 10;
     
-    public HandLookIKController handLookIKController;
 
     [Header("--- Main2BattleIdle ---")]
     public float m2b_duration = 0.2f;
@@ -210,41 +209,11 @@ public class HandController : TwoNodeController
                                         1 - Mathf.Exp(-handLookSpeed * Time.deltaTime));
         transform.rotation = look;
     }
-    internal void LookToArmLook() {
-        if (EndNode == null || MiddleNode == null) {
-            return;
-        }
-        Vector3 v1 = getArmDirection();
-        // Vector3 v2 = HandLook.transform.position - transform.position;
-        Vector3 v2 = getBicepDirection();
-        Quaternion rotate = Quaternion.AngleAxis(90, Vector3.Cross(v2, v1));
-        v1 = rotate * v1;
-        Quaternion look = Quaternion.LookRotation(v1,
-                                                  -getArmDirection());
-        Quaternion r = Quaternion.Slerp(transform.rotation,
-                                        look,
-                                        1 - Mathf.Exp(-handLookSpeed * Time.deltaTime));
-        transform.rotation = look;
-        Quaternion hr = Quaternion.AngleAxis(armLookRotationH, transform.right);
-        transform.rotation = hr * transform.rotation;
-        Quaternion vr = Quaternion.AngleAxis(armLookRotationV, transform.up);
-        transform.rotation = vr * transform.rotation;
-    }
 
-    private void Update() {
+    // private void Update() {
         // move.move(Time.deltaTime);
-        updateHandLocalRotation();
-    }
-
-    public Vector3 getArmDirection() {
-        Vector3 r = EndNode.transform.position - MiddleNode.transform.position;
-        return r.normalized;
-    }
-
-    public Vector3 getBicepDirection() {
-        Vector3 r = MiddleNode.transform.position - ParentNode.transform.position;
-        return r.normalized;
-    }
+        // updateHandLocalRotation();
+    // }
 
     public void updateHintByFK() {
         Vector3 elbow = MiddleNode.transform.position;
@@ -279,8 +248,8 @@ public class HandController : TwoNodeController
         handRotation.init(LocalHand.localEulerAngles, v, duration, (v1, v2, t) => Vector3.Lerp(v1, v2, t));
     }
 
-    private void updateHandLocalRotation() {
-        if (!handRotation.overdue()) {
+    internal void updateHandLocalRotation() {
+        if (handRotation.vaild() && !handRotation.overdue()) {
             Vector3 r = handRotation.getValue();
             // Debug.Log(" r " + r);
             LocalHand.localEulerAngles = r;

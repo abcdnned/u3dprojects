@@ -27,12 +27,15 @@ public class TargetController : MonoBehaviour {
     public AdvanceIKController advanceIKController;
 
     private void Awake() {
+        assemblyComponent();
         moveManager = new MoveManager(this);
         moveManager.addMove(new Move(MoveNameConstants.DirectMoving));
         moveManager.addMove(new Move(MoveNameConstants.Idle));
         initMove();
     }
 
+    protected virtual void assemblyComponent() {
+    }
     protected virtual void initMove() {
 
     }
@@ -58,11 +61,13 @@ public class TargetController : MonoBehaviour {
     //     handleEvent(evtId);
     // }
     public virtual void handleEvent(string eventId) {
-        if ((move.IsHandMoving() || move.IsLegMoving()) && String.Equals(eventId, HumanIKController.EVENT_STOP_WALKING)) {
-            // Debug.Log(this.GetType().Name + " event trigger ");
-            walkingStopTime.setTimer(0.1f);
-        }
-        if ((move.IsHandMoving() || move.IsLegMoving()) && String.Equals(eventId, HumanIKController.EVENT_HARD_STOP_WALKING)) {
+        if (move != null) {
+            if ((move.IsHandMoving() || move.IsLegMoving()) && String.Equals(eventId, HumanIKController.EVENT_STOP_WALKING)) {
+                // Debug.Log(this.GetType().Name + " event trigger ");
+                walkingStopTime.setTimer(0.1f);
+            }
+            if ((move.IsHandMoving() || move.IsLegMoving()) && String.Equals(eventId, HumanIKController.EVENT_HARD_STOP_WALKING)) {
+            }
         }
         if (String.Equals(eventId, HumanIKController.EVENT_KEEP_WALKING)) {
             walkingStopTime.reset();

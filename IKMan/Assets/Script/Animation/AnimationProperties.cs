@@ -6,4 +6,6 @@ public class AnimationProperties : MonoBehaviour {
 
     [Header("--- Run ---")]
     public float runHalfDuration = .5f;
+
+    public float snapTime = 0.1f;
 }

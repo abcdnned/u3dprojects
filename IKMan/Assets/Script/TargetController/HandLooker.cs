@@ -19,20 +19,25 @@ public class HandLooker : MonoBehaviour
     public float hAd_lv2 = 0;
     public float vAd_lv2 = 0;
     public bool enable_lv2 = false;
-    
     internal float initTime;
     private Vector3 lv2Normal = Vector3.zero;
     public HandLookIKController handLookIKController;
     public float normalizedTime = 0;
-
     public static float MIN_ANGEL_DIFF = 0.05f;
-
     public Vector3 offset;
+    internal Vector3 cur_lv1_pos;
+
+
+
+
+
+
     // Start is called before the first frame update
     void Start()
     {
         hAd = horizonAngel;
         vAd = verticalAngel;
+
     }
     public void setAngel(float h, float v) {
         hAd = h;
@@ -51,7 +56,8 @@ public class HandLooker : MonoBehaviour
     }
 
     // Update is called once per frame
-    protected void Update()
+    // protected void Update()
+    internal void update()
     {
         if (!enable) return;
         Transfer(Time.deltaTime);
@@ -60,6 +66,7 @@ public class HandLooker : MonoBehaviour
         // Debug.DrawRay(sun.position, f, Color.blue);
         // Debug.DrawRay(sun.position, u, Color.green);
         Vector3 lv1_pos = SphereRotationCalculator(f, u, horizonAngel, verticalAngel);
+        cur_lv1_pos = lv1_pos;
         if (enable_lv2) {
             // Calculate level 2
             if (handLookIKController != null && handLookIKController.getIKSequence(this) == 1) {
@@ -68,19 +75,19 @@ public class HandLooker : MonoBehaviour
                 Vector3 f2 = handLookIKController.getHandShoulderForward(lv1_pos);
                 Vector3 u2 = handLookIKController.getHandShoulderNormal(lv1_pos);
                 Vector3 lv2_pos = SphereRotationCalculator(f2, u2,
-                                                           handLookIKController.getRealTimeHorizonAngel(lv1_pos, normalizedTime),
+                                                           handLookIKController.getRealTimeHorizonAngel(lv1_pos),
                                                            0);
                 // Utils.deltaMove(transform, lv2_pos);
                 Utils.deltaMove(transform, lv2_pos);
             } else if (handLookIKController != null && handLookIKController.getIKSequence(this) == 2) {
-                // Debug.Log(" seq2 ");
+                Debug.Log(" seq2 ");
                 Vector3 f2 = handLookIKController.getArmForward(lv1_pos);
                 Vector3 u2 = handLookIKController.getArmNormal(lv1_pos);
                 Vector3 lv2_pos = SphereRotationCalculator(f2, u2,
-                                                           handLookIKController.getRealTimeVerticalAngel(normalizedTime, lv1_pos),
+                                                           handLookIKController.getRealTimeVerticalAngel(lv1_pos),
                                                            0);
                 Utils.deltaMove(transform, lv2_pos);
-                // Debug.DrawLine(lv2_pos, handLookIKController.shoulder.transform.position, Color.red, normalizedTime * 2);
+                // Debug.DrawLine(lv2_pos, handLookIKController.shoulder.transform.position, Color.green, normalizedTime * 2);
                 // Debug.Log(" actuel dis " + Vector3.Distance(lv2_pos, handLookIKController.shoulder.position));
             } else {
                 Vector3 f2 = (lv1_pos - sun.position).normalized;
@@ -91,6 +98,7 @@ public class HandLooker : MonoBehaviour
         } else {
             Utils.deltaMove(transform, lv1_pos);
         }
+        lookToParent();
     }
 
     public Vector3 SphereLv1PositionCalculator(Vector3 sunpos, bool realTime = false, Transform dir = null) {
@@ -126,4 +134,8 @@ public class HandLooker : MonoBehaviour
             verticalAngel_lv2 = Mathf.Lerp(verticalAngel_lv2, vAd_lv2, 1 - Mathf.Exp(-speed * dt));
         }
     }
+
+    internal virtual void lookToParent() {
+    }
+
 }

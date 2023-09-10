@@ -7,7 +7,10 @@ public class LegHandRunMove : LegHandMove
     float half_duration;
     float offsetTime;
 
-    int previousIndex;
+    internal int previousIndex;
+    internal int previousPreviousIndex;
+
+    int[] indexMapping = new int[] { 0, 1, 2, 1 };
 
     public LegHandRunMove(string name) : base(name)
     {
@@ -17,6 +20,8 @@ public class LegHandRunMove : LegHandMove
         this.half_duration = half_duration;
         this.initTime = initTime;
         this.offsetTime = offsetTime;
+        previousIndex = 0;
+        previousPreviousIndex = 0;
     }
 
     public override string getMoveType() {
@@ -33,10 +38,12 @@ public class LegHandRunMove : LegHandMove
             // Debug.Log(targetController.name + " Time.time " + Time.time + " frameCount " + Time.frameCount);
             int index = Mathf.CeilToInt(t / half_duration) % getIndexMapping().Length;
             if (previousIndex != index) {
+                previousPreviousIndex = previousIndex;
                 previousIndex = index;
                 String syncName = getSyncName(index);
                 ((TwoNodeController)targetController).SyncIKSample(syncName, half_duration);
             }
+            updateIKRotation();
         }
         if (state == 2) {
             previousIndex = -1;
@@ -51,8 +58,11 @@ public class LegHandRunMove : LegHandMove
         return null;
     }
 
-    protected virtual int[] getIndexMapping() {
-        return null;
+    internal virtual int[] getIndexMapping() {
+        return indexMapping;
+    }
+
+    protected virtual void updateIKRotation() {
     }
 
 }

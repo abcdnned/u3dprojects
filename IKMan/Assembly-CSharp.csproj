@@ -58,6 +58,7 @@
      <Compile Include="Assets/Script/Utils/States.cs" />
      <Compile Include="Assets/Script/Move/LegRotateMove.cs" />
      <Compile Include="Assets/Script/LocomotionState.cs" />
+     <Compile Include="Assets/Script/Move/LegHandMove.cs" />
      <Compile Include="Assets/Script/LegIdleMove.cs" />
      <Compile Include="Assets/Script/Timer.cs" />
      <Compile Include="Assets/Script/CameraFollower.cs" />
@@ -89,6 +90,7 @@
      <Compile Include="Assets/Script/Weapon/WeaponRef.cs" />
      <Compile Include="Assets/Script/BattleIdleState.cs" />
      <Compile Include="Assets/Script/Move/MovingSphere.cs" />
+     <Compile Include="Assets/Script/Move/LegHandRunMove.cs" />
      <Compile Include="Assets/Script/Move/HandSwingMove.cs" />
      <Compile Include="Assets/Script/TargetController/PoseManager.cs" />
      <Compile Include="Assets/Script/HandleIdleMove.cs" />
@@ -109,19 +111,19 @@
      <Compile Include="Assets/Script/Move.cs" />
      <Compile Include="Assets/Script/ReadTrigger.cs" />
      <Compile Include="Assets/Script/Move/HipDampMove.cs" />
+     <Compile Include="Assets/Script/Move/RunPoseArgument.cs" />
+     <Compile Include="Assets/Script/Move/PoseArgument.cs" />
      <Compile Include="Assets/Script/SMInput.cs" />
      <Compile Include="Assets/Script/TargetController/HandDelayLooker.cs" />
      <Compile Include="Assets/Script/Move/LegPutMove.cs" />
      <Compile Include="Assets/Script/Move/HandConsonant2Battle.cs" />
      <Compile Include="Assets/Script/AnyState.cs" />
+     <Compile Include="Assets/Script/Animation/AnimationProperties.cs" />
+     <Compile Include="Assets/Script/TargetController/TwoNodeController.cs" />
      <Compile Include="Assets/Script/TargetController/HeadController.cs" />
      <Compile Include="Assets/Script/TargetController.cs" />
      <Compile Include="Assets/InputController.cs" />
      <Compile Include="Assets/Script/Modules/CameraModule.cs" />
-     <Compile Include="Assets/Script/TargetController/TwoNodeController.cs" />
-     <Compile Include="Assets/Script/Animation/AnimationProperties.cs" />
-     <Compile Include="Assets/Script/Move/LegHandMove.cs" />
-     <Compile Include="Assets/Script/Move/LegHandRunMove.cs" />
     <Reference Include="UnityEngine">
         <HintPath>/Users/i519418/software/u3d/2021.3.16f1c1/Unity.app/Contents/Managed/UnityEngine/UnityEngine.dll</HintPath>
     </Reference>
@@ -797,11 +799,14 @@
     <Reference Include="Unity.VisualScripting.SettingsProvider.Editor">
         <HintPath>/Users/i519418/Documents/u3dprojects/IKMan/Library/ScriptAssemblies/Unity.VisualScripting.SettingsProvider.Editor.dll</HintPath>
     </Reference>
+    <Reference Include="Unity.ProBuilder">
+        <HintPath>/Users/i519418/Documents/u3dprojects/IKMan/Library/ScriptAssemblies/Unity.ProBuilder.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.TestTools.CodeCoverage.Editor.OpenCover.Mono.Reflection">
         <HintPath>/Users/i519418/Documents/u3dprojects/IKMan/Library/ScriptAssemblies/Unity.TestTools.CodeCoverage.Editor.OpenCover.Mono.Reflection.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.VisualScripting.Flow">
-        <HintPath>/Users/i519418/Documents/u3dprojects/IKMan/Library/ScriptAssemblies/Unity.VisualScripting.Flow.dll</HintPath>
+    <Reference Include="Unity.ProBuilder.Editor">
+        <HintPath>/Users/i519418/Documents/u3dprojects/IKMan/Library/ScriptAssemblies/Unity.ProBuilder.Editor.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor.UI">
         <HintPath>/Users/i519418/Documents/u3dprojects/IKMan/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
@@ -815,8 +820,14 @@
     <Reference Include="Unity.PlasticSCM.Editor">
         <HintPath>/Users/i519418/Documents/u3dprojects/IKMan/Library/ScriptAssemblies/Unity.PlasticSCM.Editor.dll</HintPath>
     </Reference>
+    <Reference Include="Unity.VisualScripting.Flow">
+        <HintPath>/Users/i519418/Documents/u3dprojects/IKMan/Library/ScriptAssemblies/Unity.VisualScripting.Flow.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.UI">
         <HintPath>/Users/i519418/Documents/u3dprojects/IKMan/Library/ScriptAssemblies/UnityEngine.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.ProBuilder.AddOns.Editor">
+        <HintPath>/Users/i519418/Documents/u3dprojects/IKMan/Library/ScriptAssemblies/Unity.ProBuilder.AddOns.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Services.Core">
         <HintPath>/Users/i519418/Documents/u3dprojects/IKMan/Library/ScriptAssemblies/Unity.Services.Core.dll</HintPath>
@@ -838,6 +849,9 @@
     </Reference>
     <Reference Include="Unity.Burst">
         <HintPath>/Users/i519418/Documents/u3dprojects/IKMan/Library/ScriptAssemblies/Unity.Burst.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.ProBuilder.AssetIdRemapUtility">
+        <HintPath>/Users/i519418/Documents/u3dprojects/IKMan/Library/ScriptAssemblies/Unity.ProBuilder.AssetIdRemapUtility.dll</HintPath>
     </Reference>
     <Reference Include="Unity.VisualScripting.Shared.Editor">
         <HintPath>/Users/i519418/Documents/u3dprojects/IKMan/Library/ScriptAssemblies/Unity.VisualScripting.Shared.Editor.dll</HintPath>

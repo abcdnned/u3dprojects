@@ -8,6 +8,11 @@ public class TwoNodeController : TargetController
     public HandDelayLooker MiddleNode;
     public HandDelayLooker EndNode;
     public Transform ParentNode;
+    public HandLookIKController handLookIKController;
+
+    protected override void assemblyComponent() {
+        handLookIKController = ParentNode.gameObject.GetComponent<HandLookIKController>();
+    }
     internal void SyncIKSample(string sampleName, float duration, bool horizon_mirror = false) {
         // Debug.Log(" isRightHand " + isRightHand);
         String elbow = IKSampleNames.ELBOW + "_" + sampleName;
@@ -33,4 +38,35 @@ public class TwoNodeController : TargetController
         target.hAd_lv2 = source.horizonAngel_lv2;
         target.vAd_lv2 = source.verticalAngel_lv2;
     }
+
+    internal void LookToArmLook(float angel = 90) {
+        if (EndNode == null || MiddleNode == null) {
+            return;
+        }
+        Vector3 v1 = getArmDirection();
+        Vector3 v2 = getBicepDirection();
+        Quaternion rotate = Quaternion.AngleAxis(angel, Vector3.Cross(v2, v1));
+        v1 = rotate * v1;
+        Quaternion look = Quaternion.LookRotation(v1,
+                                                  -getArmDirection());
+        transform.rotation = look;
+        // Quaternion r = Quaternion.Slerp(transform.rotation,
+        //                                 look,
+        //                                 1 - Mathf.Exp(-handLookSpeed * Time.deltaTime));
+        // Quaternion hr = Quaternion.AngleAxis(armLookRotationH, transform.right);
+        // transform.rotation = hr * transform.rotation;
+        // Quaternion vr = Quaternion.AngleAxis(armLookRotationV, transform.up);
+        // transform.rotation = vr * transform.rotation;
+    }
+
+    public Vector3 getArmDirection() {
+        Vector3 r = EndNode.transform.position - MiddleNode.transform.position;
+        return r.normalized;
+    }
+
+    public Vector3 getBicepDirection() {
+        Vector3 r = MiddleNode.transform.position - ParentNode.transform.position;
+        return r.normalized;
+    }
+
 }

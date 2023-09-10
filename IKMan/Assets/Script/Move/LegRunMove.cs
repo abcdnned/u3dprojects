@@ -5,7 +5,6 @@ public class LegRunMove : LegHandRunMove
 {
     String[] names = new string[] { "LegRun1", "LegRun2", "LegRun3" };
 
-    int[] indexMapping = new int[] { 0, 1, 2, 1 };
 
     public LegRunMove() : base(MoveNameConstants.LegRunMove)
     {
@@ -15,8 +14,8 @@ public class LegRunMove : LegHandRunMove
         return names;
     }
 
-    protected override int[] getIndexMapping() {
-        return indexMapping;
+    protected override void updateIKRotation() {
+        legController().LookToArmLook(-90);
     }
 
 }

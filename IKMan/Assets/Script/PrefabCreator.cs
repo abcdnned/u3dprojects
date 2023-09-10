@@ -7,6 +7,7 @@ public class PrefabCreator
     public static string POSITION_HELPER = "PositionHelper";
 
     public static float DEFAULT_LIVE = 1.1f;
+    public static float LONG_LIVE = 100f;
     public static GameObject SpawnDebugger(Vector3 position, string prefabName, float liveTime, float scale, Transform parent)
     {
         GameObject prefab = Resources.Load<GameObject>(prefabName);

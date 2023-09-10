@@ -29,8 +29,8 @@ public class LocomotionState : AnyState {
     private (States, ActionStateMachine) Move(Event e)
     {
         if (e.eventId.Equals(HumanIKController.EVENT_KEEP_WALKING)) {
-            if (hic.sprintFlag) {
-                if (movingSphere == null) {
+            // if (hic.sprintFlag) {
+                if (false && movingSphere == null) {
                     Vector3 p = Utils.copy(hic.transform.position);
                     p.y = 0.55f;
                     movingSphere = PrefabCreator.CreatePrefab(p, "MovingSphere");
@@ -43,34 +43,24 @@ public class LocomotionState : AnyState {
                 if (hic.frontRightLegStepper.move.IsLegMoving()) {
                     hic.frontRightLegStepper.handleEvent((HumanIKController.EVENT_HARD_STOP_WALKING));
                 }
-                hic.walkBalance.TryRun(movingSphere.gameObject, offset);
-                float t = Time.time;
-                hic.leftHand.TryRun(hic.ap.runHalfDuration * 2, t);
-                hic.rightHand.TryRun(0, t);
-                hic.frontLeftLegStepper.TryRun(0, t);
-                hic.frontRightLegStepper.TryRun(2 * hic.ap.runHalfDuration, t);
-            } else {
-                destoryMovingSphere();
-                hic.frontRightLegStepper.handleEvent((HumanIKController.EVENT_KEEP_WALKING));
-                hic.frontLeftLegStepper.TryMove();
-                hic.frontRightLegStepper.TryMove();
-                hic.leftHand.handleEvent(e.eventId);
-                hic.rightHand.handleEvent(e.eventId);
-            }
+                changePose(new RunPoseArgument(hic));
         } else if (e.eventId.Equals(HumanIKController.EVENT_STOP_WALKING)) {
-            destoryMovingSphere();
-            if (hic.frontLeftLegStepper.move.IsLegMoving()) {
-                hic.frontLeftLegStepper.handleEvent((HumanIKController.EVENT_STOP_WALKING));
-            } else {
-                hic.frontLeftLegStepper.handleEvent((HumanIKController.EVENT_STOP_WALKING));
-            }
-            if (hic.frontRightLegStepper.move.IsLegMoving()) {
-                hic.frontRightLegStepper.handleEvent((HumanIKController.EVENT_STOP_WALKING));
-            } else {
-                hic.frontRightLegStepper.handleEvent((HumanIKController.EVENT_STOP_WALKING));
-            }
-            hic.leftHand.handleEvent(e.eventId);
-            hic.rightHand.handleEvent(e.eventId);
+            // destoryMovingSphere();
+            // if (hic.frontLeftLegStepper.move.IsLegMoving()) {
+            //     hic.frontLeftLegStepper.handleEvent((HumanIKController.EVENT_STOP_WALKING));
+            // } else {
+            //     hic.frontLeftLegStepper.handleEvent((HumanIKController.EVENT_STOP_WALKING));
+            // }
+            // if (hic.frontRightLegStepper.move.IsLegMoving()) {
+            //     hic.frontRightLegStepper.handleEvent((HumanIKController.EVENT_STOP_WALKING));
+            // } else {
+            //     hic.frontRightLegStepper.handleEvent((HumanIKController.EVENT_STOP_WALKING));
+            // }
+            // hic.frontLeftLegStepper.TryStopRun();
+            // hic.frontRightLegStepper.TryStopRun();
+            // hic.walkBalance.
+            // hic.leftHand.handleEvent(e.eventId);
+            // hic.rightHand.handleEvent(e.eventId);
             return (stoppingState, this);
         }
         return (moveState, this);

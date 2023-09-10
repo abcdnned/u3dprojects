@@ -15,7 +15,7 @@ public class HandDelayLooker : HandLooker
     public void setDuration(float t) {
         // Debug.Log(" set Duration " + t);
         duration = t;
-        initTime = Time.time;
+        initTime = Time.time - Time.deltaTime; // Start at current frame after init
         normalizedTime = 0;
         initH = horizonAngel;
         initV = verticalAngel;
@@ -43,21 +43,18 @@ public class HandDelayLooker : HandLooker
     }
 
     override protected void Transfer(float dt) {
-        if (parent != null) {
-            Vector3 dir = transform.position - parent.position;
-            transform.rotation = Quaternion.LookRotation(dir, direction.forward);
-        }
         if (duration != 0) {
             bool ran = false;
             normalizedTime = Time.time - initTime;
             float poc = normalizedTime / duration;
-            if (poc > 1 && (normalizedTime - Time.deltaTime) / duration < 1) {
-                // Debug.Log(" finish fk ");
-                if (handLookIKController != null && handLookIKController.getIKSequence(this) > 0) {
-                    handLookIKController.transferCurPosToLv1();
-                    finishIKFKTransfer();
-                }
-            }
+            // if (poc > 1 && (normalizedTime - Time.deltaTime) / duration < 1) {
+            //     Debug.Log(" finish fk ");
+            //     if (handLookIKController != null && handLookIKController.getIKSequence(this) > 0) {
+            //         Debug.Log(" transfer cur pos to lv1 ");
+            //         handLookIKController.transferCurPosToLv1();
+            //         finishIKFKTransfer();
+            //     }
+            // }
             if (Utils.AbsDiff(horizonAngel, hAd) > MIN_ANGEL_DIFF) {
                 // Debug.Log(" poc " + poc);
                 horizonAngel = Mathf.Lerp(initH, hAd, poc);
@@ -82,6 +79,13 @@ public class HandDelayLooker : HandLooker
             if (!ran) {
                 duration = 0;
             }
+        }
+    }
+
+    internal override void lookToParent() {
+        if (parent != null) {
+            Vector3 dir = transform.position - parent.position;
+            transform.rotation = Quaternion.LookRotation(dir, direction.forward);
         }
     }
 }

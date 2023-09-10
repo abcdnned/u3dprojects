@@ -78,7 +78,8 @@ public class WalkBalance : TargetController
 
     void Update()
     {
-        if ((leftLeg.move.IsLegMoving() && !leftLeg.Recover) || (rightLeg.move.IsLegMoving() && !rightLeg.Recover)) {
+        if ((leftLeg.move != null && leftLeg.move.IsLegMoving() && !leftLeg.Recover)
+             || (rightLeg.move != null && rightLeg.move.IsLegMoving() && !rightLeg.Recover)) {
             // Debug.Log(this.GetType().Name + " walking ");
             moveManager.ChangeMove(MoveNameConstants.HipDamp);
             keepBalanceWhenWalking();
@@ -335,6 +336,15 @@ public class WalkBalance : TargetController
         } else {
         }
         StartCoroutine(walkPose(moveDuration));
+    }
+
+    internal void updateHipHeight() {
+        ReturnToCenter();
+        adjustLegDistance();
+        Vector3 h = getDynamicHeight(leftLeg.transform.position,
+                                            rightLeg.transform.position,
+                                            expectLegDistance);
+        adjustHeight(h.y, Vector3.up, hipBattleSpeed);
     }
 
 }

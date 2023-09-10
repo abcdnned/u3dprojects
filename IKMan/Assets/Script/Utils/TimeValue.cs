@@ -30,8 +30,12 @@ public class TimeValue<T>
         initTime = Time.time;
     }
 
+    internal bool vaild() {
+        return targetValue != null && initValue != null && lerp != null;
+    }
+
     internal bool overdue() {
-        return initTime + duration < Time.time;
+        return Time.time - initTime > duration;
     }
 
 }

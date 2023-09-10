@@ -32,7 +32,7 @@ public class AdvanceIKController : MonoBehaviour
     float HintDis = 0.3f;
     
 
-    private void LateUpdate()
+    internal void update()
     {
         if (state == HALF_IK) {
             updateArmDirection();

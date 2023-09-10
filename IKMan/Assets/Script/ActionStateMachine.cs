@@ -11,6 +11,8 @@ public class ActionStateMachine {
     // ---------- EXTERNAL INPUT ----------
     protected ActionStateMachine previousState;
     protected HumanIKController hic;
+
+    internal PoseArgument pose;
     internal States cs;
 
     public ActionStateMachine(HumanIKController humanIKController) {
@@ -46,6 +48,8 @@ public class ActionStateMachine {
     }
 
     public bool legMovingCheck() {
+        if (hic.frontLeftLegStepper.move == null || hic.frontRightLegStepper.move == null)
+            return false;
         return hic.frontLeftLegStepper.move.name.Contains("moving")
                || hic.frontRightLegStepper.move.name.Contains("moving");
     }
@@ -53,8 +57,20 @@ public class ActionStateMachine {
     // check if only the two legs are idle
     public bool legIdleChecker()
     {
+        if (hic.frontLeftLegStepper.move == null || hic.frontRightLegStepper.move == null)
+            return false;
         return hic.frontLeftLegStepper.move.isIdle()
                && hic.frontRightLegStepper.move.isIdle();
+    }
+
+    public PoseArgument changePose(PoseArgument argument, bool refresh = false) {
+        if (pose != null && (pose.GetType() == argument.GetType()) && !refresh)  {
+            // Keep
+        } else {
+            pose = argument;
+            pose.run();
+        }
+        return pose;
     }
 
 }

@@ -181,16 +181,40 @@ public class HumanIKController : MonoBehaviour
     if (inputModule.getInputController().Player.LeftShift.phase == UnityEngine.InputSystem.InputActionPhase.Performed) {
       sprintFlag = true;
     }
-    currentStatus = currentStatus.handleEvent(ikEvent);
 
-    leftHand.move.move(Time.deltaTime);
-    frontLeftLegStepper.move.move(Time.deltaTime);
-    rightHand.move.move(Time.deltaTime);
-    frontRightLegStepper.move.move(Time.deltaTime);
-    // if (oldState != currentStatus) {
-    //   Debug.Log(oldState.getName() + "status changed to " + currentStatus.getName());
-    // }
+    currentStatus = currentStatus.handleEvent(ikEvent);
+    if (currentStatus.pose != null) {
+      currentStatus.pose.update();
+    }
+
+    leftHand.move?.move(Time.deltaTime);
+    leftHand.updateHandLocalRotation();
+    frontLeftLegStepper.move?.move(Time.deltaTime);
+    rightHand.move?.move(Time.deltaTime);
+    rightHand.updateHandLocalRotation();
+    frontRightLegStepper.move?.move(Time.deltaTime);
+
+    leftHand.handLookIKController.update();
+    frontLeftLegStepper.handLookIKController.update();
+    rightHand.handLookIKController.update();
+    frontRightLegStepper.handLookIKController.update();
+
+    // Update elbow and hand rotation
+    leftHand.advanceIKController.elbow.update();
+    leftHand.advanceIKController.hand.update();
+    rightHand.advanceIKController.elbow.update();
+    rightHand.advanceIKController.hand.update();
+    frontLeftLegStepper.advanceIKController.elbow.update();
+    frontLeftLegStepper.advanceIKController.hand.update();
+    frontRightLegStepper.advanceIKController.elbow.update();
+    frontRightLegStepper.advanceIKController.hand.update();
+
+    leftHand.advanceIKController.update();
+    rightHand.advanceIKController.update();
+    frontLeftLegStepper.advanceIKController.update();
+    frontRightLegStepper.advanceIKController.update();
   }
+
   public void postUpdateTowHandPosition() {
     leftHand.postUpdateTowHandPosition();
     rightHand.postUpdateTowHandPosition();

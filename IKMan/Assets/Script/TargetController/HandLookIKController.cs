@@ -31,15 +31,21 @@ public class HandLookIKController : MonoBehaviour
     private bool continueTrackAfterFinish = false;
     private const float BEND = 0.002f;
 
-    public void init(float duration, Vector3 target, Transform body, Transform target_transform = null, bool c = false) {
+    private ReadTrigger stopSignal;
+
+
+
+
+    public void init(float duration, Vector3 target, Transform body, Transform target_transform = null, bool continueTrack = false, ReadTrigger stopSignal = null) {
         this.body = body;
-        continueTrackAfterFinish = c;
+        continueTrackAfterFinish = continueTrack;
         initBodyForward = Utils.forward(body);
-        Vector3 elbowEnd = elbow.SphereLv1PositionCalculator(shoulder.position);
-        Transform helper = PrefabCreator.SpawnDebugger(elbowEnd, "ElbowEndHelper", Time.deltaTime, 1, null).transform;
-        Vector3 dir = elbowEnd - shoulder.position;
-        helper.rotation = Quaternion.LookRotation(dir, elbow.direction.forward);
-        Vector3 handEnd = hand.SphereLv1PositionCalculator(elbowEnd, false, helper);
+        // Vector3 elbowEnd = elbow.SphereLv1PositionCalculator(shoulder.position);
+        // Transform helper = PrefabCreator.SpawnDebugger(elbowEnd, "ElbowEndHelper", Time.deltaTime, 1, null).transform;
+        // Vector3 dir = elbowEnd - shoulder.position;
+        // helper.rotation = Quaternion.LookRotation(dir, elbow.direction.forward);
+        // Vector3 handEnd = hand.SphereLv1PositionCalculator(elbowEnd, false, helper);
+        Vector3 handEnd = getHandEnd(false);
         // DrawUtils.drawBall(elbowEnd, 5);
         // DrawUtils.drawBall(handEnd, 5);
         initForward = (handEnd - shoulder.position).normalized;
@@ -71,11 +77,12 @@ public class HandLookIKController : MonoBehaviour
         // Debug.Log(" horizonAngel_lv2 " + horizonAngel_lv2);
         this.duration = duration;
         poc = 0;
+        this.stopSignal = stopSignal;
     }
 
-    private void Update() {
-        poc += Time.deltaTime;
-    }
+    // private void Update() {
+    //     poc += Time.deltaTime;
+    // }
 
     private Vector3 NormalizeTargetPosition(Vector3 target) {
         float targetDis = Vector3.Distance(target, shoulder.position);
@@ -142,7 +149,7 @@ public class HandLookIKController : MonoBehaviour
         return Vector3.Cross(c, t);
     }
 
-    internal float getRealTimeHorizonAngel(Vector3 lv1_pos, float normalizedTime) {
+    internal float getRealTimeHorizonAngel(Vector3 lv1_pos) {
         Vector3 lv1arm = lv1_pos - shoulder.position;
         Vector3 t = NormalizeTargetPosition(target.position) - shoulder.position;
         Vector3 normal1 = Vector3.Cross(t, lv1arm);
@@ -153,10 +160,10 @@ public class HandLookIKController : MonoBehaviour
         float angle = bicep_target_angel;
         Vector3 lv2armdir = Quaternion.AngleAxis(angle, normal1) * t;
         float ta = Vector3.Angle(lv1arm, lv2armdir);
-        return Mathf.Lerp(0, ta, normalizedTime / duration);
+        return Mathf.Lerp(0, ta, poc / duration);
     }
 
-    internal float getRealTimeVerticalAngel(float normalizedTime, Vector3 lv1_pos)
+    internal float getRealTimeVerticalAngel(Vector3 lv1_pos)
     {
         // Vector3 arm = (lv1_pos - elbow.transform.position).normalized;
         // Vector3 bicep = (elbow.transform.position - shoulder.position).normalized;
@@ -164,13 +171,17 @@ public class HandLookIKController : MonoBehaviour
         // return Mathf.Lerp(Vector3.Angle(bicep, arm), targetVerticalAngel, normalizedTime / duration);
         Vector3 c = lv1_pos - elbow.transform.position;
         Vector3 t = NormalizeTargetPosition(target.position) - elbow.transform.position;
-        return Mathf.Lerp(0, Vector3.Angle(c, t), normalizedTime / duration);
+        return Mathf.Lerp(0, Vector3.Angle(c, t), poc / duration);
     }
 
     public int getIKSequence(HandLooker check) {
         if (duration <= 0 || poc > duration || target == null) {
             if (poc > duration && continueTrackAfterFinish && target != null) {
-
+                if (stopSignal != null && stopSignal.peek()) {
+                    return 0;
+                }
+                Debug.Log(" continue track ");
+                // continue track
             } else {
                 return 0;
             }
@@ -195,12 +206,14 @@ public class HandLookIKController : MonoBehaviour
         Vector3 normal = Vector3.Cross(hdl.direction.forward, hdl.direction.right);
         Vector3 hdl_p = Vector3.ProjectOnPlane(dir, normal);
         float h = Vector3.Angle(hdl.direction.forward, hdl_p);
-        Debug.DrawLine(parent, parent + hdl_p, Color.black, 5);
+        Debug.DrawLine(parent, parent + hdl_p, Color.black, 0.1f);
         Vector3 normal_v = Vector3.Cross(hdl_p, hdl.direction.up);
         Vector3 hdl_v = Vector3.ProjectOnPlane(dir, normal_v);
         float v = Vector3.Angle(hdl_p, hdl_v);
         hdl.horizonAngel = h * (Vector3.Dot(normal, Vector3.Cross(hdl.direction.forward, hdl_p)) > 0 ? 1 : -1);
         hdl.verticalAngel = v * (Vector3.Dot(normal_v, Vector3.Cross(hdl_p, hdl_v)) > 0 ? 1 : -1);
+        Debug.Log(" hor " + hdl.horizonAngel);
+        Debug.Log(" hov " + hdl.verticalAngel);
     }
 
     private void updateBicepTargetAngel()
@@ -212,4 +225,23 @@ public class HandLookIKController : MonoBehaviour
         }
         bicep_target_angel = calculateAngelC(elbow.distance, targetDis, hand.distance);
     }
+
+    private void Awake() {
+        elbow.handLookIKController = this;
+        hand.handLookIKController = this;
+    }
+
+    internal void update() {
+        poc += Time.deltaTime;
+    }
+
+    internal Vector3 getHandEnd(bool realTime) {
+        Vector3 elbowEnd = elbow.SphereLv1PositionCalculator(shoulder.position, realTime);
+        Transform helper = PrefabCreator.SpawnDebugger(elbowEnd, "ElbowEndHelper", Time.deltaTime, 1, null).transform;
+        Vector3 dir = elbowEnd - shoulder.position;
+        helper.rotation = Quaternion.LookRotation(dir, elbow.direction.forward);
+        Vector3 handEnd = hand.SphereLv1PositionCalculator(elbowEnd, realTime, helper);
+        return handEnd;
+    }
+
 }

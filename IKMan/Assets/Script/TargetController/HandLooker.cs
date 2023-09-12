@@ -80,7 +80,7 @@ public class HandLooker : MonoBehaviour
                 // Utils.deltaMove(transform, lv2_pos);
                 Utils.deltaMove(transform, lv2_pos);
             } else if (handLookIKController != null && handLookIKController.getIKSequence(this) == 2) {
-                Debug.Log(" seq2 ");
+                // Debug.Log(" seq2 ");
                 Vector3 f2 = handLookIKController.getArmForward(lv1_pos);
                 Vector3 u2 = handLookIKController.getArmNormal(lv1_pos);
                 Vector3 lv2_pos = SphereRotationCalculator(f2, u2,

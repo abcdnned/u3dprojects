@@ -5,6 +5,10 @@ public class LegRunMove : LegHandRunMove
 {
     String[] names = new string[] { "LegRun1", "LegRun2", "LegRun3" };
 
+    internal Func<Quaternion> getFootRotation;
+
+
+
 
     public LegRunMove() : base(MoveNameConstants.LegRunMove)
     {
@@ -15,7 +19,11 @@ public class LegRunMove : LegHandRunMove
     }
 
     protected override void updateIKRotation() {
-        legController().LookToArmLook(-90);
+        if (getFootRotation != null) {
+            legController().transform.rotation = getFootRotation();
+        } else {
+            legController().LookToArmLook(-90);
+        }
     }
 
 }

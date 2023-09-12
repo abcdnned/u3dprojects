@@ -45,7 +45,7 @@ public class HandLookIKController : MonoBehaviour
         // Vector3 dir = elbowEnd - shoulder.position;
         // helper.rotation = Quaternion.LookRotation(dir, elbow.direction.forward);
         // Vector3 handEnd = hand.SphereLv1PositionCalculator(elbowEnd, false, helper);
-        Vector3 handEnd = getHandEnd(false);
+        Vector3 handEnd = getLv1HandEnd(false);
         // DrawUtils.drawBall(elbowEnd, 5);
         // DrawUtils.drawBall(handEnd, 5);
         initForward = (handEnd - shoulder.position).normalized;
@@ -86,8 +86,8 @@ public class HandLookIKController : MonoBehaviour
 
     private Vector3 NormalizeTargetPosition(Vector3 target) {
         float targetDis = Vector3.Distance(target, shoulder.position);
-        if (targetDis > elbow.distance + hand.distance - BEND) {
-            targetDis = elbow.distance + hand.distance - BEND;
+        if (targetDis > getMaxFootDis()) {
+            targetDis = getMaxFootDis();
         }
         Vector3 finalTarget = shoulder.position + targetDis * (target - shoulder.position).normalized;
         return finalTarget;
@@ -180,7 +180,6 @@ public class HandLookIKController : MonoBehaviour
                 if (stopSignal != null && stopSignal.peek()) {
                     return 0;
                 }
-                Debug.Log(" continue track ");
                 // continue track
             } else {
                 return 0;
@@ -220,8 +219,8 @@ public class HandLookIKController : MonoBehaviour
     {
         // Debug.Log(" update bicep targetAngel ");
         float targetDis = Vector3.Distance(target.position, shoulder.position);
-        if (targetDis > elbow.distance + hand.distance - BEND) {
-            targetDis = elbow.distance + hand.distance - BEND;
+        if (targetDis > getMaxFootDis()) {
+            targetDis = getMaxFootDis();
         }
         bicep_target_angel = calculateAngelC(elbow.distance, targetDis, hand.distance);
     }
@@ -235,7 +234,7 @@ public class HandLookIKController : MonoBehaviour
         poc += Time.deltaTime;
     }
 
-    internal Vector3 getHandEnd(bool realTime) {
+    internal Vector3 getLv1HandEnd(bool realTime) {
         Vector3 elbowEnd = elbow.SphereLv1PositionCalculator(shoulder.position, realTime);
         Transform helper = PrefabCreator.SpawnDebugger(elbowEnd, "ElbowEndHelper", Time.deltaTime, 1, null).transform;
         Vector3 dir = elbowEnd - shoulder.position;
@@ -244,4 +243,7 @@ public class HandLookIKController : MonoBehaviour
         return handEnd;
     }
 
+    internal float getMaxFootDis() {
+        return elbow.distance + hand.distance - BEND;
+    }
 }

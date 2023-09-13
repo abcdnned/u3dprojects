@@ -8,4 +8,5 @@ public class AnimationProperties : MonoBehaviour {
     public float runHalfDuration = .5f;
 
     public float snapTime = 0.1f;
+    public float snapBlendDis = 0.1f;
 }

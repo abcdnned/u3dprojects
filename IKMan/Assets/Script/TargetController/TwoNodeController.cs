@@ -39,17 +39,17 @@ public class TwoNodeController : TargetController
         target.vAd_lv2 = source.verticalAngel_lv2;
     }
 
-    internal void LookToArmLook(float angel = 90) {
-        if (EndNode == null || MiddleNode == null) {
-            return;
-        }
+    internal Quaternion LookToArmLook(float angel = 90, bool sideEffect = true) {
         Vector3 v1 = getArmDirection();
         Vector3 v2 = getBicepDirection();
         Quaternion rotate = Quaternion.AngleAxis(angel, Vector3.Cross(v2, v1));
         v1 = rotate * v1;
         Quaternion look = Quaternion.LookRotation(v1,
                                                   -getArmDirection());
-        transform.rotation = look;
+        if (sideEffect) {
+            transform.rotation = look;
+        }
+        return look;
         // Quaternion r = Quaternion.Slerp(transform.rotation,
         //                                 look,
         //                                 1 - Mathf.Exp(-handLookSpeed * Time.deltaTime));

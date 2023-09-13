@@ -9,6 +9,7 @@ public class LegRunMove : LegHandRunMove
 
 
 
+    
 
     public LegRunMove() : base(MoveNameConstants.LegRunMove)
     {
@@ -22,8 +23,12 @@ public class LegRunMove : LegHandRunMove
         if (getFootRotation != null) {
             legController().transform.rotation = getFootRotation();
         } else {
-            legController().LookToArmLook(-90);
+            legController().transform.rotation = getBaseOnArmRotation();
         }
+    }
+
+    internal Quaternion getBaseOnArmRotation() {
+        return legController().LookToArmLook(-90, false);
     }
 
 }

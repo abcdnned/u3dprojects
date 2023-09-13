@@ -707,10 +707,12 @@ public class LegControllerType2 : TwoNodeController
         }
     }
 
-    public void TryRun(float offsetTime, float initTime) {
+    internal LegRunMove.acceptLegRunBeat TryRun(float offsetTime, float initTime) {
         if (!(move is LegRunMove)) {
             LegRunMove move = (LegRunMove)moveManager.ChangeMove(MoveNameConstants.LegRunMove);
             move.initBasic(hic.ap.runHalfDuration, initTime, offsetTime);
+            return move.AcceptLegRunBeat;
         }
+        return null;
     }
 }

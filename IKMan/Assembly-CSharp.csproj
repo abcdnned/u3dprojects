@@ -40,6 +40,7 @@
      <Compile Include="Assets/Script/Move/LegMove.cs" />
      <Compile Include="Assets/Script/TargetController/AdvanceIKController.cs" />
      <Compile Include="Assets/Script/Move/HandMainBattle2Idle.cs" />
+     <Compile Include="Assets/Script/Input/InputArgument.cs" />
      <Compile Include="Assets/WalkPointer.cs" />
      <Compile Include="Assets/Script/HandMovingMove.cs" />
      <Compile Include="Assets/Script/PrefabCreator.cs" />
@@ -64,6 +65,7 @@
      <Compile Include="Assets/Script/CameraFollower.cs" />
      <Compile Include="Assets/Script/DrawUtils.cs" />
      <Compile Include="Assets/Script/Utils.cs" />
+     <Compile Include="Assets/Script/Pyhsics/SphereMoveController.cs" />
      <Compile Include="Assets/LegControllerType2.cs" />
      <Compile Include="Assets/Lib/EasingFunction.cs" />
      <Compile Include="Assets/Lib/IKComponentRotation.cs" />
@@ -77,6 +79,7 @@
      <Compile Include="Assets/Script/Move/Hip2IdleMove.cs" />
      <Compile Include="Assets/Script/Move/Hip2BattleIdleMove.cs" />
      <Compile Include="Assets/Script/Move/HandMove.cs" />
+     <Compile Include="Assets/Script/Pyhsics/DeltaMoveController.cs" />
      <Compile Include="Assets/Script/TargetController/HandLooker.cs" />
      <Compile Include="Assets/Lib/CustomEasingFunction.cs" />
      <Compile Include="Assets/WalkBalance.cs" />

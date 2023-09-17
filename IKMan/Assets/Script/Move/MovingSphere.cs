@@ -44,7 +44,7 @@ public class MovingSphere : MonoBehaviour
 	[SerializeField]
 	LayerMask probeMask = -1, stairsMask = -1;
 
-	public HumanIKController humanIKController;
+	// public HumanIKController humanIKController;
 
 	void OnValidate () {
 		minGroundDotProduct = Mathf.Cos(maxGroundAngle * Mathf.Deg2Rad);
@@ -56,22 +56,22 @@ public class MovingSphere : MonoBehaviour
 		OnValidate();
 	}
 
-	void Update () {
+	internal void updateInput (Vector2 movement, Transform direction, bool jumpFlag) {
         
 		Vector2 playerInput;
-        playerInput.x = humanIKController.getMovement().x;
-		playerInput.y = humanIKController.getMovement().y;
+        playerInput.x = movement.x;
+		playerInput.y = movement.y;
         playerInput = Vector2.ClampMagnitude(playerInput, 1f);
-		Vector3 forward = humanIKController.walkPointer.cam.transform.forward;
+		Vector3 forward = direction.forward;
 		forward.y = 0f;
 		forward.Normalize();
-		Vector3 right = humanIKController.walkPointer.cam.transform.right;
+		Vector3 right = direction.right;
 		right.y = 0f;
 		right.Normalize();
 		desiredVelocity = 
 			(forward * playerInput.y + right * playerInput.x)  * maxSpeed;
         //Jump
-        desiredJump |= humanIKController.jumpFlag;
+        desiredJump |= jumpFlag;
 		// GetComponent<Renderer>().material.SetColor(
 		// 	"_Color", OnGround ? Color.black : Color.white
 		// );

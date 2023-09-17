@@ -1,3 +1,4 @@
 Base path: '/Users/i519418/software/u3d/2021.3.16f1c1/Unity.app/Contents', plugins path '/Users/i519418/software/u3d/2021.3.16f1c1/Unity.app/Contents/PlaybackEngines'
 Cmd: initializeCompiler
 
+Cmd: shutdown

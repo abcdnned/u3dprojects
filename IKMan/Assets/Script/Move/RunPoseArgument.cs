@@ -64,8 +64,9 @@ public class RunPoseArgument : PoseArgument
         float t = Time.time;
         // hic.leftHand.TryRun(hic.ap.runHalfDuration * 2, t);
         // hic.rightHand.TryRun(0, t);
-        leftBeat = hic.frontLeftLegStepper.TryRun(0, t);
-        rightBeat = hic.frontRightLegStepper.TryRun(2 * hic.ap.runHalfDuration, t);
+        hic.frontLeftLegStepper.TryRun(0, t);
+        hic.frontRightLegStepper.TryRun(2 * hic.ap.runHalfDuration, t);
+        hic.walkBalance.TryRun((LegRunMove)hic.frontLeftLegStepper.move, (LegRunMove)hic.frontRightLegStepper.move);
     }
 
     // public bool shouldLegSnap(LegControllerType2 legController) {
@@ -127,7 +128,7 @@ public class RunPoseArgument : PoseArgument
                                                                                                             baseOnSnap,
                                                                                                             (hic.ap.snapBlendDis - hitDis)
                                                                                                                / hic.ap.snapBlendDis);
-                                                                            Debug.Log(" blend snap " + (hic.ap.snapBlendDis - hitDis));
+                                                                            // Debug.Log(" blend snap " + (hic.ap.snapBlendDis - hitDis));
                                                                             return r;
                                                                         }};
             lh.transform.position = snapPos;

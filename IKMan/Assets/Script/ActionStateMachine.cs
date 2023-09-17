@@ -14,6 +14,11 @@ public class ActionStateMachine {
 
     internal PoseArgument pose;
     internal States cs;
+    internal DeltaMoveController moveController;
+
+
+
+
 
     public ActionStateMachine(HumanIKController humanIKController) {
         this.hic = humanIKController;
@@ -73,4 +78,19 @@ public class ActionStateMachine {
         return pose;
     }
 
+    public DeltaMoveController changeMoveController(DeltaMoveController argument, bool refresh = false) {
+        if (moveController != null && (moveController.GetType() == argument.GetType()) && !refresh)  {
+            // Keep
+        } else {
+            if (moveController != null) {
+                moveController.exit();
+            }
+            moveController = argument;
+            moveController.hic = hic;
+            moveController.target = hic.gameObject;
+            moveController.ia = hic.inputArgument;
+            moveController.init();
+        }
+        return moveController;
+    }
 }

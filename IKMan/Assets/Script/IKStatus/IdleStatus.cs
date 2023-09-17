@@ -46,11 +46,11 @@ public class IdleStatus : AnyState
             wb.TryBattleIdle();
             return (toBattleIdleState, this);
         }
-        else if (e.eventId.Equals(HumanIKController.EVENT_KEEP_WALKING)) {
+        else if (e.eventId != null && e.eventId.Equals(HumanIKController.EVENT_KEEP_WALKING)) {
             LocomotionState locomotionState = new LocomotionState(hic);
             locomotionState.handleEvent(e);
             return (idleState, locomotionState);
-        } else if (e.eventId.Equals(HumanIKController.EVENT_IDLE)) {
+        } else if (e.eventId != null && e.eventId.Equals(HumanIKController.EVENT_IDLE)) {
             hic.frontLeftLegStepper.handleEvent(e.eventId);
             hic.frontRightLegStepper.handleEvent(e.eventId);
             hic.leftHand.handleEvent(e.eventId);

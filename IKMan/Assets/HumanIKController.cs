@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(AnimationProperties))]
+[RequireComponent(typeof(InputArgument))]
 public class HumanIKController : MonoBehaviour
 {
   [Header("--- BODY PART ---")]
@@ -22,9 +23,11 @@ public class HumanIKController : MonoBehaviour
 
   public GameObject spin1;
 
+  public Transform spin2;
+
   public PoseManager poseManager;
 
-  private Vector2 _movement;
+  // private Vector2 _movement;
   internal bool walking;
 
 
@@ -73,27 +76,32 @@ public class HumanIKController : MonoBehaviour
   [Header("--- Input ---")]
   internal bool sprintFlag;
 
-  internal bool jumpFlag;
-
-
+  // internal bool jumpFlag;
 
   // Only allow diagonal leg pairs to step together
-
   private InputModule inputModule;
-    public static string EVENT_STOP_WALKING = "stopWalking";
-    public static string EVENT_KEEP_WALKING = "keepWalking";
-    public static string EVENT_BUTTON_R = "buttonR";
-    public static string EVENT_LEFT_CLICK = "leftClick";
-    public static string EVENT_RIGHT_CLICK = "rightClick";
-    public static string EVENT_HARD_STOP_WALKING = "hardStopWalking";
+  public static string EVENT_STOP_WALKING = "stopWalking";
+  public static string EVENT_KEEP_WALKING = "keepWalking";
+  public static string EVENT_BUTTON_R = "buttonR";
+  public static string EVENT_LEFT_CLICK = "leftClick";
+  public static string EVENT_RIGHT_CLICK = "rightClick";
+  public static string EVENT_HARD_STOP_WALKING = "hardStopWalking";
+  public static string EVENT_IDLE = "idle";
 
-    public static string EVENT_IDLE = "idle";
+  public static int RIGHT_FOOT = 0;
+  public static int LEFT_FOOT = 1;
 
-    public static int RIGHT_FOOT = 0;
-    public static int LEFT_FOOT = 1;
+  internal InputArgument inputArgument;
+  internal Vector3 gravityUp = Vector3.up;
 
-    private void Start() {
+
+
+
+
+
+  private void Start() {
     inputModule = GetComponent<InputModule>();
+    inputArgument = GetComponent<InputArgument>();
     inputModule.OnMoveDelegates += MovementInput;
     inputModule.OnButtonRDelegates += ButtonR;
     inputModule.OnLeftArmDelegates += LeftClick;
@@ -134,13 +142,13 @@ public class HumanIKController : MonoBehaviour
   }
 
     public Vector3 getMovement() {
-    return _movement;
+    return inputArgument.movement;
   }
 
   // private int count = 500;
   // private bool f = false;
   private void MovementInput(Vector2 movement) {
-      _movement = movement;
+      inputArgument.movement = movement;
   }
   private void ButtonR() {
     Debug.Log(this.GetType().Name + " buttonR ");
@@ -151,8 +159,8 @@ public class HumanIKController : MonoBehaviour
     // updateAnchorPoints();
     // Movement input
     bool tmp = walking;
-    string eva = EVENT_IDLE;
-    walking = _movement.y > 0 || Mathf.Abs(_movement.x) > 0 || _movement.y < 0;
+    string eva = null;
+    walking = inputArgument.movement.y > 0 || Mathf.Abs(inputArgument.movement.x) > 0 || inputArgument.movement.y < 0;
     if (tmp && !walking) {
       eva = EVENT_STOP_WALKING;
     }
@@ -183,8 +191,12 @@ public class HumanIKController : MonoBehaviour
     }
 
     currentStatus = currentStatus.handleEvent(ikEvent);
+
     if (currentStatus.pose != null) {
       currentStatus.pose.update();
+    }
+    if (currentStatus.moveController != null) {
+      currentStatus.moveController.deltaMove();
     }
 
     leftHand.move?.move(Time.deltaTime);
@@ -213,6 +225,8 @@ public class HumanIKController : MonoBehaviour
     rightHand.advanceIKController.update();
     frontLeftLegStepper.advanceIKController.update();
     frontRightLegStepper.advanceIKController.update();
+
+    walkBalance.update();
   }
 
   public void postUpdateTowHandPosition() {
@@ -261,10 +275,10 @@ public class HumanIKController : MonoBehaviour
   //   sprintFlag = true;
   // }
   private void SpaceClick() {
-    jumpFlag = true;
+    inputArgument.jumpFlag = true;
   }
   private void LateUpdate() {
       sprintFlag =false;
-      jumpFlag = false;
+      inputArgument.reset();
   }
 }

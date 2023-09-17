@@ -10,7 +10,7 @@ public class LegHandRunMove : LegHandMove
     internal int previousIndex;
     // internal int previousPreviousIndex;
     internal delegate void acceptLegRunBeat(int beat);
-    internal acceptLegRunBeat AcceptLegRunBeat{ get; set;}
+    internal acceptLegRunBeat AcceptLegRunBeat;
 
 
 
@@ -46,10 +46,10 @@ public class LegHandRunMove : LegHandMove
                 // previousPreviousIndex = previousIndex;
                 previousIndex = index;
                 String syncName = getSyncName(index);
-                if (indexMapping[index] == 0 || indexMapping[index] == 2) {
-                    AcceptLegRunBeat?.Invoke(1);
-                } else if (indexMapping[index] == 1) {
-                    AcceptLegRunBeat?.Invoke(0);
+                if (getIndexMapping()[index] == 3) {
+                    AcceptLegRunBeat.Invoke(1);
+                } else if (getIndexMapping()[index] == 1) {
+                    AcceptLegRunBeat.Invoke(0);
                 }
                 ((TwoNodeController)targetController).SyncIKSample(syncName, half_duration);
             }

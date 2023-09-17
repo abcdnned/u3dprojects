@@ -39,13 +39,13 @@ public class MoveManager
             return null;
         }
     }
-    public Move ChangeMove(string moveName, bool alwaysNew = true)
+    public Move ChangeMove(string moveName, bool alwaysNew = false)
     {
         Move mov = getMove(moveName);
         if (mov != null)
         {
             // check move exists
-            if (!alwaysNew) {
+            if (targetController.move != null && !alwaysNew) {
                 if (targetController.move.name == moveName) {
                     return targetController.move;
                 }

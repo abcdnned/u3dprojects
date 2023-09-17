@@ -3,11 +3,11 @@ using UnityEngine;
 
 public class LegRunMove : LegHandRunMove
 {
-    String[] names = new string[] { "LegRun1", "LegRun2", "LegRun3" };
+    String[] names = new string[] { "LegRun1", "LegRun2.push", "LegRun2.lift", "LegRun3" };
 
     internal Func<Quaternion> getFootRotation;
 
-
+    int[] indexMapping = new int[] { 0, 1, 3, 2 };
 
     
 
@@ -29,6 +29,9 @@ public class LegRunMove : LegHandRunMove
 
     internal Quaternion getBaseOnArmRotation() {
         return legController().LookToArmLook(-90, false);
+    }
+    internal override int[] getIndexMapping() {
+        return indexMapping;
     }
 
 }

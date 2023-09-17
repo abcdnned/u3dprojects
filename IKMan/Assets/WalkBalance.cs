@@ -76,7 +76,7 @@ public class WalkBalance : TargetController
         hic.postUpdateTowHandPosition();
     }
 
-    void Update()
+    internal void update()
     {
         if ((leftLeg.move != null && leftLeg.move.IsLegMoving() && !leftLeg.Recover)
              || (rightLeg.move != null && rightLeg.move.IsLegMoving() && !rightLeg.Recover)) {
@@ -265,10 +265,10 @@ public class WalkBalance : TargetController
         m.groundHeight = targetHeight;
     }
 
-    public void TryRun(GameObject movingSphere, Vector3 offset) {
-        HipRunMove m = (HipRunMove)moveManager.ChangeMove(MoveNameConstants.HipRunMove);
-        m.init(movingSphere, offset);
-    }
+    // public void TryRun(GameObject movingSphere, Vector3 offset) {
+    //     HipRunMove m = (HipRunMove)moveManager.ChangeMove(MoveNameConstants.HipRunMove);
+    //     m.init(movingSphere, offset);
+    // }
 
 
     public void rotateCurrentDampDist(Vector3 forward, Vector3 right) {
@@ -345,6 +345,12 @@ public class WalkBalance : TargetController
                                             rightLeg.transform.position,
                                             expectLegDistance);
         adjustHeight(h.y, Vector3.up, hipBattleSpeed);
+    }
+
+    internal void TryRun(LegRunMove leftBeat, LegRunMove rightBeat) {
+        HipRunMove m = (HipRunMove)moveManager.ChangeMove(MoveNameConstants.HipRunMove);
+        leftBeat.AcceptLegRunBeat += m.onLegBeats;
+        rightBeat.AcceptLegRunBeat += m.onLegBeats;
     }
 
 }

@@ -19,6 +19,10 @@ public class Move
 
     public MoveManager moveManager;
 
+
+
+
+
     public virtual void beReady() {
 
     }
@@ -63,6 +67,7 @@ public class Move
 
     public virtual void init() {
     }
+
     public virtual void finish() {
     }
 

@@ -138,4 +138,15 @@ public class HandLooker : MonoBehaviour
     internal virtual void lookToParent() {
     }
 
+    private void Update() {
+        if (Application.isPlaying)
+        {
+        }
+        else
+        {
+            hAd = horizonAngel;
+            vAd = verticalAngel;
+            update();
+        } 
+    }
 }

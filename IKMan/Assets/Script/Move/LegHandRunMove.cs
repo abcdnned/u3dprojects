@@ -9,7 +9,7 @@ public class LegHandRunMove : LegHandMove
 
     internal int previousIndex;
     // internal int previousPreviousIndex;
-    internal delegate void acceptLegRunBeat(int beat);
+    internal delegate void acceptLegRunBeat(int beat, bool isRight);
     internal acceptLegRunBeat AcceptLegRunBeat;
 
 
@@ -46,12 +46,8 @@ public class LegHandRunMove : LegHandMove
                 // previousPreviousIndex = previousIndex;
                 previousIndex = index;
                 String syncName = getSyncName(index);
-                if (getIndexMapping()[index] == 3) {
-                    AcceptLegRunBeat.Invoke(1);
-                } else if (getIndexMapping()[index] == 1) {
-                    AcceptLegRunBeat.Invoke(0);
-                }
-                ((TwoNodeController)targetController).SyncIKSample(syncName, half_duration);
+                dropBeats(previousIndex, index);
+                ((TwoNodeController)targetController).SyncIKSample(syncName, half_duration, !twoNodeController().IsRightPart());
             }
             updateIKRotation();
         }
@@ -73,6 +69,9 @@ public class LegHandRunMove : LegHandMove
     }
 
     protected virtual void updateIKRotation() {
+    }
+
+    protected virtual void dropBeats(int previousIndex, int index) {
     }
 
 }

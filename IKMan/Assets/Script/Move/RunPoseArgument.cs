@@ -62,8 +62,8 @@ public class RunPoseArgument : PoseArgument
 
     public override void run() {
         float t = Time.time;
-        // hic.leftHand.TryRun(hic.ap.runHalfDuration * 2, t);
-        // hic.rightHand.TryRun(0, t);
+        hic.leftHand.TryRun(hic.ap.runHalfDuration * 2, t);
+        hic.rightHand.TryRun(0, t);
         hic.frontLeftLegStepper.TryRun(0, t);
         hic.frontRightLegStepper.TryRun(2 * hic.ap.runHalfDuration, t);
         hic.walkBalance.TryRun((LegRunMove)hic.frontLeftLegStepper.move, (LegRunMove)hic.frontRightLegStepper.move);

@@ -23,4 +23,12 @@ public class LegHandMove : Move
         return null;
     }
 
+    public TwoNodeController twoNodeController() {
+        if (targetController is TwoNodeController) {
+            return (TwoNodeController)targetController;
+        }
+        return null;
+
+    }
+
 }

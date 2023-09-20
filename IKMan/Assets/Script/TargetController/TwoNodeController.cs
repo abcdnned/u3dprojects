@@ -9,6 +9,7 @@ public class TwoNodeController : TargetController
     public HandDelayLooker EndNode;
     public Transform ParentNode;
     public HandLookIKController handLookIKController;
+    [SerializeField]internal float isRightPart = 1;
 
     protected override void assemblyComponent() {
         handLookIKController = ParentNode.gameObject.GetComponent<HandLookIKController>();
@@ -36,7 +37,7 @@ public class TwoNodeController : TargetController
         target.hAd = horizon_mirror ? -source.horizonAngel : source.horizonAngel;
         target.vAd = source.verticalAngel;
         target.hAd_lv2 = source.horizonAngel_lv2;
-        target.vAd_lv2 = source.verticalAngel_lv2;
+        target.vAd_lv2 = horizon_mirror ? -source.verticalAngel_lv2 : source.verticalAngel_lv2;
     }
 
     internal Quaternion LookToArmLook(float angel = 90, bool sideEffect = true) {
@@ -67,6 +68,10 @@ public class TwoNodeController : TargetController
     public Vector3 getBicepDirection() {
         Vector3 r = MiddleNode.transform.position - ParentNode.transform.position;
         return r.normalized;
+    }
+
+    public virtual bool IsRightPart() {
+        return isRightPart == 1;
     }
 
 }

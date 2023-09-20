@@ -33,7 +33,6 @@ public class LegControllerType2 : TwoNodeController
     [SerializeField] WalkBalance walkBalance;
     [SerializeField]float stage1 = 0.2f;
     [SerializeField]float stage2 = 0.85f;
-    [SerializeField]float isRightFoot = 1;
 
     [SerializeField]float preMoveOvershootFix = 0.3f;
     [SerializeField] Transform hint;
@@ -80,7 +79,7 @@ public class LegControllerType2 : TwoNodeController
     protected override void initMove() {
         moveManager.addMove(new LegIdleMove());
         moveManager.addMove(new LegMovingMove());
-        moveManager.addMove(new LegPutMove(isRightFoot == 1));
+        moveManager.addMove(new LegPutMove(isRightPart == 1));
         moveManager.addMove(new LegRotateMove());
         moveManager.addMove(new LegRunMove());
         moveManager.ChangeMove(MoveNameConstants.LegIdle);
@@ -120,12 +119,12 @@ public class LegControllerType2 : TwoNodeController
         pairRight.Normalize();
         bool followup = false;
         bool frontFollowup = false;
-        float deg = Vector3.SignedAngle(curDir, forward, Vector3.up) * isRightFoot;
+        float deg = Vector3.SignedAngle(curDir, forward, Vector3.up) * isRightPart;
         Vector3 overshootVector = forward * (pairProjectDis + halfStepDistance);
         // Vector3 overshootVector = forward * halfStepDistance;
         float pairDeg = Math.Abs(Vector3.Angle(pairDir, curDir));
         int corss = crossDir(transform.position, pair.position, forward);
-        if (corss * isRightFoot < 0) {
+        if (corss * isRightPart < 0) {
             // Debug.Log(this.GetType().Name + " cross ");
         }
         if (deg > 20) {
@@ -136,7 +135,7 @@ public class LegControllerType2 : TwoNodeController
                 // }
                 overshootVector = forward * halfStepDistance * 0.90f;
                 frontFollowup = true;
-        } else if ((deg < -15 && pairDeg < 15) || (corss  * isRightFoot < 0)) {
+        } else if ((deg < -15 && pairDeg < 15) || (corss  * isRightPart < 0)) {
                 overshootVector =  Utils.halfTowards(pairDir, forward, 0) * halfStepDistance * 0.80f;
                 Vector3 footHalfDir = Utils.customTowards(curDir, footDir, 0.75f, 0);
                 footDir = footHalfDir;
@@ -154,27 +153,27 @@ public class LegControllerType2 : TwoNodeController
             // Debug.Log(this.GetType().Name + " straight " + isRightFoot);
             float curFeetBetween = calculateFeetBetween(endPoint, forward, pair.position) / 2;
             if (curFeetBetween < feetBetween) {
-                if (corss * isRightFoot < 0) {
-                    endPoint += right * feetBetween * isRightFoot * 3;
+                if (corss * isRightPart < 0) {
+                    endPoint += right * feetBetween * isRightPart * 3;
                 } else {
-                    endPoint += right * Mathf.Abs(feetBetween - curFeetBetween) * isRightFoot * 3;
+                    endPoint += right * Mathf.Abs(feetBetween - curFeetBetween) * isRightPart * 3;
                 }
             } else if (curFeetBetween > feetBetween) {
-                if (corss * isRightFoot < 0) {
-                    endPoint += right * feetBetween * isRightFoot * 3;
+                if (corss * isRightPart < 0) {
+                    endPoint += right * feetBetween * isRightPart * 3;
                 } else {
-                    endPoint -= right * Mathf.Abs(feetBetween - curFeetBetween) * isRightFoot * 3;
+                    endPoint -= right * Mathf.Abs(feetBetween - curFeetBetween) * isRightPart * 3;
                 }
             }
         } else {
-            endPoint += pairRight * 2 * feetBetween * isRightFoot;
+            endPoint += pairRight * 2 * feetBetween * isRightPart;
         }
         //check detour
         int rc = routConflict(endPoint - transform.position, pair.position - transform.position);
-        bool takeDetour = rc * isRightFoot > 0;
-        if (corss * isRightFoot < 0 || takeDetour) {
+        bool takeDetour = rc * isRightPart > 0;
+        if (corss * isRightPart < 0 || takeDetour) {
             // Debug.Log(this.GetType().Name + " rc * isRightFoot " + (rc * isRightFoot) + isRightFoot);
-            detour = Utils.right(transform) * detourFac * feetBetween * isRightFoot;
+            detour = Utils.right(transform) * detourFac * feetBetween * isRightPart;
             detour.y = 0;
         }
          endPoint.y = 0;
@@ -194,16 +193,16 @@ public class LegControllerType2 : TwoNodeController
         int corss = crossDir(transform.position, pair.position, forward);
         float curFeetBetween = calculateFeetBetween(endPoint, forward, pair.position) / 2;
         if (curFeetBetween < feetBetween) {
-            if (corss * isRightFoot < 0) {
-                endPoint += right * feetBetween * isRightFoot * 3;
+            if (corss * isRightPart < 0) {
+                endPoint += right * feetBetween * isRightPart * 3;
             } else {
-                endPoint += right * Mathf.Abs(feetBetween - curFeetBetween) * isRightFoot * 3;
+                endPoint += right * Mathf.Abs(feetBetween - curFeetBetween) * isRightPart * 3;
             }
         } else if (curFeetBetween > feetBetween) {
-            if (corss * isRightFoot < 0) {
-                endPoint += right * feetBetween * isRightFoot * 3;
+            if (corss * isRightPart < 0) {
+                endPoint += right * feetBetween * isRightPart * 3;
             } else {
-                endPoint -= right * Mathf.Abs(feetBetween - curFeetBetween) * isRightFoot * 3;
+                endPoint -= right * Mathf.Abs(feetBetween - curFeetBetween) * isRightPart * 3;
             }
         }
         endPoint.y = 0;
@@ -302,8 +301,8 @@ public class LegControllerType2 : TwoNodeController
                     lastPosition = startPoint;
                     init1 = true;
                     float handDuration = moveDuration - (moveDuration * preStartMovingDistance);
-                    hic.leftHand.TryMove(handDuration, isRightFoot);
-                    hic.rightHand.TryMove(handDuration, isRightFoot);
+                    hic.leftHand.TryMove(handDuration, isRightPart);
+                    hic.rightHand.TryMove(handDuration, isRightPart);
                 }
                 float poc = Mathf.Lerp(0, 1, move.normalizedTime / stage1);
                 Vector3 targetPosition =
@@ -464,7 +463,7 @@ public class LegControllerType2 : TwoNodeController
             dampingDuration = ((LegControllerType2)pairComponent).dampingDuration;
             enable = ((LegControllerType2)pairComponent).enable;
             feetBetween = ((LegControllerType2)pairComponent).feetBetween;
-            isRightFoot = -((LegControllerType2)pairComponent).isRightFoot;
+            isRightPart = -((LegControllerType2)pairComponent).isRightPart;
             preMoveOvershootFix = ((LegControllerType2)pairComponent).preMoveOvershootFix;
             maxFootBodyAngel = ((LegControllerType2)pairComponent).maxFootBodyAngel;
             detourFac = ((LegControllerType2)pairComponent).detourFac;
@@ -532,7 +531,7 @@ public class LegControllerType2 : TwoNodeController
             }
             if (twoFootAlign) {
                 Vector3 standVector =
-                        isRightFoot > 0
+                        isRightPart > 0
                         ? (pair.transform.position - transform.position)
                         : (transform.position - pair.transform.position);
                 float startAngel = Vector3.SignedAngle(standVector, direction, Vector3.up);
@@ -545,8 +544,8 @@ public class LegControllerType2 : TwoNodeController
                 // Debug.Log(this.GetType().Name + " startRight " + startRight);
                 // Debug.Log(this.GetType().Name + " isRightFoot " + isRightFoot);
                 if (!pairComponent.move.IsLegMoving()
-                    && ((startRight && isRightFoot > 0)
-                    || (!startRight && isRightFoot < 0)))
+                    && ((startRight && isRightPart > 0)
+                    || (!startRight && isRightPart < 0)))
                 {
                     // Start the step coroutine
                     // Debug.Log(this.GetType().Name + " start ");
@@ -612,7 +611,7 @@ public class LegControllerType2 : TwoNodeController
         // Vector3 wp2 = homeTransform.position;
 
         // Vector3 wp2 = pair.position + Utils.right(owner.transform) * 2 * feetBetween * isRightFoot;
-        Vector3 wp2 = pair.position + right * 2 * feetBetween * isRightFoot;
+        Vector3 wp2 = pair.position + right * 2 * feetBetween * isRightPart;
         // float homeDot = Vector3.Dot(homeTransform.position, direction);
         float thisDot = Vector3.Dot(transform.position, direction);
         float pairDot = Vector3.Dot(pairComponent.transform.position, direction);
@@ -713,4 +712,5 @@ public class LegControllerType2 : TwoNodeController
             move.initBasic(hic.ap.runHalfDuration, initTime, offsetTime);
         }
     }
+
 }

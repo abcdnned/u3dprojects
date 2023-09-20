@@ -24,6 +24,10 @@ public class HumanIKController : MonoBehaviour
   public GameObject spin1;
 
   public Transform spin2;
+  public Transform spin3;
+  public Transform leftShoulder;
+  public Transform rightShoulder;
+  public Transform neck;
 
   public PoseManager poseManager;
 
@@ -221,12 +225,14 @@ public class HumanIKController : MonoBehaviour
     frontRightLegStepper.advanceIKController.elbow.update();
     frontRightLegStepper.advanceIKController.hand.update();
 
-    leftHand.advanceIKController.update();
-    rightHand.advanceIKController.update();
+    walkBalance.update();
+
     frontLeftLegStepper.advanceIKController.update();
     frontRightLegStepper.advanceIKController.update();
+    leftHand.advanceIKController.update();
+    rightHand.advanceIKController.update();
 
-    walkBalance.update();
+
   }
 
   public void postUpdateTowHandPosition() {

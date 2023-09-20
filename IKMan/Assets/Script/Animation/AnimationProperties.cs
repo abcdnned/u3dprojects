@@ -10,4 +10,5 @@ public class AnimationProperties : MonoBehaviour {
     public float snapBlendDis = 0.1f;
     public float runUpHeight = 0.75f;
     public float runDownHeigth = 0.6f;
+    public float runSpin3Angel = 30;
 }

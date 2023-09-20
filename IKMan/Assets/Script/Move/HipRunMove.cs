@@ -10,6 +10,9 @@ public class HipRunMove : HipMove
     private float speed;
     private GameObject ph;
 
+    private float spin3speed = 10;
+    private Quaternion spin3TargetRotation;
+
 
 
     public HipRunMove() : base(MoveNameConstants.HipRunMove)
@@ -25,6 +28,7 @@ public class HipRunMove : HipMove
         return AdvanceIKController.FK;
     }
     public override Move move(float dt) {
+        // Debug.Log(" hip run ");
         normalizedTime += dt;
         controller.adjustHeight(h, controller.hic.gravityUp, speed);
         controller.hic.spin2.position = ph.transform.position;
@@ -33,6 +37,32 @@ public class HipRunMove : HipMove
                                         ph.transform.rotation,
                                         1 - Mathf.Exp(-10 * Time.deltaTime));
         controller.hic.spin2.rotation = r;
+
+        if (spin3TargetRotation != null) {
+            int c = controller.hic.spin3.childCount;
+            // Debug.Log(" child count " + c);
+            // Transform[] childs = new Transform[1];
+            Transform neck = null;
+            for (int i = 0; i < c; ++i) {
+                Transform child = controller.hic.spin3.GetChild(i);
+                if (child.name == controller.hic.neck.name) {
+                    child.SetParent(null);
+                    neck = child;
+                    break;
+                }
+            }
+            controller.hic.spin3.localRotation= Quaternion.Slerp(controller.hic.spin3.localRotation,
+                                                            spin3TargetRotation,
+                                                            1 - Mathf.Exp(-spin3speed * Time.deltaTime));
+            if (neck != null) {
+                neck.SetParent(controller.hic.spin3);
+            }
+            // for (int i = 0; i < c; ++i) {
+            //     if (childs[i] != null) {
+            //         childs[i].SetParent(controller.hic.spin3);
+            //     }
+            // }
+        }
         // Debug.Log(" nor " + normalizedTime);
         // if (state == 0) {
         //     state++;
@@ -52,11 +82,15 @@ public class HipRunMove : HipMove
     //     }
     // }
 
-    internal void onLegBeats(int code) {
+    internal void onLegBeats(int code, bool isRight) {
         // Debug.Log(" code " + code);
         float groundHeight = controller.hic.ap.runUpHeight;
         if (code == 0) {
+            spin3TargetRotation = Quaternion.identity;
             groundHeight = controller.hic.ap.runDownHeigth;
+        } else if (code == 1) {
+            float angel = isRight ? -controller.hic.ap.runSpin3Angel : controller.hic.ap.runSpin3Angel;
+            spin3TargetRotation =  Quaternion.identity * Quaternion.AngleAxis(angel, controller.hic.gravityUp);
         }
         float hipMoveSpeed = controller.hipHeightDiff(groundHeight, controller.hic.gravityUp) / controller.hic.ap.runHalfDuration;
         h = groundHeight;

@@ -146,6 +146,8 @@ public class HandLooker : MonoBehaviour
         {
             hAd = horizonAngel;
             vAd = verticalAngel;
+            hAd_lv2 = horizonAngel_lv2;
+            vAd_lv2 = verticalAngel_lv2;
             update();
         } 
     }

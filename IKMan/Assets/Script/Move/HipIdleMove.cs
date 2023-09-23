@@ -6,12 +6,12 @@ public class HipIdleMove : HipMove
     }
 
     public override Move move(float dt) {
-        // parent.ReturnToCenter();
-        // parent.adjustLegDistance();
-        // Vector3 h = parent.getDynamicHeight(parent.leftLeg.transform.position,
-        //                                     parent.rightLeg.transform.position,
-        //                                     parent.expectLegDistance);
-        // parent.adjustHeight(h.y, Vector3.up, parent.hipBattleSpeed);
+        // controller.ReturnToCenter();
+        // controller.adjustLegDistance();
+        // Vector3 h = controller.getDynamicHeight(controller.leftLeg.transform.position,
+        //                                     controller.rightLeg.transform.position,
+        //                                     controller.expectLegDistance);
+        // controller.adjustHeight(controller.hic.ap.standHeight, controller.hic.gravityUp, controller.hipBattleSpeed);
         return this;
     }
     // public override Move transfer() {

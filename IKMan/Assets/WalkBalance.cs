@@ -94,13 +94,13 @@ public class WalkBalance : TargetController
             move = move.move(Time.deltaTime);
         }
         // Update rotation based on camera.
-        if (hic.currentStatus.getName() == LocomotionState.NAME
-            && hic.currentStatus.cs.name == LocomotionState.STATE_MOVE) {
-            Vector2 m = hic.getMovement();
-            Vector3 dir = Utils.forwardFlat(cam) * m.y + Utils.right(cam) * m.x;
-            updateTransferDirection(dir);
-            transfer(0);
-        }
+        // if (hic.currentStatus.getName() == LocomotionState.NAME
+        //     && hic.currentStatus.cs.name == LocomotionState.STATE_MOVE) {
+        //     Vector2 m = hic.getMovement();
+        //     Vector3 dir = Utils.forwardFlat(cam) * m.y + Utils.right(cam) * m.x;
+        //     updateTransferDirection(dir);
+        //     transfer(0);
+        // }
         // else if (
         //     (humanIKController.currentStatus.getName() == IdleStatus.NAME
         //     && humanIKController.currentStatus.cs.name == IdleStatus.STATE_TOBATTLEIDLE) ||
@@ -351,6 +351,23 @@ public class WalkBalance : TargetController
         HipRunMove m = (HipRunMove)moveManager.ChangeMove(MoveNameConstants.HipRunMove);
         leftBeat.AcceptLegRunBeat += m.onLegBeats;
         rightBeat.AcceptLegRunBeat += m.onLegBeats;
+    }
+    internal void TryIdle() {
+        moveManager.ChangeMove(MoveNameConstants.HipIdle);
+    }
+
+    internal void justRotateHip(Vector3 dir, float angelOffset, float speed) {
+        Vector3 forward = Utils.forwardFlat(target);
+        Vector3 right = Utils.right(target);
+        Quaternion tr = Quaternion.LookRotation(dir);       
+        Quaternion offset = Quaternion.AngleAxis(angelOffset, Vector3.up);
+        tr *= offset;
+        Quaternion r = Quaternion.Slerp(
+            target.rotation,
+            tr, 
+            1 - Mathf.Exp(-speed * Time.deltaTime)
+        );
+        target.rotation = r;
     }
 
 }

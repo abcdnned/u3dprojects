@@ -1,6 +1,6 @@
 using System;
 using UnityEngine;
-
+using static IKSampleNames;
 public class HandRunMove : LegHandRunMove
 {
     // private GameObject anchor;
@@ -12,7 +12,7 @@ public class HandRunMove : LegHandRunMove
 
 
 
-    String[] names = new string[] { "HandRun1", "HandRun2", "HandRun3" };
+    String[] names = new string[] { HAND_RUN_1, HAND_RUN_2, HAND_RUN_3 };
 
     public HandRunMove() : base(MoveNameConstants.HandRunMove)
     {

@@ -71,6 +71,7 @@
      <Compile Include="Assets/Lib/IKComponentRotation.cs" />
      <Compile Include="Assets/Script/Move/HandMain2Battle.cs" />
      <Compile Include="Assets/Script/Move/MoveConstants.cs" />
+     <Compile Include="Assets/Script/Move/IdlePoseArguments.cs" />
      <Compile Include="Assets/Script/Event.cs" />
      <Compile Include="Assets/Script/Move/HipIdleMove.cs" />
      <Compile Include="Assets/Script/Move/HandRunMove.cs" />
@@ -96,7 +97,7 @@
      <Compile Include="Assets/Script/Move/LegHandRunMove.cs" />
      <Compile Include="Assets/Script/Move/HandSwingMove.cs" />
      <Compile Include="Assets/Script/TargetController/PoseManager.cs" />
-     <Compile Include="Assets/Script/HandleIdleMove.cs" />
+     <Compile Include="Assets/Script/HandIdleMove.cs" />
      <Compile Include="Assets/Script/LegController3.cs" />
      <Compile Include="Assets/Script/Move/HipHeightChangeMove.cs" />
      <Compile Include="Assets/Script/Modules/InputModule.cs" />

@@ -19,6 +19,10 @@ public class AnyState : ActionStateMachine
             Debug.Log(this.GetType().Name + " states change to " + value.Item1.name);
             cs = value.Item1;
         }
+        if (value.Item2 != null && value.Item2.GetType() != this.GetType()) {
+            // Handle event which caused transfer
+            value.Item2.handleEvent(e);
+        }
         return value.Item2;
     }
 }

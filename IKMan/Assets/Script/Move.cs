@@ -66,6 +66,8 @@ public class Move
     }
 
     public virtual void init() {
+        normalizedTime = 0;
+        state = 0;
     }
 
     public virtual void finish() {

@@ -61,7 +61,8 @@ public class LocomotionState : AnyState {
             // hic.walkBalance.
             // hic.leftHand.handleEvent(e.eventId);
             // hic.rightHand.handleEvent(e.eventId);
-            return (stoppingState, this);
+            // changeMoveController(null);
+            // return (null, new IdleStatus(hic));
         }
         return (moveState, this);
     }

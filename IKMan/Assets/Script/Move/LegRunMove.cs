@@ -1,9 +1,10 @@
 using System;
 using UnityEngine;
+using static IKSampleNames;
 
 public class LegRunMove : LegHandRunMove
 {
-    String[] names = new string[] { "LegRun1", "LegRun2.push", "LegRun2.lift", "LegRun3" };
+    String[] names = new string[] {LEG_RUN_1, LEG_RUN_2_PUSH, LEG_RUN_2_LIFT, LEG_RUN_3};
 
     internal Func<Quaternion> getFootRotation;
 

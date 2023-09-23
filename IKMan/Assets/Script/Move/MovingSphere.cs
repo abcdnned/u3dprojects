@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class MovingSphere : MonoBehaviour
 {
@@ -43,6 +44,12 @@ public class MovingSphere : MonoBehaviour
     int stepsSinceLastGrounded, stepsSinceLastJump;
 	[SerializeField]
 	LayerMask probeMask = -1, stairsMask = -1;
+	internal Func<float> getSpeed;
+
+
+
+
+
 
 	// public HumanIKController humanIKController;
 
@@ -68,8 +75,9 @@ public class MovingSphere : MonoBehaviour
 		Vector3 right = direction.right;
 		right.y = 0f;
 		right.Normalize();
+		float speed = getSpeed == null ? maxSpeed : getSpeed();
 		desiredVelocity = 
-			(forward * playerInput.y + right * playerInput.x)  * maxSpeed;
+			(forward * playerInput.y + right * playerInput.x)  * speed;
         //Jump
         desiredJump |= jumpFlag;
 		// GetComponent<Renderer>().material.SetColor(

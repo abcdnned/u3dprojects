@@ -278,4 +278,8 @@ public class HandController : TwoNodeController
         }
     }
 
+    public void TryIdle() {
+        moveManager.ChangeMove(MoveNameConstants.HandIdle);
+    }
+
 }

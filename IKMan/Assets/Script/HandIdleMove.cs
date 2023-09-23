@@ -1,10 +1,9 @@
 using UnityEngine;
 
-public class LegIdleMove : LegHandMove
+public class HandIdleMove : LegHandMove
 {
-    public LegIdleMove() : base(MoveNameConstants.LegIdle) {
+    public HandIdleMove() : base(MoveNameConstants.HandIdle) {}
 
-    }
     public override string getMoveType() {
         return AdvanceIKController.FK;
     }
@@ -13,7 +12,7 @@ public class LegIdleMove : LegHandMove
     public override Move move(float dt) {
         normalizedTime += dt;
         if (state == 0) {
-            ((TwoNodeController)targetController).SyncIKSample(IKSampleNames.LEG_IDLE, targetController.hic.ap.transferSpeedSmall, !twoNodeController().IsRightPart());
+            ((TwoNodeController)targetController).SyncIKSample(IKSampleNames.IDLE_SAMPLE, targetController.hic.ap.transferSpeedSmall, !twoNodeController().IsRightPart());
             state++;
         } 
         if (state == 1) {
@@ -23,9 +22,8 @@ public class LegIdleMove : LegHandMove
         }
         return this;
     }
+
+
+
+    
 }
-
-
-
-
-

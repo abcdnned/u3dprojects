@@ -713,4 +713,8 @@ public class LegControllerType2 : TwoNodeController
         }
     }
 
+    internal void TryIdle() {
+        moveManager.ChangeMove(MoveNameConstants.LegIdle);
+    }
+
 }

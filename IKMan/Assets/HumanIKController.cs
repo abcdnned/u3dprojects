@@ -75,6 +75,8 @@ public class HumanIKController : MonoBehaviour
   [Header("--- Character Properties ---")]
   public float swingStrength = 200;
 
+  public float runMaxSpeed = 5;
+
   internal AnimationProperties ap;
 
   [Header("--- Input ---")]
@@ -194,7 +196,9 @@ public class HumanIKController : MonoBehaviour
       sprintFlag = true;
     }
 
-    currentStatus = currentStatus.handleEvent(ikEvent);
+    if (eva != null) {
+      currentStatus = currentStatus.handleEvent(ikEvent);
+    }
 
     if (currentStatus.pose != null) {
       currentStatus.pose.update();

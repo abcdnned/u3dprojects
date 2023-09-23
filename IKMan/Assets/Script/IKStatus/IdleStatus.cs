@@ -48,13 +48,15 @@ public class IdleStatus : AnyState
         }
         else if (e.eventId != null && e.eventId.Equals(HumanIKController.EVENT_KEEP_WALKING)) {
             LocomotionState locomotionState = new LocomotionState(hic);
-            locomotionState.handleEvent(e);
+            // locomotionState.handleEvent(e);
             return (idleState, locomotionState);
         } else if (e.eventId != null && e.eventId.Equals(HumanIKController.EVENT_IDLE)) {
             hic.frontLeftLegStepper.handleEvent(e.eventId);
             hic.frontRightLegStepper.handleEvent(e.eventId);
             hic.leftHand.handleEvent(e.eventId);
             hic.rightHand.handleEvent(e.eventId);
+        } else if (e.eventId != null && e.eventId.Equals(HumanIKController.EVENT_STOP_WALKING)) {
+            changePose(new IdlePoseArgument(hic));
         }
         return (idleState, this);
     }

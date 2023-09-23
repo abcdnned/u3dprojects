@@ -73,6 +73,12 @@ public class HipRunMove : HipMove
         // if (movingSphere == null) {
         //     return moveManager.ChangeMove(MoveNameConstants.HipIdle);
         // }
+        // Update rotation based on camera.
+        Vector2 m = controller.hic.inputArgument.movement;
+        if (m.magnitude > 0) {
+            Vector3 dir = Utils.forwardFlat(controller.cam) * m.y + Utils.right(controller.cam) * m.x;
+            controller.justRotateHip(dir, 0, controller.hic.ap.hipTrackCameraSpeed);
+        }
         return this;
     }
 
@@ -101,6 +107,7 @@ public class HipRunMove : HipMove
         base.init();
         ph = PrefabCreator.CreatePrefab(controller.hic.spin2.position, "SpinHelper");
         ph.AddComponent<SphereCollider>();
+        ph.GetComponent<Rigidbody>().interpolation = RigidbodyInterpolation.Interpolate;
         CharacterJoint newJoint = ph.AddComponent<CharacterJoint>();
         newJoint.anchor = new Vector3(0, -controller.hic.spin2.localPosition.y, -0.01f);
         newJoint.connectedBody = controller.hic.spin1.GetComponent<Rigidbody>();

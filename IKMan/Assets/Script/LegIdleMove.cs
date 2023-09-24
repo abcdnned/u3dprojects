@@ -9,7 +9,7 @@ public class LegIdleMove : LegHandMove
         return AdvanceIKController.FK;
     }
 
-    
+
     public override Move move(float dt) {
         normalizedTime += dt;
         if (state == 0) {
@@ -17,9 +17,7 @@ public class LegIdleMove : LegHandMove
             state++;
         } 
         if (state == 1) {
-            state++;
-        }
-        if (state == 2) { 
+            updateIKRotation();
         }
         return this;
     }

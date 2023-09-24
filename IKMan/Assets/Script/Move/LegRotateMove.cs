@@ -9,19 +9,15 @@ public class LegRotateMove : LegMove
     public LegRotateMove() : base(MoveNameConstants.LegRotateMove) {
     }
 
-    protected override void subinit()
-    {
-        duration = legController.shortStepDuration;
-    }
-
     Rotater rotater;
 
 
     public override Move move(float dt) {
+        duration = legController().shortStepDuration;
         if (state == 0) {
             state = 1;
             rotater = new Rotater(humanIKController.walkPointer.transform,
-                                  legController.transform,
+                                  legController().transform,
                                   duration,
                                   angelOffset);
         }

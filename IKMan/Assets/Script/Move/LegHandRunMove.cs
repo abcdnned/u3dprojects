@@ -68,9 +68,6 @@ public class LegHandRunMove : LegHandMove
         return indexMapping;
     }
 
-    protected virtual void updateIKRotation() {
-    }
-
     protected virtual void dropBeats(int previousIndex, int index) {
     }
 

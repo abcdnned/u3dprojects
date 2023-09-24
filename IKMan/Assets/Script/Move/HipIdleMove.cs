@@ -11,7 +11,7 @@ public class HipIdleMove : HipMove
         // Vector3 h = controller.getDynamicHeight(controller.leftLeg.transform.position,
         //                                     controller.rightLeg.transform.position,
         //                                     controller.expectLegDistance);
-        // controller.adjustHeight(controller.hic.ap.standHeight, controller.hic.gravityUp, controller.hipBattleSpeed);
+        controller.adjustHeight(controller.hic.ap.standHeight, controller.hic.gravityUp, controller.hipBattleSpeed);
         return this;
     }
     // public override Move transfer() {

@@ -6,8 +6,6 @@ public class LegRunMove : LegHandRunMove
 {
     String[] names = new string[] {LEG_RUN_1, LEG_RUN_2_PUSH, LEG_RUN_2_LIFT, LEG_RUN_3};
 
-    internal Func<Quaternion> getFootRotation;
-
     int[] indexMapping = new int[] { 0, 1, 3, 2 };
 
     
@@ -20,17 +18,6 @@ public class LegRunMove : LegHandRunMove
         return names;
     }
 
-    protected override void updateIKRotation() {
-        if (getFootRotation != null) {
-            legController().transform.rotation = getFootRotation();
-        } else {
-            legController().transform.rotation = getBaseOnArmRotation();
-        }
-    }
-
-    internal Quaternion getBaseOnArmRotation() {
-        return legController().LookToArmLook(-90, false);
-    }
     internal override int[] getIndexMapping() {
         return indexMapping;
     }

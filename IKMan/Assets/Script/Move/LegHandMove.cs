@@ -1,7 +1,11 @@
 using UnityEngine;
+using System;
 
 public class LegHandMove : Move
 {
+    internal Func<Quaternion> getFootRotation;
+
+
     public LegHandMove(string name) : base(name) {
     }
     public override void init() {
@@ -31,4 +35,15 @@ public class LegHandMove : Move
 
     }
 
+    protected virtual void updateIKRotation() {
+        if (getFootRotation != null) {
+            legController().transform.rotation = getFootRotation();
+        } else {
+            legController().transform.rotation = getBaseOnArmRotation();
+        }
+    }
+
+    internal virtual Quaternion getBaseOnArmRotation() {
+        return legController().LookToArmLook(-90, false);
+    }
 }

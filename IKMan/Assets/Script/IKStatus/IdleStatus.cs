@@ -18,6 +18,7 @@ public class IdleStatus : AnyState
         idleState = new States(STATE_IDLE, Idle);
         toBattleIdleState = new States(STATE_TOBATTLEIDLE, ToBattleIdle);
         cs = idleState;
+        changePose(new IdlePoseArgument(hic));
     }
     private (States, ActionStateMachine) Idle(Event e) {
         if (e.bgA == EVENT_BUTTON_R) {

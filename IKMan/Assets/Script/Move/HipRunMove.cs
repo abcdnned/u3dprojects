@@ -93,7 +93,7 @@ public class HipRunMove : HipMove
         float groundHeight = controller.hic.ap.runUpHeight;
         if (code == 0) {
             spin3TargetRotation = Quaternion.identity;
-            groundHeight = controller.hic.ap.runDownHeigth;
+            groundHeight = controller.hic.ap.runDownHeight;
         } else if (code == 1) {
             float angel = isRight ? -controller.hic.ap.runSpin3Angel : controller.hic.ap.runSpin3Angel;
             spin3TargetRotation =  Quaternion.identity * Quaternion.AngleAxis(angel, controller.hic.gravityUp);

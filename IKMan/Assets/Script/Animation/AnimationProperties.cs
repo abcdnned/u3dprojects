@@ -9,7 +9,7 @@ public class AnimationProperties : MonoBehaviour {
     public float snapTime = 0.1f;
     public float snapBlendDis = 0.1f;
     public float runUpHeight = 0.75f;
-    public float runDownHeigth = 0.6f;
+    public float runDownHeight = 0.6f;
     public float runSpin3Angel = 30;
 
     [Header("--- Animation Speed ---")]
@@ -19,5 +19,8 @@ public class AnimationProperties : MonoBehaviour {
     [Header("--- idle ---")]
 
     public float standHeight = 0.7f;
+    public float idleDownHeight = .6f;
+
+    public float idleBreathTime = 2f;
 
 }

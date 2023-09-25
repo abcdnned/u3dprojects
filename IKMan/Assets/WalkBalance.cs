@@ -352,8 +352,9 @@ public class WalkBalance : TargetController
         leftBeat.AcceptLegRunBeat += m.onLegBeats;
         rightBeat.AcceptLegRunBeat += m.onLegBeats;
     }
-    internal void TryIdle() {
+    internal void TryIdle(float t) {
         moveManager.ChangeMove(MoveNameConstants.HipIdle);
+        ((HipIdleMove)move).initBasic(t);
     }
 
     internal void justRotateHip(Vector3 dir, float angelOffset, float speed) {

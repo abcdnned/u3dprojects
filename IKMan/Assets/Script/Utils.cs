@@ -137,4 +137,11 @@ public class Utils {
 
     }
 
+    public float Step(float edge, float value) {
+        if (value <= edge) {
+            return 0;
+        }
+        return 1;
+    }
+
 }

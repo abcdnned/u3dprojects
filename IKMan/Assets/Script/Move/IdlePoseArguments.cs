@@ -15,11 +15,12 @@ public class IdlePoseArgument : PoseArgument
     }
 
     public override void run() {
+        float t = Time.time;
         hic.leftHand.TryIdle();
         hic.rightHand.TryIdle();
         hic.frontLeftLegStepper.TryIdle();
         hic.frontRightLegStepper.TryIdle();
-        hic.walkBalance.TryIdle();
+        hic.walkBalance.TryIdle(t);
     }
 
 }

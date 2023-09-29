@@ -10,8 +10,8 @@ public class IdlePoseArgument : PoseArgument
     }
 
     public override void update() {
-        legUpdate(leftLegController, ref llh, leftStopSignal);
-        legUpdate(rightLegController, ref rlh, rightStopSignal);
+        legUpdate(leftLegController, ref llh, ref leftStopSignal);
+        legUpdate(rightLegController, ref rlh, ref rightStopSignal);
     }
 
     public override void run() {

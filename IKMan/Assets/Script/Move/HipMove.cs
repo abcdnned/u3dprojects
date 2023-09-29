@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class HipMove : Move
 {
+    protected float spin3speed = 10;
     protected WalkBalance controller;
 
     public HipMove(string name) : base(name) {

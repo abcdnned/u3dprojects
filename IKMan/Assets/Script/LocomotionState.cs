@@ -43,7 +43,7 @@ public class LocomotionState : AnyState {
                 //     hic.frontRightLegStepper.handleEvent((HumanIKController.EVENT_HARD_STOP_WALKING));
                 // }
                 changePose(new RunPoseArgument(hic));
-                // changeMoveController(new SphereMoveController());
+                changeMoveController(new SphereMoveController());
         } else if (e.eventId.Equals(HumanIKController.EVENT_STOP_WALKING)) {
             // destoryMovingSphere();
             // if (hic.frontLeftLegStepper.move.IsLegMoving()) {
@@ -61,8 +61,8 @@ public class LocomotionState : AnyState {
             // hic.walkBalance.
             // hic.leftHand.handleEvent(e.eventId);
             // hic.rightHand.handleEvent(e.eventId);
-            // changeMoveController(null);
-            // return (null, new IdleStatus(hic));
+            changeMoveController(null);
+            return (null, new IdleStatus(hic));
         }
         return (moveState, this);
     }

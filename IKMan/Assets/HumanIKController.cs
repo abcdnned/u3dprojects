@@ -31,6 +31,8 @@ public class HumanIKController : MonoBehaviour
 
   public PoseManager poseManager;
 
+  public GameObject rootGameObject;
+
   // private Vector2 _movement;
   internal bool walking;
 
@@ -100,6 +102,8 @@ public class HumanIKController : MonoBehaviour
   internal InputArgument inputArgument;
   internal Vector3 gravityUp = Vector3.up;
 
+  internal Vector3 relativeMovment = Vector3.zero;
+
 
 
 
@@ -166,7 +170,8 @@ public class HumanIKController : MonoBehaviour
     // Movement input
     bool tmp = walking;
     string eva = null;
-    walking = inputArgument.movement.y > 0 || Mathf.Abs(inputArgument.movement.x) > 0 || inputArgument.movement.y < 0;
+    // Debug.Log(" movement " + inputArgument.movement);
+    walking = inputArgument.movement.magnitude > 0;
     if (tmp && !walking) {
       eva = EVENT_STOP_WALKING;
     }
@@ -191,13 +196,16 @@ public class HumanIKController : MonoBehaviour
     Event ikEvent = new Event();
     ikEvent.bgA = bga;
     ikEvent.eventId = eva;
-    ActionStateMachine oldState = currentStatus;
+    ActionStateMachine oldStatus = currentStatus;
     if (inputModule.getInputController().Player.LeftShift.phase == UnityEngine.InputSystem.InputActionPhase.Performed) {
       sprintFlag = true;
     }
 
     if (eva != null) {
       currentStatus = currentStatus.handleEvent(ikEvent);
+      if (oldStatus.GetType() != currentStatus.GetType()) {
+        oldStatus.pose?.exit();
+      }
     }
 
     if (currentStatus.pose != null) {
@@ -290,5 +298,6 @@ public class HumanIKController : MonoBehaviour
   private void LateUpdate() {
       sprintFlag =false;
       inputArgument.reset();
+      relativeMovment = Vector3.zero;
   }
 }

@@ -8,12 +8,12 @@ public class MainHoldWeapon : HandMove
         Vector3 readyPos = handController.hic.weaponReady.transform.position;
         Vector3 spin1 = handController.hic.spin1.transform.position;
         GameObject polePivot = PrefabCreator.CreatePrefab(new Vector3(spin1.x, readyPos.y, spin1.z),
-                               "WeaponHandler");
+                               "WeaponHandler", Quaternion.identity);
         polePivot.transform.rotation = Quaternion.LookRotation(humanIKController.transform.forward,
                                                       humanIKController.transform.up);
         polePivot.transform.parent = humanIKController.spin1.transform;
         GameObject pole = PrefabCreator.CreatePrefab(new Vector3(spin1.x, readyPos.y, spin1.z),
-                               "Pole");
+                               "Pole", Quaternion.identity);
         float zRotate = Vector3.Angle(pole.transform.forward, polePivot.transform.forward);
         pole.transform.eulerAngles = new Vector3(90, 0, -zRotate);
         CharacterJoint newJoint = pole.AddComponent<CharacterJoint>();

@@ -8,9 +8,7 @@ public class HipRunMove : HipMove
     // Vector3 offset;
     private float h;
     private float speed;
-    private GameObject ph;
-
-    private float spin3speed = 10;
+    // private GameObject ph;
     private Quaternion spin3TargetRotation;
 
 
@@ -31,12 +29,12 @@ public class HipRunMove : HipMove
         // Debug.Log(" hip run ");
         normalizedTime += dt;
         controller.adjustHeight(h, controller.hic.gravityUp, speed);
-        controller.hic.spin2.position = ph.transform.position;
+        // controller.hic.spin2.position = ph.transform.position;
         // controller.hic.spin2.rotation = ph.transform.rotation;
-        Quaternion r = Quaternion.Slerp(controller.hic.spin2.rotation,
-                                        ph.transform.rotation,
-                                        1 - Mathf.Exp(-10 * Time.deltaTime));
-        controller.hic.spin2.rotation = r;
+        // Quaternion r = Quaternion.Slerp(controller.hic.spin2.rotation,
+        //                                 ph.transform.rotation,
+        //                                 1 - Mathf.Exp(-10 * Time.deltaTime));
+        // controller.hic.spin2.rotation = r;
 
         if (spin3TargetRotation != null) {
             int c = controller.hic.spin3.childCount;
@@ -103,38 +101,42 @@ public class HipRunMove : HipMove
         speed = hipMoveSpeed;
     }
 
+    // TODO hand rotation
+    //      hand look normalize
+    //      life cycle of SpinHelper
     public override void init() {
         base.init();
-        ph = PrefabCreator.CreatePrefab(controller.hic.spin2.position, "SpinHelper");
-        ph.AddComponent<SphereCollider>();
-        ph.GetComponent<Rigidbody>().interpolation = RigidbodyInterpolation.Interpolate;
-        CharacterJoint newJoint = ph.AddComponent<CharacterJoint>();
-        newJoint.anchor = new Vector3(0, -controller.hic.spin2.localPosition.y, -0.01f);
-        newJoint.connectedBody = controller.hic.spin1.GetComponent<Rigidbody>();
-        newJoint.autoConfigureConnectedAnchor = true;
-        newJoint.axis = new Vector3(1,0,0);
-        newJoint.swingAxis = new Vector3(0,1,0);
-        SoftJointLimitSpring sls = new SoftJointLimitSpring();
-        sls.spring = 2.16f;
-        newJoint.twistLimitSpring = sls;
-        SoftJointLimit l = new SoftJointLimit();
-        l.limit = -10;
-        newJoint.lowTwistLimit = l;
-        SoftJointLimit h = new SoftJointLimit();
-        h.limit = -5;
-        newJoint.highTwistLimit = h;
-        SoftJointLimit s1 = new SoftJointLimit();
-        s1.limit = 0f;
-        newJoint.swing1Limit = s1;
-        SoftJointLimit s2 = new SoftJointLimit();
-        s2.limit = 0f;
-        newJoint.swing2Limit = s2;
+        // ph = PrefabCreator.CreatePrefab(controller.hic.spin2.position, "SpinHelper", controller.hic.spin1.transform.rotation);
+        // ph.AddComponent<SphereCollider>();
+        // ph.GetComponent<Rigidbody>().interpolation = RigidbodyInterpolation.Interpolate;
+        // CharacterJoint newJoint = ph.AddComponent<CharacterJoint>();
+        // newJoint.anchor = new Vector3(0, -controller.hic.spin2.localPosition.y, -0.01f);
+        // newJoint.connectedBody = controller.hic.spin1.GetComponent<Rigidbody>();
+        // newJoint.autoConfigureConnectedAnchor = true;
+        // newJoint.axis = new Vector3(1,0,0);
+        // newJoint.swingAxis = new Vector3(0,1,0);
+        // SoftJointLimitSpring sls = new SoftJointLimitSpring();
+        // sls.spring = 2.16f;
+        // newJoint.twistLimitSpring = sls;
+        // SoftJointLimit l = new SoftJointLimit();
+        // l.limit = -10;
+        // newJoint.lowTwistLimit = l;
+        // SoftJointLimit h = new SoftJointLimit();
+        // h.limit = -5;
+        // newJoint.highTwistLimit = h;
+        // SoftJointLimit s1 = new SoftJointLimit();
+        // s1.limit = 0f;
+        // newJoint.swing1Limit = s1;
+        // SoftJointLimit s2 = new SoftJointLimit();
+        // s2.limit = 0f;
+        // newJoint.swing2Limit = s2;
     }
 
     public override void finish() {
-        if (ph != null) {
-            GameObject.Destroy(ph);
-        }
+        // if (ph != null) {
+        //     GameObject.Destroy(ph);
+            // Debug.Log(" run destory ph ");
+        // }
     }
 
 

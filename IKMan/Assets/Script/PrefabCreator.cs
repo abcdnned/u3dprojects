@@ -18,11 +18,11 @@ public class PrefabCreator
         return instance;
     }
 
-    public static GameObject CreatePrefab(Vector3 position, string prefabName, Transform parent = null)
+    public static GameObject CreatePrefab(Vector3 position, string prefabName, Quaternion face, Transform parent = null)
     {
 
         GameObject prefab = Resources.Load<GameObject>(prefabSavePath + prefabName);
-        GameObject instance = GameObject.Instantiate(prefab, position, Quaternion.identity);
+        GameObject instance = GameObject.Instantiate(prefab, position, face);
         instance.transform.SetParent(parent);
         return instance;
     }

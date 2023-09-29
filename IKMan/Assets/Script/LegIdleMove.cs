@@ -13,7 +13,7 @@ public class LegIdleMove : LegHandMove
     public override Move move(float dt) {
         normalizedTime += dt;
         if (state == 0) {
-            ((TwoNodeController)targetController).SyncIKSample(IKSampleNames.LEG_IDLE, targetController.hic.ap.transferSpeedSmall, !twoNodeController().IsRightPart());
+            ((TwoNodeController)targetController).SyncIKSample(IKSampleNames.LEG_IDLE, targetController.hic.ap.transferSpeedFast, !twoNodeController().IsRightPart());
             state++;
         } 
         if (state == 1) {

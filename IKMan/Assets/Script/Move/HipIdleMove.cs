@@ -17,11 +17,14 @@ public class HipIdleMove : HipMove
         // Vector3 h = controller.getDynamicHeight(controller.leftLeg.transform.position,
         //                                     controller.rightLeg.transform.position,
         //                                     controller.expectLegDistance);
+        controller.hic.spin3.localRotation= Quaternion.Slerp(controller.hic.spin3.localRotation,
+                                                        Quaternion.identity,
+                                                        1 - Mathf.Exp(-spin3speed * 2 * Time.deltaTime));
         float h = calculateRealTimeHeight();
 
         controller.adjustHeight(h, controller.hic.gravityUp, controller.hipBattleSpeed);
 
-        controller.hic.spin2.position = ph.transform.position;
+        // controller.hic.spin2.position = ph.transform.position;
         // controller.hic.spin2.rotation = ph.transform.rotation;
         Quaternion r = Quaternion.Slerp(controller.hic.spin2.rotation,
                                         ph.transform.rotation,
@@ -74,7 +77,7 @@ public class HipIdleMove : HipMove
     
     public override void init() {
         base.init();
-        ph = PrefabCreator.CreatePrefab(controller.hic.spin2.position, "SpinHelper");
+        ph = PrefabCreator.CreatePrefab(controller.hic.spin2.position, "SpinHelper", controller.hic.spin1.transform.rotation);
         ph.AddComponent<SphereCollider>();
         ph.GetComponent<Rigidbody>().interpolation = RigidbodyInterpolation.Interpolate;
         CharacterJoint newJoint = ph.AddComponent<CharacterJoint>();
@@ -84,7 +87,7 @@ public class HipIdleMove : HipMove
         newJoint.axis = new Vector3(1,0,0);
         newJoint.swingAxis = new Vector3(0,1,0);
         SoftJointLimitSpring sls = new SoftJointLimitSpring();
-        sls.spring = .77f;
+        sls.spring = .73f;
         newJoint.twistLimitSpring = sls;
         SoftJointLimit l = new SoftJointLimit();
         l.limit = -.1f;
@@ -103,6 +106,7 @@ public class HipIdleMove : HipMove
     public override void finish() {
         if (ph != null) {
             GameObject.Destroy(ph);
+            // Debug.Log(" idle destory ph ");
         }
     }
 

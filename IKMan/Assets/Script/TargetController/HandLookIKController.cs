@@ -12,18 +12,18 @@ public class HandLookIKController : MonoBehaviour
     public HandLooker hand;
 
     public Vector3 initBodyForward;
-    public Vector3 initNormal = Vector3.zero;
+    // public Vector3 initNormal = Vector3.zero;
 
-    internal Vector3 initForward = Vector3.zero;
+    // internal Vector3 initForward = Vector3.zero;
 
     public Transform body;
 
-    public float horizonAngel_lv2 = 0f;
-    public float realTimeHorizonAngel_lv2 = 0f;
+    // public float horizonAngel_lv2 = 0f;
+    // public float realTimeHorizonAngel_lv2 = 0f;
 
-    public float targetVerticalAngel = 0f;
+    // public float targetVerticalAngel = 0f;
     public float bicep_target_angel = 0f;
-    public float realTimeTargetVerticalAngel = 0f;
+    // public float realTimeTargetVerticalAngel = 0f;
 
     public float duration;
 
@@ -48,7 +48,7 @@ public class HandLookIKController : MonoBehaviour
         Vector3 handEnd = getLv1HandEnd(false);
         // DrawUtils.drawBall(elbowEnd, 5);
         // DrawUtils.drawBall(handEnd, 5);
-        initForward = (handEnd - shoulder.position).normalized;
+        // initForward = (handEnd - shoulder.position).normalized;
         // Debug.DrawLine(handEnd, shoulder.position, Color.yellow, 20);
         // Debug.DrawLine(elbowEnd, shoulder.position, Color.yellow, 20);
         // float dis = Vector3.Distance(handEnd, shoulder.position);
@@ -70,10 +70,10 @@ public class HandLookIKController : MonoBehaviour
         // targetVerticalAngel = (float)(lv2Angel - lv1Angel);
         // targetVerticalAngel = 180 - (float)lv2Angel;
         bicep_target_angel = calculateAngelC(elbow.distance, targetDis, hand.distance);
-        initNormal = Vector3.Cross(handEnd - shoulder.position, finalTarget - shoulder.position);
+        // initNormal = Vector3.Cross(handEnd - shoulder.position, finalTarget - shoulder.position);
         // Debug.DrawLine(shoulder.position + initNormal * 5, shoulder.position, Color.black, 8);
-        horizonAngel_lv2 = Vector3.Angle(handEnd - shoulder.position,
-                                                finalTarget - shoulder.position);
+        // horizonAngel_lv2 = Vector3.Angle(handEnd - shoulder.position,
+        //                                         finalTarget - shoulder.position);
         // Debug.Log(" horizonAngel_lv2 " + horizonAngel_lv2);
         this.duration = duration;
         poc = 0;

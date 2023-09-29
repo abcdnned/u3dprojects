@@ -19,7 +19,7 @@ public class SphereMoveController : DeltaMoveController
         if (movingSphere == null) {
             Vector3 p = Utils.copy(target.transform.position);
             p.y = 0.55f;
-            movingSphere = PrefabCreator.CreatePrefab(p, "MovingSphere").GetComponent<MovingSphere>();
+            movingSphere = PrefabCreator.CreatePrefab(p, "MovingSphere", target.transform.rotation).GetComponent<MovingSphere>();
             movingSphere.getSpeed = getSpeed;
             offset = target.transform.position - movingSphere.transform.position;
         }
@@ -27,8 +27,9 @@ public class SphereMoveController : DeltaMoveController
 
     internal override void exit() {
         if (movingSphere != null) {
-            GameObject.Destroy(movingSphere);
+            GameObject.Destroy(movingSphere.gameObject);
             movingSphere = null;
+            // Debug.Log(" moving sphere destroy ");
         }
     }
 

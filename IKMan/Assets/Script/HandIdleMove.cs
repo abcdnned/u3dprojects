@@ -16,9 +16,7 @@ public class HandIdleMove : LegHandMove
             state++;
         } 
         if (state == 1) {
-            state++;
-        }
-        if (state == 2) { 
+            handController().LookToArmLook();
         }
         return this;
     }

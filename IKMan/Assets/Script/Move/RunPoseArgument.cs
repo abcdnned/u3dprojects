@@ -18,8 +18,8 @@ public class RunPoseArgument : PoseArgument
     }
 
     public override void update() {
-        legUpdate(leftLegController, ref llh, leftStopSignal);
-        legUpdate(rightLegController, ref rlh, rightStopSignal);
+        legUpdate(leftLegController, ref llh, ref leftStopSignal);
+        legUpdate(rightLegController, ref rlh, ref rightStopSignal);
         // (Vector3, Vector3) hit = getSnapPosition(leftLegController);
         // Vector3 snapPos = hit.Item1;
         // Vector3 snapNormal = hit.Item2;

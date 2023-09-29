@@ -72,6 +72,9 @@ public class ActionStateMachine {
         if (pose != null && (pose.GetType() == argument.GetType()) && !refresh)  {
             // Keep
         } else {
+            if (pose != null) {
+                pose.exit();
+            }
             pose = argument;
             pose.run();
         }
@@ -93,7 +96,7 @@ public class ActionStateMachine {
             }
             moveController = argument;
             moveController.hic = hic;
-            moveController.target = hic.gameObject;
+            moveController.target = hic.rootGameObject;
             moveController.ia = hic.inputArgument;
             moveController.init();
         }

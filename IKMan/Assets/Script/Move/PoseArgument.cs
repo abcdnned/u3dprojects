@@ -87,7 +87,7 @@ public class PoseArgument
         
     }
 
-    protected void legUpdate(LegControllerType2 legController, ref GameObject lh, ReadTrigger stopSignal) {
+    protected void legUpdate(LegControllerType2 legController, ref GameObject lh, ref ReadTrigger stopSignal) {
         (Vector3, Vector3, float) hit = getSnapPosition(legController);
         Vector3 snapPos = hit.Item1;
         Vector3 snapNormal = hit.Item2;
@@ -129,5 +129,16 @@ public class PoseArgument
                                                                             return r;
                                                                         }};
         }
+    }
+
+    internal void exit() {
+        GameObject.Destroy(llh);
+        GameObject.Destroy(rlh);
+        llh = null;
+        rlh = null;
+        ((LegHandMove)leftLegController.move).getFootRotation = null;
+        ((LegHandMove)rightLegController.move).getFootRotation = null;
+        leftStopSignal?.set();
+        rightStopSignal?.set();
     }
 }

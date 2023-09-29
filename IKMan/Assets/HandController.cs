@@ -266,7 +266,7 @@ public class HandController : TwoNodeController
     public void TryRun(float offset, float initTime) {
         if (!(move is HandRunMove)) {
             HandRunMove move = (HandRunMove)moveManager.ChangeMove(MoveNameConstants.HandRunMove);
-            Debug.Log(name + " initTime " + initTime);
+            // Debug.Log(name + " initTime " + initTime);
             move.initBasic(hic.ap.runHalfDuration, initTime, offset);
         }
     }

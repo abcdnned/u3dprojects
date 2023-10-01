@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -55,18 +56,30 @@ public class HandDelayLooker : HandLooker
             //         finishIKFKTransfer();
             //     }
             // }
-            if (Utils.AbsDiff(horizonAngel, hAd) > MIN_ANGEL_DIFF) {
-                // Debug.Log(" poc " + poc);
-                horizonAngel = Mathf.Lerp(initH, hAd, poc);
-                // Debug.Log(" h " + horizonAngel);
+            if (Utils.AbsDiff(horizonAngel, hAd) > MIN_ANGEL_DIFF
+                || Utils.AbsDiff(verticalAngel, vAd) > MIN_ANGEL_DIFF) {
+                Vector3 initSpherePoint = calculateInitSpherePoint();
+                Vector3 targetSpherePoint = calculateTargetSpherePoint();
+                // DrawUtils.drawBall(sun.transform.position + targetSpherePoint, 0.02f);
+                Vector3 normal = Vector3.Cross(initSpherePoint, targetSpherePoint);
+                Vector3 upward = Quaternion.AngleAxis(1, normal) * targetSpherePoint;
+                Quaternion initRotation = Quaternion.LookRotation(initSpherePoint, upward);
+                Quaternion targetRotation = Quaternion.LookRotation(targetSpherePoint, upward);
+                Quaternion pocRotation = Quaternion.Slerp(initRotation, targetRotation, poc);
+                Vector3 pocSpherePoint = calculatePocSpherePoint(pocRotation);
+                (float, float)realData = calculateRealHVfromSpherePoint(pocSpherePoint);
+                horizonAngel = realData.Item1;
+                verticalAngel = realData.Item2;
                 ran = true;
             }
-            if (Utils.AbsDiff(verticalAngel, vAd) > MIN_ANGEL_DIFF) {
-                // Debug.Log(" poc2 " + poc);
-                verticalAngel = Mathf.Lerp(initV, vAd, poc);
-                ran = true;
-                // Debug.Log(" v " + verticalAngel);
-            }
+            // if (Utils.AbsDiff(horizonAngel, hAd) > MIN_ANGEL_DIFF) {
+            //     horizonAngel = Mathf.Lerp(initH, hAd, poc);
+            //     ran = true;
+            // }
+            // if (Utils.AbsDiff(verticalAngel, vAd) > MIN_ANGEL_DIFF) {
+            //     verticalAngel = Mathf.Lerp(initV, vAd, poc);
+            //     ran = true;
+            // }
             if (!enable_lv2) return;
             if (Utils.AbsDiff(horizonAngel_lv2, hAd_lv2) > MIN_ANGEL_DIFF) {
                 horizonAngel_lv2 = Mathf.Lerp(initH_lv2, hAd_lv2, poc);
@@ -88,4 +101,38 @@ public class HandDelayLooker : HandLooker
             transform.rotation = Quaternion.LookRotation(dir, direction.forward);
         }
     }
+
+    private (float, float) calculateRealHVfromSpherePoint(Vector3 pocSpherePoint)
+    {
+        Vector3 hv = Vector3.ProjectOnPlane(pocSpherePoint, Vector3.up);
+        float hv_sign = pocSpherePoint.x > 0 ? 1 : -1;
+        float vv_sign = pocSpherePoint.y > 0 ? 1 : -1;
+        float hangel = hv_sign * Vector3.Angle(hv, Vector3.forward);
+        float vangel = vv_sign * Vector3.Angle(pocSpherePoint, hv);
+        return (hangel, vangel);
+    }
+
+    private Vector3 calculatePocSpherePoint(Quaternion pocRotation)
+    {
+        Vector3 poc = pocRotation * Vector3.forward;
+        // DrawUtils.drawBall(sun.transform.position + poc, 0.02f);
+        return poc;
+    }
+
+    private Vector3 calculateTargetSpherePoint()
+    {
+        Vector3 forward = Quaternion.AngleAxis(hAd, Vector3.up) * Vector3.forward;
+        Vector3 secondNormal = Vector3.Cross(forward,Vector3.up);
+        Vector3 r = Quaternion.AngleAxis(vAd, secondNormal) * forward;
+        return r;
+    }
+
+    private Vector3 calculateInitSpherePoint()
+    {
+        Vector3 forward = Quaternion.AngleAxis(initH, Vector3.up) * Vector3.forward;
+        Vector3 secondNormal = Vector3.Cross(forward, Vector3.up);
+        Vector3 r = Quaternion.AngleAxis(initV, secondNormal) * forward;
+        return r;
+    }
+
 }

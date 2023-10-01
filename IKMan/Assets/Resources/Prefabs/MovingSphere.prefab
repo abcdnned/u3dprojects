@@ -149,7 +149,6 @@ MonoBehaviour:
   stairsMask:
     serializedVersion: 2
     m_Bits: 4294967295
-  playerInputSpace: {fileID: 0}
 --- !u!96 &3403980024223350691
 TrailRenderer:
   serializedVersion: 2

@@ -178,10 +178,11 @@ public class HumanIKController : MonoBehaviour
     if (walking)
     {
       eva = EVENT_KEEP_WALKING;
-    } else {
-        Vector3 direction = transform.forward;
-        float leftDot = Vector3.Dot(frontLeftLegStepper.transform.position, direction);
-        float rightDot = Vector3.Dot(frontRightLegStepper.transform.position, direction);
+      walkPointer.update();
+    // } else {
+    //     Vector3 direction = transform.forward;
+    //     float leftDot = Vector3.Dot(frontLeftLegStepper.transform.position, direction);
+    //     float rightDot = Vector3.Dot(frontRightLegStepper.transform.position, direction);
     }
     // Button Group A input
     string bga = null;

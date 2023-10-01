@@ -80,6 +80,7 @@
      <Compile Include="Assets/Script/Move/Hip2IdleMove.cs" />
      <Compile Include="Assets/Script/Move/Hip2BattleIdleMove.cs" />
      <Compile Include="Assets/Script/Move/HandMove.cs" />
+     <Compile Include="Assets/Script/Utils/EnhanceHandDelayLooker.cs" />
      <Compile Include="Assets/Script/Pyhsics/DeltaMoveController.cs" />
      <Compile Include="Assets/Script/TargetController/HandLooker.cs" />
      <Compile Include="Assets/Lib/CustomEasingFunction.cs" />
@@ -96,6 +97,7 @@
      <Compile Include="Assets/Script/Move/MovingSphere.cs" />
      <Compile Include="Assets/Script/Move/LegHandRunMove.cs" />
      <Compile Include="Assets/Script/Move/HandSwingMove.cs" />
+     <Compile Include="Assets/Script/Utils/HandLookTester.cs" />
      <Compile Include="Assets/Script/TargetController/PoseManager.cs" />
      <Compile Include="Assets/Script/HandIdleMove.cs" />
      <Compile Include="Assets/Script/LegController3.cs" />
@@ -103,6 +105,7 @@
      <Compile Include="Assets/Script/Modules/InputModule.cs" />
      <Compile Include="Assets/Script/Pyhsics/JointTrouq.cs" />
      <Compile Include="Assets/Script/Utils/IKSampleNames.cs" />
+     <Compile Include="Assets/Script/Utils/TwoNodeGizmo.cs" />
      <Compile Include="Assets/Script/QuaternionExtensions.cs" />
      <Compile Include="Assets/Script/Move/HipMove.cs" />
      <Compile Include="Assets/VelocityController.cs" />
@@ -128,8 +131,6 @@
      <Compile Include="Assets/Script/TargetController.cs" />
      <Compile Include="Assets/InputController.cs" />
      <Compile Include="Assets/Script/Modules/CameraModule.cs" />
-     <Compile Include="Assets/Script/Utils/EnhanceHandDelayLooker.cs" />
-     <Compile Include="Assets/Script/Utils/TwoNodeGizmo.cs" />
     <Reference Include="UnityEngine">
         <HintPath>/Users/i519418/software/u3d/2021.3.16f1c1/Unity.app/Contents/Managed/UnityEngine/UnityEngine.dll</HintPath>
     </Reference>

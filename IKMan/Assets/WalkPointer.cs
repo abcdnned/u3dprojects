@@ -19,7 +19,7 @@ public class WalkPointer : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    internal void update()
     {
         // bool turn = false;
         if ((humanIKController.currentStatus.getName() == LocomotionState.NAME

@@ -45,6 +45,7 @@ public class MovingSphere : MonoBehaviour
 	[SerializeField]
 	LayerMask probeMask = -1, stairsMask = -1;
 	internal Func<float> getSpeed;
+	internal Transform direction;
 
 
 
@@ -64,7 +65,7 @@ public class MovingSphere : MonoBehaviour
 	}
 
 	internal void updateInput (Vector2 movement, Transform direction, bool jumpFlag) {
-        
+		this.direction = direction;
 		Vector2 playerInput;
         playerInput.x = movement.x;
 		playerInput.y = movement.y;
@@ -119,20 +120,29 @@ public class MovingSphere : MonoBehaviour
         UpdateState();
 		Vector3 xAxis = ProjectOnContactPlane(Vector3.right).normalized;
 		Vector3 zAxis = ProjectOnContactPlane(Vector3.forward).normalized;
+		Debug.Log(" xAxis " + xAxis);
+		Debug.Log(" zAxis " + zAxis);
 		float currentX = Vector3.Dot(velocity, xAxis);
 		float currentZ = Vector3.Dot(velocity, zAxis);
 		float acceleration = OnGround ? maxAcceleration : maxAirAcceleration;
         // Debug.Log(" acc " + acceleration);
 		float maxSpeedChange = acceleration * Time.deltaTime;
-		float newX =
-			Mathf.MoveTowards(currentX, desiredVelocity.x, maxSpeedChange);
-		float newZ =
-			Mathf.MoveTowards(currentZ, desiredVelocity.z, maxSpeedChange);
+		// float newX =
+		// 	Mathf.MoveTowards(currentX, desiredVelocity.x, maxSpeedChange);
+		// float newZ =
+		// 	Mathf.MoveTowards(currentZ, desiredVelocity.z, maxSpeedChange);
+		Vector3 curV = new Vector3(currentX, 0, currentZ);
+		Vector3 desV = new Vector3(desiredVelocity.x, 0, desiredVelocity.z);
+		Vector3 newV = Vector3.MoveTowards(curV, desV, maxSpeedChange);
+		float newX = newV.x;
+		float newZ = newV.z;
         velocity += xAxis * (newX - currentX) + zAxis * (newZ - currentZ);
+        // velocity = desiredVelocity;
 		if (desiredJump) {
 			desiredJump = false;
 			Jump();
 		}
+		Debug.Log(" veloc " + velocity);
 		body.velocity = velocity;
 		ClearState();
     }

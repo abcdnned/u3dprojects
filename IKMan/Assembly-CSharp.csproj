@@ -131,6 +131,10 @@
      <Compile Include="Assets/Script/TargetController.cs" />
      <Compile Include="Assets/InputController.cs" />
      <Compile Include="Assets/Script/Modules/CameraModule.cs" />
+     <Compile Include="Assets/Script/Move/Pose/AirIdlePoseArgument.cs" />
+     <Compile Include="Assets/Script/Move/HipAirMove.cs" />
+     <Compile Include="Assets/Script/Move/LegAirMove.cs" />
+     <Compile Include="Assets/Script/Move/HandAirMove.cs" />
     <Reference Include="UnityEngine">
         <HintPath>/Users/i519418/software/u3d/2021.3.16f1c1/Unity.app/Contents/Managed/UnityEngine/UnityEngine.dll</HintPath>
     </Reference>

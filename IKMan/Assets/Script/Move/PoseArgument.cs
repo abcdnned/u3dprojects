@@ -38,7 +38,7 @@ public class PoseArgument
     protected ReadTrigger leftStopSignal;
 
     protected ReadTrigger rightStopSignal;
-
+    protected WalkBalance hip;
 
 
 
@@ -63,13 +63,20 @@ public class PoseArgument
         rightHand = rightHandController.advanceIKController.hand;
         rightShoulder = rightHandController.advanceIKController.shoulder;
         rightHip = rightLegController.advanceIKController.shoulder;
+
+        hip = hic.walkBalance;
     }
 
     public virtual void update() {
     }
 
     public virtual void run() {
-
+        float t = Time.time;
+        hic.leftHand.TryIdle();
+        hic.rightHand.TryIdle();
+        hic.frontLeftLegStepper.TryIdle();
+        hic.frontRightLegStepper.TryIdle();
+        hic.walkBalance.TryIdle(t);
     }
 
     protected (Vector3, Vector3, float) getSnapPosition(LegControllerType2 legController) {
@@ -140,5 +147,15 @@ public class PoseArgument
         ((LegHandMove)rightLegController.move).getFootRotation = null;
         leftStopSignal?.set();
         rightStopSignal?.set();
+    }
+
+    protected (Vector3, Vector3) hitStandPosition() {
+        RaycastHit hit;
+        if (Physics.Raycast(hip.transform.position, -hic.gravityUp, out hit, hic.ap.standHeight, 1 << 9)) {
+            Debug.DrawLine(hip.transform.position, hit.point, Color.red, 3);
+            return (hit.point, hit.normal);
+        }
+        return (Vector3.zero, Vector3.zero);
+        
     }
 }

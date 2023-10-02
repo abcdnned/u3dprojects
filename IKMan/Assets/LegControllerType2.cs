@@ -82,6 +82,7 @@ public class LegControllerType2 : TwoNodeController
         moveManager.addMove(new LegPutMove(isRightPart == 1));
         moveManager.addMove(new LegRotateMove());
         moveManager.addMove(new LegRunMove());
+        moveManager.addMove(new LegAirMove());
         moveManager.ChangeMove(MoveNameConstants.LegIdle);
         stepCount = 0;
     }
@@ -715,6 +716,11 @@ public class LegControllerType2 : TwoNodeController
 
     internal void TryIdle() {
         moveManager.ChangeMove(MoveNameConstants.LegIdle);
+    }
+
+    internal void TryAir(float offsetTime, float initTime, float duration) {
+        LegAirMove move = (LegAirMove)moveManager.ChangeMove(MoveNameConstants.LegAirMove);
+        move.initBasic(duration, initTime, offsetTime);
     }
 
 }

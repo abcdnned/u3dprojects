@@ -118,6 +118,7 @@ public class WalkBalance : TargetController
         moveManager.addMove(new Hip2IdleMove());
         moveManager.addMove(new HipHeightChangeMove());
         moveManager.addMove(new HipRunMove());
+        moveManager.addMove(new HipAirMove());
         moveManager.ChangeMove(MoveNameConstants.HipIdle);
     }
     
@@ -371,4 +372,7 @@ public class WalkBalance : TargetController
         target.rotation = r;
     }
 
+    internal void TryAir() {
+        moveManager.ChangeMove(MoveNameConstants.HipAirMove);
+    }
 }

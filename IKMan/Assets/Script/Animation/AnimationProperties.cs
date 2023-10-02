@@ -16,6 +16,7 @@ public class AnimationProperties : MonoBehaviour {
     public float transferSpeedSmall = .5f;
 
     public float transferSpeedFast = 0.2f;
+    public float transferSpeedLong = 2f;
     public float hipTrackCameraSpeed = 5f;
 
     [Header("--- idle ---")]

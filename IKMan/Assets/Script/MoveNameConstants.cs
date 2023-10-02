@@ -28,4 +28,7 @@ public class MoveNameConstants
     public static string LegRunMove = "leg_run";
     public static string HandRunMove = "hand_run";
     public static string HipRunMove = "hip_run";
+    public static string LegAirMove = "leg_air";
+    public static string HandAirMove = "hand_air";
+    public static string HipAirMove = "hip_air";
 }

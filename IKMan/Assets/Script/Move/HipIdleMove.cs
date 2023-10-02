@@ -17,9 +17,10 @@ public class HipIdleMove : HipMove
         // Vector3 h = controller.getDynamicHeight(controller.leftLeg.transform.position,
         //                                     controller.rightLeg.transform.position,
         //                                     controller.expectLegDistance);
-        controller.hic.spin3.localRotation= Quaternion.Slerp(controller.hic.spin3.localRotation,
-                                                        Quaternion.identity,
-                                                        1 - Mathf.Exp(-spin3speed * 2 * Time.deltaTime));
+        // controller.hic.spin3.localRotation= Quaternion.Slerp(controller.hic.spin3.localRotation,
+        //                                                 Quaternion.identity,
+        //                                                 1 - Mathf.Exp(-spin3speed * 2 * Time.deltaTime));
+        base.move(dt);
         float h = calculateRealTimeHeight();
 
         controller.adjustHeight(h, controller.hic.gravityUp, controller.hipBattleSpeed);
@@ -77,37 +78,31 @@ public class HipIdleMove : HipMove
     
     public override void init() {
         base.init();
-        ph = PrefabCreator.CreatePrefab(controller.hic.spin2.position, "SpinHelper", controller.hic.spin1.transform.rotation);
-        ph.AddComponent<SphereCollider>();
-        ph.GetComponent<Rigidbody>().interpolation = RigidbodyInterpolation.Interpolate;
-        CharacterJoint newJoint = ph.AddComponent<CharacterJoint>();
-        newJoint.anchor = new Vector3(0, -controller.hic.spin2.localPosition.y, -0.01f);
-        newJoint.connectedBody = controller.hic.spin1.GetComponent<Rigidbody>();
-        newJoint.autoConfigureConnectedAnchor = true;
-        newJoint.axis = new Vector3(1,0,0);
-        newJoint.swingAxis = new Vector3(0,1,0);
-        SoftJointLimitSpring sls = new SoftJointLimitSpring();
-        sls.spring = .73f;
-        newJoint.twistLimitSpring = sls;
-        SoftJointLimit l = new SoftJointLimit();
-        l.limit = -.1f;
-        newJoint.lowTwistLimit = l;
-        SoftJointLimit h = new SoftJointLimit();
-        h.limit = 0;
-        newJoint.highTwistLimit = h;
-        SoftJointLimit s1 = new SoftJointLimit();
-        s1.limit = 0f;
-        newJoint.swing1Limit = s1;
-        SoftJointLimit s2 = new SoftJointLimit();
-        s2.limit = 0f;
-        newJoint.swing2Limit = s2;
-    }
-
-    public override void finish() {
-        if (ph != null) {
-            GameObject.Destroy(ph);
-            // Debug.Log(" idle destory ph ");
-        }
+        ph = attachIdleJoint();
+        // ph = PrefabCreator.CreatePrefab(controller.hic.spin2.position, "SpinHelper", controller.hic.spin1.transform.rotation);
+        // ph.AddComponent<SphereCollider>();
+        // ph.GetComponent<Rigidbody>().interpolation = RigidbodyInterpolation.Interpolate;
+        // CharacterJoint newJoint = ph.AddComponent<CharacterJoint>();
+        // newJoint.anchor = new Vector3(0, -controller.hic.spin2.localPosition.y, -0.01f);
+        // newJoint.connectedBody = controller.hic.spin1.GetComponent<Rigidbody>();
+        // newJoint.autoConfigureConnectedAnchor = true;
+        // newJoint.axis = new Vector3(1,0,0);
+        // newJoint.swingAxis = new Vector3(0,1,0);
+        // SoftJointLimitSpring sls = new SoftJointLimitSpring();
+        // sls.spring = .73f;
+        // newJoint.twistLimitSpring = sls;
+        // SoftJointLimit l = new SoftJointLimit();
+        // l.limit = -.1f;
+        // newJoint.lowTwistLimit = l;
+        // SoftJointLimit h = new SoftJointLimit();
+        // h.limit = 0;
+        // newJoint.highTwistLimit = h;
+        // SoftJointLimit s1 = new SoftJointLimit();
+        // s1.limit = 0f;
+        // newJoint.swing1Limit = s1;
+        // SoftJointLimit s2 = new SoftJointLimit();
+        // s2.limit = 0f;
+        // newJoint.swing2Limit = s2;
     }
 
     private float calculateRealTimeHeight() {

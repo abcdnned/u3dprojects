@@ -55,6 +55,7 @@ public class HandController : TwoNodeController
         moveManager.addMove(new HandSwingMove());
         moveManager.addMove(new HandConsonant2Battle());
         moveManager.addMove(new HandRunMove());
+        moveManager.addMove(new HandAirMove());
         moveManager.ChangeMove(MoveNameConstants.HandIdle);
         handRotation.init(Vector3.zero, Vector3.zero, 0.1f, (v1, v2, t) => Vector3.Lerp(v1, v2, t));
     }
@@ -282,4 +283,8 @@ public class HandController : TwoNodeController
         moveManager.ChangeMove(MoveNameConstants.HandIdle);
     }
 
+    internal void TryAir(float offsetTime, float initTime, float duration) {
+        HandAirMove move = (HandAirMove)moveManager.ChangeMove(MoveNameConstants.HandAirMove);
+        move.initBasic(duration, initTime, offsetTime);
+    }
 }

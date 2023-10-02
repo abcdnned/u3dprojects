@@ -6,11 +6,13 @@ public class LocomotionState : AnyState {
     public const string STATE_MOVE = "moveState";
     public const string STATE_STOPPING = "stoppingState";
     public const string STATE_TRANSFER = "transferState";
+    public const string STATE_JUMP = "jumpState";
     // Banner transferBanner = new Banner(Banner.WALKING_TO_TRANSFER);
 
     private States moveState;
     private States stoppingState;
     private States transferState;
+    private States jumpState;
 
 
     private Vector3 offset;
@@ -23,11 +25,18 @@ public class LocomotionState : AnyState {
         moveState = new States(STATE_MOVE, Move);
         stoppingState = new States(STATE_STOPPING, Stopping);
         transferState = new States(STATE_TRANSFER, Transfer);
+        jumpState = new States(STATE_JUMP, Jump);
         cs = moveState;
     }
     private (States, ActionStateMachine) Move(Event e)
     {
-        if (e.eventId.Equals(HumanIKController.EVENT_KEEP_WALKING)) {
+        if (e.eventId != null && e.eventId.Equals(HumanIKController.EVENT_JUMP)) {
+            Debug.Log(" locomotion jump ");
+            changePose(new AirIdlePoseArgument(hic));
+            changeMoveController(new SphereMoveController());
+            return (jumpState, this);
+        }
+        else if (e.eventId != null && e.eventId.Equals(HumanIKController.EVENT_KEEP_WALKING)) {
             // if (hic.sprintFlag) {
                 // if (false && movingSphere == null) {
                 //     Vector3 p = Utils.copy(hic.transform.position);
@@ -44,7 +53,7 @@ public class LocomotionState : AnyState {
                 // }
                 changePose(new RunPoseArgument(hic));
                 changeMoveController(new SphereMoveController());
-        } else if (e.eventId.Equals(HumanIKController.EVENT_STOP_WALKING)) {
+        } else if (e.eventId != null && e.eventId.Equals(HumanIKController.EVENT_STOP_WALKING)) {
             // destoryMovingSphere();
             // if (hic.frontLeftLegStepper.move.IsLegMoving()) {
             //     hic.frontLeftLegStepper.handleEvent((HumanIKController.EVENT_STOP_WALKING));
@@ -174,11 +183,18 @@ public class LocomotionState : AnyState {
 
     }
 
-private void destoryMovingSphere() {
+    private void destoryMovingSphere() {
         // if (movingSphere != null) {
         //     GameObject.Destroy(movingSphere);
         //     movingSphere = null;
         // }
     }
 
+    private (States, ActionStateMachine) Jump(Event e)
+    {
+        if (((AirIdlePoseArgument)pose).landed) {
+            return (moveState, this);
+        }
+        return (jumpState, this);
+    }
 }

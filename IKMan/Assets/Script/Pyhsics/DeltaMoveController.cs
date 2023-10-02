@@ -18,5 +18,8 @@ public class DeltaMoveController
 
     internal virtual void exit() {
     }
+    internal virtual Vector3 getVelocity() {
+        return Vector3.zero;
+    }
 
 }

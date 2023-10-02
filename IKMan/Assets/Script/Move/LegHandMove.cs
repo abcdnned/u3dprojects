@@ -38,8 +38,10 @@ public class LegHandMove : Move
     protected virtual void updateIKRotation() {
         if (getFootRotation != null) {
             legController().transform.rotation = getFootRotation();
-        } else {
+        } else if (legController() != null) {
             legController().transform.rotation = getBaseOnArmRotation();
+        } else if (handController() != null) {
+            handController().LookToArmLook();
         }
     }
 

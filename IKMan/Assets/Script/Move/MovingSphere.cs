@@ -25,7 +25,7 @@ public class MovingSphere : MonoBehaviour
 
     Vector3 velocity, desiredVelocity;
 
-	Rigidbody body;
+	internal Rigidbody body;
 
     int jumpPhase;
 
@@ -120,12 +120,9 @@ public class MovingSphere : MonoBehaviour
         UpdateState();
 		Vector3 xAxis = ProjectOnContactPlane(Vector3.right).normalized;
 		Vector3 zAxis = ProjectOnContactPlane(Vector3.forward).normalized;
-		Debug.Log(" xAxis " + xAxis);
-		Debug.Log(" zAxis " + zAxis);
 		float currentX = Vector3.Dot(velocity, xAxis);
 		float currentZ = Vector3.Dot(velocity, zAxis);
 		float acceleration = OnGround ? maxAcceleration : maxAirAcceleration;
-        // Debug.Log(" acc " + acceleration);
 		float maxSpeedChange = acceleration * Time.deltaTime;
 		// float newX =
 		// 	Mathf.MoveTowards(currentX, desiredVelocity.x, maxSpeedChange);
@@ -142,7 +139,7 @@ public class MovingSphere : MonoBehaviour
 			desiredJump = false;
 			Jump();
 		}
-		Debug.Log(" veloc " + velocity);
+		// Debug.Log(" veloc " + velocity);
 		body.velocity = velocity;
 		ClearState();
     }

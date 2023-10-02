@@ -37,4 +37,7 @@ public class SphereMoveController : DeltaMoveController
     internal float getSpeed() {
         return hic.runMaxSpeed;
     }
+    internal override Vector3 getVelocity() {
+        return movingSphere.body.velocity;
+    }
 }

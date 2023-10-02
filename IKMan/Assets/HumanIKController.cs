@@ -95,6 +95,7 @@ public class HumanIKController : MonoBehaviour
   public static string EVENT_RIGHT_CLICK = "rightClick";
   public static string EVENT_HARD_STOP_WALKING = "hardStopWalking";
   public static string EVENT_IDLE = "idle";
+  public static string EVENT_JUMP = "jump";
 
   public static int RIGHT_FOOT = 0;
   public static int LEFT_FOOT = 1;
@@ -172,10 +173,13 @@ public class HumanIKController : MonoBehaviour
     string eva = null;
     // Debug.Log(" movement " + inputArgument.movement);
     walking = inputArgument.movement.magnitude > 0;
-    if (tmp && !walking) {
+    if (inputArgument.jumpFlag) {
+      eva = EVENT_JUMP;
+    }
+    else if (tmp && !walking) {
       eva = EVENT_STOP_WALKING;
     }
-    if (walking)
+    else if (walking)
     {
       eva = EVENT_KEEP_WALKING;
       walkPointer.update();
@@ -202,12 +206,12 @@ public class HumanIKController : MonoBehaviour
       sprintFlag = true;
     }
 
-    if (eva != null) {
-      currentStatus = currentStatus.handleEvent(ikEvent);
-      if (oldStatus.GetType() != currentStatus.GetType()) {
-        oldStatus.pose?.exit();
-      }
+    // if (eva != null) {
+    currentStatus = currentStatus.handleEvent(ikEvent);
+    if (oldStatus.GetType() != currentStatus.GetType()) {
+      oldStatus.pose?.exit();
     }
+    // }
 
     if (currentStatus.pose != null) {
       currentStatus.pose.update();

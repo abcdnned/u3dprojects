@@ -19,5 +19,9 @@ public class IKSampleNames
     public static string HAND_RUN_2 = "HandRun2";
     public static string HAND_RUN_3 = "HandRun3";
     public static string LEG_IDLE = "LegIdle";
+    public static string LEG_AIR_1 = "AirLeg1";
+    public static string LEG_AIR_2 = "AirLeg2";
+    public static string HAND_AIR_1 = "AirHand1";
+    public static string HAND_AIR_2 = "AirHand2";
 
 }

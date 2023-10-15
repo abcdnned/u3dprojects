@@ -74,4 +74,11 @@ public class TwoNodeController : TargetController
         return isRightPart == 1;
     }
 
+    internal void TrySync(float duration, string sampleName, string name = null) {
+        LegHandMove move = (LegHandMove)moveManager.ChangeMove(MoveNameConstants.LegHandMove);
+        move.initSyncProperties(duration, sampleName, !move.twoNodeController().IsRightPart());
+        if (name != null) {
+            move.name = name;
+        }
+    }
 }

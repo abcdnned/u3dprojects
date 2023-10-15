@@ -36,6 +36,7 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
+     <Compile Include="Assets/Script/Move/HandAirMove.cs" />
      <Compile Include="Assets/LegController2back.cs" />
      <Compile Include="Assets/Script/Move/LegMove.cs" />
      <Compile Include="Assets/Script/TargetController/AdvanceIKController.cs" />
@@ -46,10 +47,12 @@
      <Compile Include="Assets/Script/PrefabCreator.cs" />
      <Compile Include="Assets/Script/ControllerStatus.cs" />
      <Compile Include="Assets/Script/Move/HipRunMove.cs" />
+     <Compile Include="Assets/Script/Move/LegAirMove.cs" />
      <Compile Include="Assets/Script/Move/LegRunMove.cs" />
      <Compile Include="Assets/Script/Utils/MoveManager.cs" />
      <Compile Include="Assets/Script/Steper.cs" />
      <Compile Include="Assets/Follow.cs" />
+     <Compile Include="Assets/Script/Move/HipAirMove.cs" />
      <Compile Include="Assets/Script/Utils/EnhanceCharacterJoint.cs" />
      <Compile Include="Assets/Script/Rotater.cs" />
      <Compile Include="Assets/Script/Utils/StatelliteRotater.cs" />
@@ -82,6 +85,7 @@
      <Compile Include="Assets/Script/Move/HandMove.cs" />
      <Compile Include="Assets/Script/Utils/EnhanceHandDelayLooker.cs" />
      <Compile Include="Assets/Script/Pyhsics/DeltaMoveController.cs" />
+     <Compile Include="Assets/Script/Move/Pose/AirIdlePoseArgument.cs" />
      <Compile Include="Assets/Script/TargetController/HandLooker.cs" />
      <Compile Include="Assets/Lib/CustomEasingFunction.cs" />
      <Compile Include="Assets/WalkBalance.cs" />
@@ -131,10 +135,7 @@
      <Compile Include="Assets/Script/TargetController.cs" />
      <Compile Include="Assets/InputController.cs" />
      <Compile Include="Assets/Script/Modules/CameraModule.cs" />
-     <Compile Include="Assets/Script/Move/Pose/AirIdlePoseArgument.cs" />
-     <Compile Include="Assets/Script/Move/HipAirMove.cs" />
-     <Compile Include="Assets/Script/Move/LegAirMove.cs" />
-     <Compile Include="Assets/Script/Move/HandAirMove.cs" />
+     <Compile Include="Assets/Script/Move/Pose/SmallLandPoseArguments.cs" />
     <Reference Include="UnityEngine">
         <HintPath>/Users/i519418/software/u3d/2021.3.16f1c1/Unity.app/Contents/Managed/UnityEngine/UnityEngine.dll</HintPath>
     </Reference>

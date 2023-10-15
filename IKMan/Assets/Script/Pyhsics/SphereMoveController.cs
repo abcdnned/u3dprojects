@@ -19,7 +19,7 @@ public class SphereMoveController : DeltaMoveController
     internal override void init() {
         if (movingSphere == null) {
             Vector3 p = Utils.copy(target.transform.position);
-            p.y = 0.55f;
+            p.y = p.y + 0.5f;
             movingSphere = PrefabCreator.CreatePrefab(p, "MovingSphere", hic.walkPointer.transform.rotation).GetComponent<MovingSphere>();
             movingSphere.getSpeed = getSpeed;
             offset = target.transform.position - movingSphere.transform.position;
@@ -39,5 +39,13 @@ public class SphereMoveController : DeltaMoveController
     }
     internal override Vector3 getVelocity() {
         return movingSphere.body.velocity;
+    }
+
+    internal override int onGround() {
+        if (movingSphere.OnGround) {
+            return 1;
+        } else {
+            return 0;
+        }
     }
 }

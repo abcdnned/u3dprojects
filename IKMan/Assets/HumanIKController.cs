@@ -182,7 +182,6 @@ public class HumanIKController : MonoBehaviour
     else if (walking)
     {
       eva = EVENT_KEEP_WALKING;
-      walkPointer.update();
     // } else {
     //     Vector3 direction = transform.forward;
     //     float leftDot = Vector3.Dot(frontLeftLegStepper.transform.position, direction);
@@ -213,11 +212,13 @@ public class HumanIKController : MonoBehaviour
     }
     // }
 
-    if (currentStatus.pose != null) {
-      currentStatus.pose.update();
-    }
     if (currentStatus.moveController != null) {
       currentStatus.moveController.deltaMove();
+    }
+    walkPointer.update();
+
+    if (currentStatus.pose != null) {
+      currentStatus.pose.update();
     }
 
     leftHand.move?.move(Time.deltaTime);

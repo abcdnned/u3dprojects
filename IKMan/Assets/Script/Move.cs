@@ -15,7 +15,7 @@ public class Move
 
     public TargetController targetController;
 
-    public HumanIKController humanIKController;
+    public HumanIKController hic;
 
     public MoveManager moveManager;
 

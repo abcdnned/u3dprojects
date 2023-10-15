@@ -7,12 +7,14 @@ public class LocomotionState : AnyState {
     public const string STATE_STOPPING = "stoppingState";
     public const string STATE_TRANSFER = "transferState";
     public const string STATE_JUMP = "jumpState";
+    public const string STATE_LAND = "landState";
     // Banner transferBanner = new Banner(Banner.WALKING_TO_TRANSFER);
 
     private States moveState;
     private States stoppingState;
     private States transferState;
     private States jumpState;
+    private States landState;
 
 
     private Vector3 offset;
@@ -26,6 +28,7 @@ public class LocomotionState : AnyState {
         stoppingState = new States(STATE_STOPPING, Stopping);
         transferState = new States(STATE_TRANSFER, Transfer);
         jumpState = new States(STATE_JUMP, Jump);
+        landState = new States(STATE_LAND, Land);
         cs = moveState;
     }
     private (States, ActionStateMachine) Move(Event e)
@@ -53,7 +56,8 @@ public class LocomotionState : AnyState {
                 // }
                 changePose(new RunPoseArgument(hic));
                 changeMoveController(new SphereMoveController());
-        } else if (e.eventId != null && e.eventId.Equals(HumanIKController.EVENT_STOP_WALKING)) {
+        // } else if (e.eventId != null && e.eventId.Equals(HumanIKController.EVENT_STOP_WALKING)) {
+        } else if (hic.inputArgument.movement.magnitude <= 0) {
             // destoryMovingSphere();
             // if (hic.frontLeftLegStepper.move.IsLegMoving()) {
             //     hic.frontLeftLegStepper.handleEvent((HumanIKController.EVENT_STOP_WALKING));
@@ -193,8 +197,17 @@ public class LocomotionState : AnyState {
     private (States, ActionStateMachine) Jump(Event e)
     {
         if (((AirIdlePoseArgument)pose).landed) {
-            return (moveState, this);
+            return (landState, this);
         }
         return (jumpState, this);
+    }
+
+    private (States, ActionStateMachine) Land(Event e)
+    {
+        changePose(new SmallLandPoseArgument(hic));
+        if (((SmallLandPoseArgument)pose).recover) {
+            return (moveState, this);
+        }
+        return (landState, this);
     }
 }

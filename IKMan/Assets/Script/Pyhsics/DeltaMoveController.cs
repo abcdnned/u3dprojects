@@ -22,4 +22,8 @@ public class DeltaMoveController
         return Vector3.zero;
     }
 
+    internal virtual int onGround() {
+        return -1;
+    }
+
 }

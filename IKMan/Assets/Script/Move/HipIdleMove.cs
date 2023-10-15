@@ -23,7 +23,7 @@ public class HipIdleMove : HipMove
         base.move(dt);
         float h = calculateRealTimeHeight();
 
-        controller.adjustHeight(h, controller.hic.gravityUp, controller.hipBattleSpeed);
+        controller.adjustGroundedHeight(h, controller.hic.gravityUp, controller.hipBattleSpeed);
 
         // controller.hic.spin2.position = ph.transform.position;
         // controller.hic.spin2.rotation = ph.transform.rotation;

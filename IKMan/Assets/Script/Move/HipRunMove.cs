@@ -28,7 +28,7 @@ public class HipRunMove : HipMove
     public override Move move(float dt) {
         // Debug.Log(" hip run ");
         normalizedTime += dt;
-        controller.adjustHeight(h, controller.hic.gravityUp, speed);
+        controller.adjustGroundedHeight(h, controller.hic.gravityUp, speed);
         // controller.hic.spin2.position = ph.transform.position;
         // controller.hic.spin2.rotation = ph.transform.rotation;
         // Quaternion r = Quaternion.Slerp(controller.hic.spin2.rotation,

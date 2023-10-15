@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class AnimationProperties : MonoBehaviour {
 
+    [Header("--- General ---")]
+    public float airRayCast = 0.1f;
+    public float landDownHeigth = .4f;
+
     [Header("--- Run ---")]
     public float runHalfDuration = .5f;
     public float snapTime = 0.1f;
@@ -18,6 +22,7 @@ public class AnimationProperties : MonoBehaviour {
     public float transferSpeedFast = 0.2f;
     public float transferSpeedLong = 2f;
     public float hipTrackCameraSpeed = 5f;
+    public float smallLandDuration = .1f;
 
     [Header("--- idle ---")]
 

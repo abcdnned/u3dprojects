@@ -58,7 +58,7 @@ public class WalkBalance : TargetController
     public float expectTransferSpeed = 5;
     public Transform cam;
     private Vector3 transferDir;
-    public float airRayCastDistance = 0.5f;
+    public float airRayCastDistance = 2f;
     public LayerMask airRayCastIgnoreLayer;
     public static float DOWN_RAY_OFFSET = 10;
 
@@ -143,19 +143,49 @@ public class WalkBalance : TargetController
         return new Vector3(x, y, z);
     }
 
-    internal void adjustHeight(float h, Vector3 normal, float speed) {
+    internal void adjustGroundedHeight(float h, Vector3 normal, float speed, bool instant = false) {
         if (h < 0) {
             h = 0;
         }
-        RaycastHit hit;
-        Vector3 start = Utils.copy(transform.position);
-        start.y += DOWN_RAY_OFFSET;
-        if (Physics.Raycast(start, -normal, out hit, DOWN_RAY_OFFSET + airRayCastDistance, ~airRayCastIgnoreLayer)) {
-            h -= hipHeightOffset;
+        // RaycastHit hit;
+        // Vector3 start = Utils.copy(adjustTarget.position);
+        // start.y += DOWN_RAY_OFFSET;
+        // if (Physics.Raycast(start, -normal, out hit, DOWN_RAY_OFFSET + airRayCastDistance, ~airRayCastIgnoreLayer)) {
+            // h -= hic.ap.standHeight;
+        Transform adjustTarget = hic.spin1.transform;
+        RaycastHit hit = getGroundedHit(normal);
+        if (hit.collider != null) {
             Vector3 desiredPos = hit.point + normal * h;
             desiredPos.y = h;
-            Utils.deltaMove(transform, Vector3.MoveTowards(transform.position, desiredPos, speed * Time.deltaTime));
+            if (!instant) {
+                Utils.deltaMove(adjustTarget, Vector3.MoveTowards(adjustTarget.position, desiredPos, speed * Time.deltaTime));
+            } else {
+                Utils.deltaMove(adjustTarget, desiredPos);
+            }
         }
+        // }
+    }
+
+    internal RaycastHit getGroundedHit(Vector3 normal) {
+        RaycastHit hit;
+        Transform adjustTarget = hic.spin1.transform;
+        Vector3 start = Utils.copy(adjustTarget.position);
+        start.y += DOWN_RAY_OFFSET;
+        if (Physics.Raycast(start, -normal, out hit, DOWN_RAY_OFFSET + airRayCastDistance, ~airRayCastIgnoreLayer)) {
+            return hit;
+        }
+        return hit;
+    }
+
+    internal (bool, float) getGroundedHeight(Vector3 normal) {
+        RaycastHit hit = getGroundedHit(normal);
+        if (hit.collider != null) {
+            float h = hic.spin1.transform.position.y - hit.point.y;
+            if (h > 0) {
+                return (true, h);
+            }
+        }
+        return (false, 0);
     }
 
     internal float hipHeightDiff(float h, Vector3 normal) {
@@ -259,12 +289,12 @@ public class WalkBalance : TargetController
         moveManager.ChangeMove(MoveNameConstants.HipIdle2BattleIdle);
     }
 
-    public void TryRotate(float targetRotation, float targetHeight) {
-        updateTransferDirection(Utils.forwardFlat(cam));
-        HipHeightChangeMove m = (HipHeightChangeMove)moveManager.ChangeMove(MoveNameConstants.HipHeightChangeMove);
-        m.targetRotation = targetRotation;
-        m.groundHeight = targetHeight;
-    }
+    // public void TryRotate(float targetRotation, float targetHeight) {
+    //     updateTransferDirection(Utils.forwardFlat(cam));
+    //     HipHeightChangeMove m = (HipHeightChangeMove)moveManager.ChangeMove(MoveNameConstants.HipHeightChangeMove);
+    //     m.targetRotation = targetRotation;
+    //     m.groundHeight = targetHeight;
+    // }
 
     // public void TryRun(GameObject movingSphere, Vector3 offset) {
     //     HipRunMove m = (HipRunMove)moveManager.ChangeMove(MoveNameConstants.HipRunMove);
@@ -345,7 +375,7 @@ public class WalkBalance : TargetController
         Vector3 h = getDynamicHeight(leftLeg.transform.position,
                                             rightLeg.transform.position,
                                             expectLegDistance);
-        adjustHeight(h.y, Vector3.up, hipBattleSpeed);
+        adjustGroundedHeight(h.y, Vector3.up, hipBattleSpeed);
     }
 
     internal void TryRun(LegRunMove leftBeat, LegRunMove rightBeat) {
@@ -374,5 +404,10 @@ public class WalkBalance : TargetController
 
     internal void TryAir() {
         moveManager.ChangeMove(MoveNameConstants.HipAirMove);
+    }
+
+    internal void TryChangeHeight(float h, float duration) {
+        HipHeightChangeMove move = (HipHeightChangeMove)moveManager.ChangeMove(MoveNameConstants.HipHeightChangeMove);
+        move.initBasics(h, duration);
     }
 }

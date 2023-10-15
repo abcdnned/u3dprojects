@@ -9,9 +9,9 @@ public class MainHoldWeapon : HandMove
         Vector3 spin1 = handController.hic.spin1.transform.position;
         GameObject polePivot = PrefabCreator.CreatePrefab(new Vector3(spin1.x, readyPos.y, spin1.z),
                                "WeaponHandler", Quaternion.identity);
-        polePivot.transform.rotation = Quaternion.LookRotation(humanIKController.transform.forward,
-                                                      humanIKController.transform.up);
-        polePivot.transform.parent = humanIKController.spin1.transform;
+        polePivot.transform.rotation = Quaternion.LookRotation(hic.transform.forward,
+                                                      hic.transform.up);
+        polePivot.transform.parent = hic.spin1.transform;
         GameObject pole = PrefabCreator.CreatePrefab(new Vector3(spin1.x, readyPos.y, spin1.z),
                                "Pole", Quaternion.identity);
         float zRotate = Vector3.Angle(pole.transform.forward, polePivot.transform.forward);
@@ -40,23 +40,23 @@ public class MainHoldWeapon : HandMove
         newJoint.swing2Limit = s2;
 
         pole.AddComponent<EnhanceCharacterJoint>();
-        humanIKController.poleJoint = newJoint;
+        hic.poleJoint = newJoint;
 
         GameObject hand = handController.gameObject;
         HandDelayLooker handDelayLooker = hand.AddComponent<HandDelayLooker>();
         handDelayLooker.sun = pole.transform;
         handDelayLooker.direction = pole.transform;
-        handDelayLooker.distance = humanIKController.swingRadius;
+        handDelayLooker.distance = hic.swingRadius;
         handDelayLooker.horizonAngel = 0;
         handDelayLooker.hAd = 0;
         handDelayLooker.verticalAngel = 90;
         handDelayLooker.vAd = 90;
 
-        humanIKController.attchment_rightHand.transform.SetParent(null);
-        humanIKController.attchment_rightHand.GetComponent<Rigidbody>().isKinematic = false;
+        hic.attchment_rightHand.transform.SetParent(null);
+        hic.attchment_rightHand.GetComponent<Rigidbody>().isKinematic = false;
         Quaternion rot = Quaternion.LookRotation(pole.transform.up, -pole.transform.forward);
-        humanIKController.attchment_rightHand.transform.rotation = rot;
-        CharacterJoint hand_joint = humanIKController.attchment_rightHand.AddComponent<CharacterJoint>();
+        hic.attchment_rightHand.transform.rotation = rot;
+        CharacterJoint hand_joint = hic.attchment_rightHand.AddComponent<CharacterJoint>();
         hand_joint.connectedBody = pole.GetComponent<Rigidbody>();
         hand_joint.anchor = new Vector3(0,0,0);
         hand_joint.autoConfigureConnectedAnchor = false;
@@ -65,15 +65,15 @@ public class MainHoldWeapon : HandMove
         hand_joint.swingAxis = new Vector3(-1,0,0);
         Utils.JointSetLimit(hand_joint, -0, 0);
 
-        GameObject gs = humanIKController.weapon;
+        GameObject gs = hic.weapon;
         CharacterJoint weapon_joint = gs.GetComponent<CharacterJoint>();
         GameObject.Destroy(weapon_joint);
         Quaternion gs_rot = Quaternion.LookRotation(-hand_joint.transform.forward,
                                                     hand_joint.transform.right);
         gs.transform.rotation = gs_rot;
         weapon_joint = gs.AddComponent<CharacterJoint>();
-        weapon_joint.anchor = humanIKController.mainHandle.localPosition;
-        weapon_joint.connectedBody = humanIKController.attchment_rightHand.GetComponent<Rigidbody>();
+        weapon_joint.anchor = hic.mainHandle.localPosition;
+        weapon_joint.connectedBody = hic.attchment_rightHand.GetComponent<Rigidbody>();
         weapon_joint.autoConfigureConnectedAnchor = false;
         weapon_joint.axis = new Vector3(1,0,0);
         weapon_joint.swingAxis = new Vector3(0,0,-1);

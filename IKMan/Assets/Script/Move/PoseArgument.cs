@@ -122,7 +122,7 @@ public class PoseArgument
             }
         }
         if (snapPos.magnitude > 0) {
-            Vector3 projectedForward = Vector3.ProjectOnPlane(hic.walkPointer.transform.forward, snapNormal);
+            Vector3 projectedForward = Vector3.ProjectOnPlane(hic.transform.forward, snapNormal);
             Quaternion baseOnSnap = Quaternion.LookRotation(projectedForward, snapNormal);
             ((LegHandMove)legController.move).getFootRotation = () => {  if (hitDis <= 0) {
                                                                             return baseOnSnap;
@@ -149,13 +149,22 @@ public class PoseArgument
         rightStopSignal?.set();
     }
 
-    protected (Vector3, Vector3) hitStandPosition() {
+    protected (Vector3, Vector3) hitStandPosition(int layer) {
         RaycastHit hit;
-        if (Physics.Raycast(hip.transform.position, -hic.gravityUp, out hit, hic.ap.standHeight, 1 << 9)) {
-            Debug.DrawLine(hip.transform.position, hit.point, Color.red, 3);
+        if (Physics.Raycast(hic.spin1.transform.position, -hic.gravityUp, out hit, hic.ap.standHeight, layer)) {
+            Debug.DrawLine(hic.spin1.transform.position, hit.point, Color.red, 3);
             return (hit.point, hit.normal);
         }
         return (Vector3.zero, Vector3.zero);
-        
+    }
+
+    protected bool isAirRayHit(Transform target, Vector3 up, int layer, float distance) {
+        float upOffset = 1f;
+        Vector3 start = target.position + upOffset * up;
+        RaycastHit hit;
+        if (Physics.Raycast(start, -up, out hit, upOffset + distance, layer)) {
+            return true;
+        }
+        return false;
     }
 }

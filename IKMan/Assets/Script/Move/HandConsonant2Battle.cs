@@ -34,9 +34,9 @@ public class HandConsonant2Battle : HandMove
                 state++;
                 handController.SyncIKSample(IKSampleNames.SWING_RIGHT_HAND_ON_LEFT, duration2, true);
                 handController.handLookIKController.init(duration2,
-                                                        humanIKController.consonantHandle.position,
-                                                        humanIKController.body.transform,
-                                                        humanIKController.consonantHandle,
+                                                        hic.consonantHandle.position,
+                                                        hic.body.transform,
+                                                        hic.consonantHandle,
                                                         true);
             }
         }

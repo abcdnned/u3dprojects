@@ -35,7 +35,7 @@ public class Hip2BattleIdleMove : Move
             parent.ReturnToCenter();
             parent.transferByTime(parent.battleIdleAngelOffset, normalizedTime / duration, false);
             // Debug.Log(" transferSpeed " + transferSpeed);
-            parent.adjustHeight(h.y, Vector3.up, hipMoveSpeed);
+            parent.adjustGroundedHeight(h.y, Vector3.up, hipMoveSpeed);
             // Debug.Log(this.GetType().Name + " speed " + hipMoveSpeed);
         }
         return this;

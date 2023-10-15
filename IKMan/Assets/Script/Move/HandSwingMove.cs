@@ -27,7 +27,7 @@ public class HandSwingMove : HandMove
         this.handTransform = handTransform;
         this.midDirection = midDirection;
         Debug.DrawRay(joint.transform.position, midDirection, Color.black, 5);
-        midDirectionOffset = Quaternion.FromToRotation(humanIKController.walkPointer.transform.forward, midDirection);
+        midDirectionOffset = Quaternion.FromToRotation(hic.walkPointer.transform.forward, midDirection);
     }
 
     public override string getMoveType() {
@@ -46,14 +46,14 @@ public class HandSwingMove : HandMove
             } else {
                 handController.handLookIKController.init(Time.deltaTime,
                                                         handTransform.position,
-                                                        humanIKController.body.transform,
+                                                        hic.body.transform,
                                                         handTransform);
                 // (float, float) sha = swingHandAngle();
                 // handController.armLookRotationH = sha.Item1;
                 // handController.armLookRotationV = sha.Item2;
                 // handController.LookToArmLook();
                 Rigidbody rigidbody = joint.GetComponent<Rigidbody>();
-                Vector3 swingTorque = new Vector3(0, -humanIKController.swingStrength, 0);
+                Vector3 swingTorque = new Vector3(0, -hic.swingStrength, 0);
                 rigidbody.AddTorque(swingTorque, ForceMode.Acceleration);
                 handJoint.GetComponent<Rigidbody>().AddTorque(swingTorque / 2, ForceMode.Acceleration);
             }
@@ -97,7 +97,7 @@ public class HandSwingMove : HandMove
     }
 
     private Vector3 getMidDirection() {
-        Vector3 result =  midDirectionOffset * humanIKController.walkPointer.transform.forward;
+        Vector3 result =  midDirectionOffset * hic.walkPointer.transform.forward;
         Debug.DrawRay(joint.transform.position, result, Color.red, 1);
         return result;
     }

@@ -19,7 +19,7 @@ public class HipBattleIdleMove : Move
         Debug.Log(" battle idle ");
         normalizedTime += dt;
         parent.transfer(parent.battleIdleAngelOffset);
-        parent.adjustHeight(parent.battleIdleHipH, Vector3.up,
+        parent.adjustGroundedHeight(parent.battleIdleHipH, Vector3.up,
                             parent.hipBattleSpeed);
         return this;
     }

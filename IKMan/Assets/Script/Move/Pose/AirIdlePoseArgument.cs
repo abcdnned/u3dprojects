@@ -40,10 +40,14 @@ public class AirIdlePoseArgument : PoseArgument
         if (t <= enableTime) {
             return false;
         } else {
-            (Vector3, Vector3) hit = hitStandPosition();
-            Vector3 snapPos = hit.Item1;
+            // (Vector3, Vector3) hit = hitStandPosition();
+            // Vector3 snapPos = hit.Item1;
+            // int hitLayer = 1 << 9;
+            // bool hitGround = isAirRayHit(hic.spin1.transform, hic.gravityUp, hitLayer, hic.ap.standHeight + hic.ap.airRayCast);
+            // hitGround |= isAirRayHit(leftLegController.transform, hic.gravityUp, hitLayer);
             bool fall = Vector3.Dot(hic.currentStatus.moveController.getVelocity(), hic.gravityUp) <= 0;
-            if (snapPos.magnitude > 0 && fall) {
+            bool hitGround = hic.currentStatus.moveController.onGround() > 0;
+            if (hitGround && fall) {
                 return true;
             }
         }

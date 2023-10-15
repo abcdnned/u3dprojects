@@ -23,5 +23,6 @@ public class IKSampleNames
     public static string LEG_AIR_2 = "AirLeg2";
     public static string HAND_AIR_1 = "AirHand1";
     public static string HAND_AIR_2 = "AirHand2";
+    public static string HAND_LAND = "HandLand";
 
 }

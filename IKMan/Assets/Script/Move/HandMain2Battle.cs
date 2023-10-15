@@ -33,8 +33,8 @@ public class HandMain2Battle : HandMove
             handController.SyncIKSample(IKSampleNames.FETCH_GREAT_SWORD_1, duration);
             if (handController.handLookIKController != null) {
                 handController.handLookIKController.init(duration,
-                                                        humanIKController.mainHandle.position,
-                                                        humanIKController.body.transform);
+                                                        hic.mainHandle.position,
+                                                        hic.body.transform);
             }
         }
         if (state == 1) {
@@ -45,8 +45,8 @@ public class HandMain2Battle : HandMove
                 handController.SyncIKSample(IKSampleNames.FETCH_GREAT_SWORD_2, duration2);
                 if (handController.handLookIKController != null) {
                     handController.handLookIKController.init(duration2,
-                                                            humanIKController.weaponReady.transform.position,
-                                                            humanIKController.body.transform);
+                                                            hic.weaponReady.transform.position,
+                                                            hic.body.transform);
                 }
                 switchJoint(greateSworad, hand);
                 handController.twistTwist(new Vector3(0, 106, 0), duration2);
@@ -76,7 +76,7 @@ public class HandMain2Battle : HandMove
         GameObject.Destroy(characterJoint);
         adjustSwordPositionWithHand(hand, gs);
         CharacterJoint newJoint = gs.AddComponent<CharacterJoint>();
-        newJoint.anchor = humanIKController.mainHandle.localPosition;
+        newJoint.anchor = hic.mainHandle.localPosition;
         newJoint.connectedBody = hand.GetComponent<Rigidbody>();
         newJoint.autoConfigureConnectedAnchor = false;
         newJoint.axis = new Vector3(1,0,0);

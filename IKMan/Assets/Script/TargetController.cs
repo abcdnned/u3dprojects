@@ -31,6 +31,7 @@ public class TargetController : MonoBehaviour {
         moveManager = new MoveManager(this);
         moveManager.addMove(new Move(MoveNameConstants.DirectMoving));
         moveManager.addMove(new Move(MoveNameConstants.Idle));
+        moveManager.addMove(new LegHandMove());
         initMove();
     }
 

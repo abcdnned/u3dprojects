@@ -287,4 +287,5 @@ public class HandController : TwoNodeController
         HandAirMove move = (HandAirMove)moveManager.ChangeMove(MoveNameConstants.HandAirMove);
         move.initBasic(duration, initTime, offsetTime);
     }
+
 }

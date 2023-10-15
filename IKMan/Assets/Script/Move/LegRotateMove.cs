@@ -16,7 +16,7 @@ public class LegRotateMove : LegMove
         duration = legController().shortStepDuration;
         if (state == 0) {
             state = 1;
-            rotater = new Rotater(humanIKController.walkPointer.transform,
+            rotater = new Rotater(hic.walkPointer.transform,
                                   legController().transform,
                                   duration,
                                   angelOffset);

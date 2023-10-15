@@ -26,7 +26,7 @@ public class Hip2IdleMove : Move
             return moveManager.ChangeMove(MoveNameConstants.HipIdle);
         } else {
             parent.transfer(0);
-            parent.adjustHeight(parent.idleHipH, Vector3.up, hipMoveSpeed);
+            parent.adjustGroundedHeight(parent.idleHipH, Vector3.up, hipMoveSpeed);
         }
         return this;
     }

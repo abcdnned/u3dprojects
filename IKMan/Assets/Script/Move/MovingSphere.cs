@@ -32,8 +32,8 @@ public class MovingSphere : MonoBehaviour
     bool desiredJump;
 	int groundContactCount, steepContactCount;
 
-	bool OnGround => groundContactCount > 0;
-	bool OnSteep => steepContactCount > 0;
+	internal bool OnGround => groundContactCount > 0;
+	internal bool OnSteep => steepContactCount > 0;
 
 	[SerializeField, Range(0f, 90f)]
     float maxGroundAngle = 25f, maxStairsAngle = 50f;

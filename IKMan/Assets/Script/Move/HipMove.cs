@@ -59,6 +59,7 @@ public class HipMove : Move
                 helpers[i] = null;
             }
         }
+        helperCount = 0;
     }
 
     public override Move move(float dt) {

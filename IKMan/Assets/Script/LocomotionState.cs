@@ -40,40 +40,9 @@ public class LocomotionState : AnyState {
             return (jumpState, this);
         }
         else if (e.eventId != null && e.eventId.Equals(HumanIKController.EVENT_KEEP_WALKING)) {
-            // if (hic.sprintFlag) {
-                // if (false && movingSphere == null) {
-                //     Vector3 p = Utils.copy(hic.transform.position);
-                //     p.y = 0.55f;
-                //     movingSphere = PrefabCreator.CreatePrefab(p, "MovingSphere");
-                //     movingSphere.GetComponent<MovingSphere>().humanIKController = hic;
-                //     offset = hic.transform.position - movingSphere.transform.position;
-                // }
-                // if (hic.frontLeftLegStepper.move.IsLegMoving()) {
-                //     hic.frontLeftLegStepper.handleEvent((HumanIKController.EVENT_HARD_STOP_WALKING));
-                // }
-                // if (hic.frontRightLegStepper.move.IsLegMoving()) {
-                //     hic.frontRightLegStepper.handleEvent((HumanIKController.EVENT_HARD_STOP_WALKING));
-                // }
                 changePose(new RunPoseArgument(hic));
                 changeMoveController(new SphereMoveController());
-        // } else if (e.eventId != null && e.eventId.Equals(HumanIKController.EVENT_STOP_WALKING)) {
         } else if (hic.inputArgument.movement.magnitude <= 0) {
-            // destoryMovingSphere();
-            // if (hic.frontLeftLegStepper.move.IsLegMoving()) {
-            //     hic.frontLeftLegStepper.handleEvent((HumanIKController.EVENT_STOP_WALKING));
-            // } else {
-            //     hic.frontLeftLegStepper.handleEvent((HumanIKController.EVENT_STOP_WALKING));
-            // }
-            // if (hic.frontRightLegStepper.move.IsLegMoving()) {
-            //     hic.frontRightLegStepper.handleEvent((HumanIKController.EVENT_STOP_WALKING));
-            // } else {
-            //     hic.frontRightLegStepper.handleEvent((HumanIKController.EVENT_STOP_WALKING));
-            // }
-            // hic.frontLeftLegStepper.TryStopRun();
-            // hic.frontRightLegStepper.TryStopRun();
-            // hic.walkBalance.
-            // hic.leftHand.handleEvent(e.eventId);
-            // hic.rightHand.handleEvent(e.eventId);
             changeMoveController(null);
             return (null, new IdleStatus(hic));
         }
@@ -105,13 +74,6 @@ public class LocomotionState : AnyState {
             }
         }
         else if (e.eventId != null && e.eventId.Equals(HumanIKController.EVENT_KEEP_WALKING)) {
-            // hic.frontRightLegStepper.handleEvent((HumanIKController.EVENT_KEEP_WALKING));
-            // hic.frontLeftLegStepper.TryMove();
-            // hic.frontRightLegStepper.TryMove();
-            // hic.leftHand.handleEvent(e.eventId);
-            // hic.rightHand.handleEvent(e.eventId);
-            // Debug.Log(this.GetType().Name + " refresh ");
-            // stopWalkingBanner.refresh();
             return (moveState, this);
         }
         return (stoppingState, this);
@@ -132,66 +94,12 @@ public class LocomotionState : AnyState {
     public override ActionStateMachine run() {
         return null;
     }
-    // public override ActionStateMachine handleEvent(Event e) {
-    //     (States, ActionStateMachine) value = cs.handleEvent(e);
-    //     if (cs != value.Item1) {
-    //         Debug.Log(this.GetType().Name + " State change to " + value.Item1.name);
-    //         cs = value.Item1;
-    //     }
-    //     return value.Item2;
-        // if (transferBanner.Check()) {
-        //     Debug.Log(this.GetType().Name + " transferBanner checked ");
-        //     return new IdleStatus(humanIKController);
-        // }
-        // if (stopWalkingBanner.Check()) {
-        //     Debug.Log(this.GetType().Name + " stopWalingBanner checked ");
-        //     Vector3 direction = Utils.forward(humanIKController.body.transform);
-        //     float leftDot = Vector3.Dot(humanIKController.frontLeftLegStepper.transform.position, direction);
-        //     float rightDot = Vector3.Dot(humanIKController.frontRightLegStepper.transform.position, direction);
-        //     if (!humanIKController.frontLeftLegStepper.Moving && !humanIKController.frontRightLegStepper.Moving
-        //         && (Mathf.Max(leftDot, rightDot) - Mathf.Min(leftDot, rightDot) > 0.2)) {
-        //         transferBanner.Reset(1);
-        //         Debug.Log(this.GetType().Name + " need one foot transfer ");
-        //         if (leftDot < rightDot) {
-        //             humanIKController.frontLeftLegStepper.TryMove();
-        //             humanIKController.frontLeftLegStepper.handleEvent(HumanIKController.EVENT_STOP_WALKING, transferBanner);
-        //         } else {
-        //             humanIKController.frontRightLegStepper.TryMove();
-        //             humanIKController.frontRightLegStepper.handleEvent(HumanIKController.EVENT_STOP_WALKING, transferBanner);
-        //         }
-        //     } else {
-        //         return new IdleStatus(humanIKController);
-        //     }
-        // }
-        // if (e.eventId.Equals(HumanIKController.EVENT_KEEP_WALKING)) {
-        //     humanIKController.frontRightLegStepper.handleEvent(HumanIKController.EVENT_KEEP_WALKING);
-        //     humanIKController.frontLeftLegStepper.TryMove();
-        //     humanIKController.frontRightLegStepper.TryMove();
-        //     humanIKController.leftHand.handleEvent(e);
-        //     humanIKController.rightHand.handleEvent(e);
-        // } else if (e.eventId.Equals(HumanIKController.EVENT_STOP_WALKING)) {
-        //     int resetValue = 3;
-        //     if (humanIKController.frontLeftLegStepper.Moving && humanIKController.frontRightLegStepper.Moving) {
-        //         resetValue = 4;
-        //     }
-        //     stopWalkingBanner.Reset(resetValue);
-        //     humanIKController.frontLeftLegStepper.handleEvent(e.eventId, stopWalkingBanner);
-        //     humanIKController.frontRightLegStepper.handleEvent(e.eventId, stopWalkingBanner);
-        //     humanIKController.leftHand.handleEvent(e, stopWalkingBanner);
-        //     humanIKController.rightHand.handleEvent(e, stopWalkingBanner);
-        // }
-    // }
-
 
     public override void handleInput(SMInput smInput) {
 
     }
 
     private void destoryMovingSphere() {
-        // if (movingSphere != null) {
-        //     GameObject.Destroy(movingSphere);
-        //     movingSphere = null;
-        // }
     }
 
     private (States, ActionStateMachine) Jump(Event e)

@@ -23,6 +23,8 @@ public class HipIdleMove : HipMove
         base.move(dt);
         float h = calculateRealTimeHeight();
 
+        // float speed = controller.hipHeightDiff(h, controller.hic.gravityUp) / (hic.ap.idleBreathTime / 2);
+        // controller.adjustGroundedHeight(h, controller.hic.gravityUp, speed, true);
         controller.adjustGroundedHeight(h, controller.hic.gravityUp, controller.hipBattleSpeed);
 
         // controller.hic.spin2.position = ph.transform.position;
@@ -79,39 +81,15 @@ public class HipIdleMove : HipMove
     public override void init() {
         base.init();
         ph = attachIdleJoint();
-        // ph = PrefabCreator.CreatePrefab(controller.hic.spin2.position, "SpinHelper", controller.hic.spin1.transform.rotation);
-        // ph.AddComponent<SphereCollider>();
-        // ph.GetComponent<Rigidbody>().interpolation = RigidbodyInterpolation.Interpolate;
-        // CharacterJoint newJoint = ph.AddComponent<CharacterJoint>();
-        // newJoint.anchor = new Vector3(0, -controller.hic.spin2.localPosition.y, -0.01f);
-        // newJoint.connectedBody = controller.hic.spin1.GetComponent<Rigidbody>();
-        // newJoint.autoConfigureConnectedAnchor = true;
-        // newJoint.axis = new Vector3(1,0,0);
-        // newJoint.swingAxis = new Vector3(0,1,0);
-        // SoftJointLimitSpring sls = new SoftJointLimitSpring();
-        // sls.spring = .73f;
-        // newJoint.twistLimitSpring = sls;
-        // SoftJointLimit l = new SoftJointLimit();
-        // l.limit = -.1f;
-        // newJoint.lowTwistLimit = l;
-        // SoftJointLimit h = new SoftJointLimit();
-        // h.limit = 0;
-        // newJoint.highTwistLimit = h;
-        // SoftJointLimit s1 = new SoftJointLimit();
-        // s1.limit = 0f;
-        // newJoint.swing1Limit = s1;
-        // SoftJointLimit s2 = new SoftJointLimit();
-        // s2.limit = 0f;
-        // newJoint.swing2Limit = s2;
     }
 
     private float calculateRealTimeHeight() {
         int floor = Mathf.FloorToInt((Time.time - initTime) / controller.hic.ap.idleBreathTime);
         float fract = (Time.time - initTime) - (floor * controller.hic.ap.idleBreathTime);
-        float edge = controller.hic.ap.idleBreathTime / 3;
+        float edge = controller.hic.ap.idleBreathTime / 2;
         int mod = fract <= edge ? 1 : 0;
         // float th = mod == 1 ? controller.hic.ap.standHeight : controller.hic.ap.idleDownHeight; 
-        float normal = mod == 1 ? (fract / edge) : ((fract - edge) / (edge * 2));
+        float normal = mod == 1 ? (fract / edge) : ((fract - edge) / edge);
         float th = mod == 1 ? Mathf.Lerp(controller.hic.ap.idleDownHeight, controller.hic.ap.standHeight, normal)
                         : Mathf.Lerp(controller.hic.ap.standHeight, controller.hic.ap.idleDownHeight, normal);
         return th;

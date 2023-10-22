@@ -22,6 +22,7 @@ public class SphereMoveController : DeltaMoveController
             p.y = p.y + 0.5f;
             movingSphere = PrefabCreator.CreatePrefab(p, "MovingSphere", hic.walkPointer.transform.rotation).GetComponent<MovingSphere>();
             movingSphere.getSpeed = getSpeed;
+            movingSphere.turnSpeedBuff = 3;
             offset = target.transform.position - movingSphere.transform.position;
         }
     }

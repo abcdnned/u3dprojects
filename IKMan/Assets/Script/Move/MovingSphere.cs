@@ -47,6 +47,8 @@ public class MovingSphere : MonoBehaviour
 	internal Func<float> getSpeed;
 	internal Transform direction;
 
+	internal float turnSpeedBuff = -1;
+
 
 
 
@@ -133,7 +135,11 @@ public class MovingSphere : MonoBehaviour
 		Vector3 newV = Vector3.MoveTowards(curV, desV, maxSpeedChange);
 		float newX = newV.x;
 		float newZ = newV.z;
-        velocity += xAxis * (newX - currentX) + zAxis * (newZ - currentZ);
+		Vector3 a = xAxis * (newX - currentX) + zAxis * (newZ - currentZ);
+		if (OnGround && turnSpeedBuff > 0 && Vector3.Dot(curV, desV) < 0) {
+			velocity = a * turnSpeedBuff;
+		}
+        velocity += a;
         // velocity = desiredVelocity;
 		if (desiredJump) {
 			desiredJump = false;

@@ -210,6 +210,7 @@ public class HumanIKController : MonoBehaviour
     if (oldStatus.GetType() != currentStatus.GetType()) {
       oldStatus.pose?.exit();
     }
+    // TODO static jump
     // }
 
     if (currentStatus.moveController != null) {

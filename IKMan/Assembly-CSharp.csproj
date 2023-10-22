@@ -93,6 +93,7 @@
      <Compile Include="Assets/Script/Move/HipBattleIdleMove.cs" />
      <Compile Include="Assets/Script/Utils/TimeValue.cs" />
      <Compile Include="Assets/Script/Utils/Banner.cs" />
+     <Compile Include="Assets/Script/Move/Pose/SmallLandPoseArguments.cs" />
      <Compile Include="Assets/Script/Others/Auxiliary.cs" />
      <Compile Include="Assets/LegController.cs" />
      <Compile Include="Assets/Script/Modules/AnchorManager.cs" />
@@ -135,7 +136,6 @@
      <Compile Include="Assets/Script/TargetController.cs" />
      <Compile Include="Assets/InputController.cs" />
      <Compile Include="Assets/Script/Modules/CameraModule.cs" />
-     <Compile Include="Assets/Script/Move/Pose/SmallLandPoseArguments.cs" />
     <Reference Include="UnityEngine">
         <HintPath>/Users/i519418/software/u3d/2021.3.16f1c1/Unity.app/Contents/Managed/UnityEngine/UnityEngine.dll</HintPath>
     </Reference>

@@ -190,14 +190,12 @@ public class WalkBalance : TargetController
 
     internal float hipHeightDiff(float h, Vector3 normal) {
         float r = 0;
-        RaycastHit hit;
-        Vector3 start = Utils.copy(transform.position);
-        start.y += DOWN_RAY_OFFSET;
-        if (Physics.Raycast(start, -normal, out hit, DOWN_RAY_OFFSET + airRayCastDistance, ~airRayCastIgnoreLayer)) {
-            h -= hipHeightOffset;
+        Transform adjustTarget = hic.spin1.transform;
+        RaycastHit hit = getGroundedHit(normal);
+        if (hit.collider != null) {
             Vector3 desiredPos = hit.point + normal * h;
             desiredPos.y = h;
-            r = Vector3.Distance(transform.position, desiredPos);
+            return Vector3.Distance(adjustTarget.position, desiredPos);
         }
         return r;
     }

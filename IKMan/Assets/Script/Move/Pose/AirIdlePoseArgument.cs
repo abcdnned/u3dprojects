@@ -26,7 +26,6 @@ public class AirIdlePoseArgument : PoseArgument
     }
 
     public override void run() {
-        Debug.Log(" air idle pose "  );
         float t = Time.time;
         hic.leftHand.TryAir(hic.ap.runHalfDuration, t, hic.ap.transferSpeedLong);
         hic.rightHand.TryAir(0, t, hic.ap.transferSpeedLong);

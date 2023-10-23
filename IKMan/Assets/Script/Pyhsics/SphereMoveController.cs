@@ -8,6 +8,8 @@ public class SphereMoveController : DeltaMoveController
     private Vector3 offset;
     private MovingSphere movingSphere;
 
+    internal bool initJump = false;
+
 
     internal override void deltaMove() {
         movingSphere.updateInput(ia.movement, hic.walkPointer.cam, ia.jumpFlag);
@@ -21,6 +23,9 @@ public class SphereMoveController : DeltaMoveController
             Vector3 p = Utils.copy(target.transform.position);
             p.y = p.y + 0.5f;
             movingSphere = PrefabCreator.CreatePrefab(p, "MovingSphere", hic.walkPointer.transform.rotation).GetComponent<MovingSphere>();
+            if (initJump) {
+                movingSphere.initJump = true;
+            }
             movingSphere.getSpeed = getSpeed;
             movingSphere.turnSpeedBuff = 3;
             offset = target.transform.position - movingSphere.transform.position;

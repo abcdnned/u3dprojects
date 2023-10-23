@@ -48,6 +48,7 @@ public class MovingSphere : MonoBehaviour
 	internal Transform direction;
 
 	internal float turnSpeedBuff = -1;
+	internal bool initJump = false;
 
 
 
@@ -91,7 +92,7 @@ public class MovingSphere : MonoBehaviour
 	
 	void Jump() {
 		Vector3 jumpDirection;
-		if (OnGround) {
+		if (initJump || OnGround) {
 			jumpDirection = contactNormal;
 		}
 		else if (OnSteep) {
@@ -106,6 +107,9 @@ public class MovingSphere : MonoBehaviour
 		}
 		else {
 			return;
+		}
+		if (initJump) {
+			initJump = false;
 		}
 		stepsSinceLastJump = 0;
 		jumpPhase += 1;
@@ -178,6 +182,7 @@ public class MovingSphere : MonoBehaviour
 		EvaluateCollision(collision);
 	}
 	
+	// TODO how to enable OnGround at the first place when MovingSphere summoned
 	void EvaluateCollision (Collision collision) {
         float minDot = GetMinDot(collision.gameObject.layer);
         for (int i = 0; i < collision.contactCount; i++) {

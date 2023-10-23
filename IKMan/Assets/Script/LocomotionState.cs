@@ -34,9 +34,10 @@ public class LocomotionState : AnyState {
     private (States, ActionStateMachine) Move(Event e)
     {
         if (e.eventId != null && e.eventId.Equals(HumanIKController.EVENT_JUMP)) {
-            Debug.Log(" locomotion jump ");
             changePose(new AirIdlePoseArgument(hic));
-            changeMoveController(new SphereMoveController());
+            SphereMoveController sphereMoveController = new SphereMoveController();
+            sphereMoveController.initJump = true;
+            changeMoveController(sphereMoveController);
             return (jumpState, this);
         }
         else if (e.eventId != null && e.eventId.Equals(HumanIKController.EVENT_KEEP_WALKING)) {

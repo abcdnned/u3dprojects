@@ -147,5 +147,8 @@ public class Utils {
     public static void flog_SM(string s) {
         Debug.Log(" frame " + Time.frameCount + " " + s);
     }
+    public static void flog(string s) {
+        Debug.Log(" frame " + Time.frameCount + " " + s);
+    }
 
 }

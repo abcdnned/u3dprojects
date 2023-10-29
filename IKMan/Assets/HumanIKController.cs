@@ -84,6 +84,11 @@ public class HumanIKController : MonoBehaviour
   [Header("--- Input ---")]
   internal bool sprintFlag;
 
+  [Header("--- Global Config ---")]
+  public GameObject gs_p_wist;
+
+  [Header("--- Test ---")]
+
   // internal bool jumpFlag;
 
   // Only allow diagonal leg pairs to step together
@@ -104,6 +109,7 @@ public class HumanIKController : MonoBehaviour
   internal Vector3 gravityUp = Vector3.up;
 
   internal Vector3 relativeMovment = Vector3.zero;
+  internal Vector3 spin2Offset = Vector3.zero;
 
 
 
@@ -121,6 +127,7 @@ public class HumanIKController : MonoBehaviour
     inputModule.OnSpaceDelegates += SpaceClick;
     ap = GetComponent<AnimationProperties>();
     initStatus();
+    spin2Offset = spin2.transform.position - spin1.transform.position;
   }
 
   public void initStatus() {

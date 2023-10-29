@@ -163,6 +163,7 @@ public class WalkBalance : TargetController
                 Utils.deltaMove(adjustTarget, desiredPos);
             }
         }
+        // Utils.flog(" adjustHeight " + adjustTarget.position.y);
         // }
     }
 

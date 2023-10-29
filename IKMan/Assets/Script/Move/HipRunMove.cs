@@ -8,10 +8,10 @@ public class HipRunMove : HipMove
     // Vector3 offset;
     private float h;
     private float speed;
-    // private GameObject ph;
     private Quaternion spin3TargetRotation;
-
-
+    private GameObject pivot;
+    private GameObject ph;
+    private float pivotYOffset;
 
     public HipRunMove() : base(MoveNameConstants.HipRunMove)
     {
@@ -26,20 +26,14 @@ public class HipRunMove : HipMove
         return AdvanceIKController.FK;
     }
     public override Move move(float dt) {
-        // Debug.Log(" hip run ");
         normalizedTime += dt;
         controller.adjustGroundedHeight(h, controller.hic.gravityUp, speed);
-        // controller.hic.spin2.position = ph.transform.position;
-        // controller.hic.spin2.rotation = ph.transform.rotation;
-        // Quaternion r = Quaternion.Slerp(controller.hic.spin2.rotation,
-        //                                 ph.transform.rotation,
-        //                                 1 - Mathf.Exp(-10 * Time.deltaTime));
-        // controller.hic.spin2.rotation = r;
-
+        if (pivot != null) {
+            updatePivot();
+            // updateSpin2();
+        }
         if (spin3TargetRotation != null) {
             int c = controller.hic.spin3.childCount;
-            // Debug.Log(" child count " + c);
-            // Transform[] childs = new Transform[1];
             Transform neck = null;
             for (int i = 0; i < c; ++i) {
                 Transform child = controller.hic.spin3.GetChild(i);
@@ -55,37 +49,10 @@ public class HipRunMove : HipMove
             if (neck != null) {
                 neck.SetParent(controller.hic.spin3);
             }
-            // for (int i = 0; i < c; ++i) {
-            //     if (childs[i] != null) {
-            //         childs[i].SetParent(controller.hic.spin3);
-            //     }
-            // }
         }
-        // Debug.Log(" nor " + normalizedTime);
-        // if (state == 0) {
-        //     state++;
-        // } 
-        // if (state == 1) {
-        //     SyncPosition();
-        // }
-        // if (movingSphere == null) {
-        //     return moveManager.ChangeMove(MoveNameConstants.HipIdle);
-        // }
-        // Update rotation based on camera.
-        // Vector2 m = controller.hic.inputArgument.movement;
-        // if (m.magnitude > 0) {
-        //     Vector3 dir = Utils.forwardFlat(controller.cam) * m.y + Utils.right(controller.cam) * m.x;
-        //     controller.justRotateHip(dir, 0, controller.hic.ap.hipTrackCameraSpeed);
-        // }
         rotateToCamera();
         return this;
     }
-
-    // public void SyncPosition() {
-    //     if (movingSphere != null) {
-    //         humanIKController.transform.position = offset + movingSphere.transform.position;
-    //     }
-    // }
 
     internal void onLegBeats(int code, bool isRight) {
         // Debug.Log(" code " + code);
@@ -102,43 +69,40 @@ public class HipRunMove : HipMove
         speed = hipMoveSpeed;
     }
 
-    // TODO hand rotation
-    //      hand look normalize
-    //      life cycle of SpinHelper
     public override void init() {
         base.init();
-        // ph = PrefabCreator.CreatePrefab(controller.hic.spin2.position, "SpinHelper", controller.hic.spin1.transform.rotation);
-        // ph.AddComponent<SphereCollider>();
-        // ph.GetComponent<Rigidbody>().interpolation = RigidbodyInterpolation.Interpolate;
-        // CharacterJoint newJoint = ph.AddComponent<CharacterJoint>();
-        // newJoint.anchor = new Vector3(0, -controller.hic.spin2.localPosition.y, -0.01f);
-        // newJoint.connectedBody = controller.hic.spin1.GetComponent<Rigidbody>();
-        // newJoint.autoConfigureConnectedAnchor = true;
-        // newJoint.axis = new Vector3(1,0,0);
-        // newJoint.swingAxis = new Vector3(0,1,0);
-        // SoftJointLimitSpring sls = new SoftJointLimitSpring();
-        // sls.spring = 2.16f;
-        // newJoint.twistLimitSpring = sls;
-        // SoftJointLimit l = new SoftJointLimit();
-        // l.limit = -10;
-        // newJoint.lowTwistLimit = l;
-        // SoftJointLimit h = new SoftJointLimit();
-        // h.limit = -5;
-        // newJoint.highTwistLimit = h;
-        // SoftJointLimit s1 = new SoftJointLimit();
-        // s1.limit = 0f;
-        // newJoint.swing1Limit = s1;
-        // SoftJointLimit s2 = new SoftJointLimit();
-        // s2.limit = 0f;
-        // newJoint.swing2Limit = s2;
+        (GameObject, GameObject)v = attachRunJoint();
+        pivot = v.Item1;
+        ph = v.Item2;
+        pivotYOffset = pivot.transform.position.y - hic.spin1.transform.position.y;
     }
 
     public override void finish() {
-        // if (ph != null) {
-        //     GameObject.Destroy(ph);
-            // Debug.Log(" run destory ph ");
-        // }
+        base.finish();
+        // hic.spin2.transform.position = hic.spin1.transform.position + hic.spin2Offset;
     }
 
+    private void updateSpin2() {
+        Vector3 offset = ph.transform.position - pivot.transform.position;
+        float x = Vector3.Dot(offset, pivot.transform.right);
+        float y = Vector3.Dot(offset, pivot.transform.up);
+        float z = Vector3.Dot(offset, pivot.transform.forward);
+        hic.spin2.position = hic.spin1.transform.position
+                             + x * hic.spin1.transform.right
+                             + y * hic.spin1.transform.up
+                             + z * hic.spin1.transform.forward;
+        Quaternion diff = QuaternionExtensions.Diff(pivot.transform.rotation, ph.transform.rotation);
+        Quaternion target = QuaternionExtensions.Add(hic.spin1.transform.rotation, diff);
+        // Quaternion r = Quaternion.Slerp(hic.spin2.rotation,
+        //                                 target,
+        //                                 1 - Mathf.Exp(-10 * Time.deltaTime));
+        // hic.spin2.rotation = r;
+        hic.spin2.rotation = target;
+    }
 
+    private void updatePivot() {
+        Vector3 np = Utils.copy(pivot.transform.position);
+        np.y = hic.ap.runUpHeight - hic.spin1.transform.position.y + pivotYOffset;
+        pivot.transform.position = np;
+    }
 }

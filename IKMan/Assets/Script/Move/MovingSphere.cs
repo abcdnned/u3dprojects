@@ -140,7 +140,9 @@ public class MovingSphere : MonoBehaviour
 		float newX = newV.x;
 		float newZ = newV.z;
 		Vector3 a = xAxis * (newX - currentX) + zAxis * (newZ - currentZ);
-		if (OnGround && turnSpeedBuff > 0 && Vector3.Dot(curV, desV) < 0) {
+		// if (OnGround && turnSpeedBuff >= 0 && Vector3.Dot(curV, desV) <= 0) {
+		if (OnGround && turnSpeedBuff >= 0 && Vector3.Angle(curV, desV) > 10) {
+		//TODO Smooth Turn
 			velocity = a * turnSpeedBuff;
 		}
         velocity += a;

@@ -129,7 +129,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxSpeed: 10
-  maxAcceleration: 10
+  maxAcceleration: 20
   maxAirAcceleration: 1
   allowedArea:
     serializedVersion: 2

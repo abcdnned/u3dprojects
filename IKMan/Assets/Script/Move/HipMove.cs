@@ -115,4 +115,12 @@ public class HipMove : Move
         helperCount++;
         return (pivot, ph);
     }
+
+    protected void rotateByMovingController() {
+        Vector3 m = hic.currentStatus.moveController.getVelocity();
+        m.y = 0;
+        if (m.magnitude > 0) {
+            controller.justRotateHip(m, 0, controller.hic.ap.hipTrackCameraSpeed);
+        }
+    }
 }

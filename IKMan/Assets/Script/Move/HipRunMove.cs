@@ -50,7 +50,7 @@ public class HipRunMove : HipMove
                 neck.SetParent(controller.hic.spin3);
             }
         }
-        rotateToCamera();
+        rotateByMovingController();
         return this;
     }
 

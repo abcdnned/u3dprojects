@@ -42,6 +42,7 @@
      <Compile Include="Assets/Script/TargetController/AdvanceIKController.cs" />
      <Compile Include="Assets/Script/Move/HandMainBattle2Idle.cs" />
      <Compile Include="Assets/Script/Input/InputArgument.cs" />
+     <Compile Include="Assets/Script/Utils/GlobalConfigSpace.cs" />
      <Compile Include="Assets/WalkPointer.cs" />
      <Compile Include="Assets/Script/HandMovingMove.cs" />
      <Compile Include="Assets/Script/PrefabCreator.cs" />
@@ -136,7 +137,6 @@
      <Compile Include="Assets/Script/TargetController.cs" />
      <Compile Include="Assets/InputController.cs" />
      <Compile Include="Assets/Script/Modules/CameraModule.cs" />
-     <Compile Include="Assets/Script/Utils/GlobalConfigSpace.cs" />
     <Reference Include="UnityEngine">
         <HintPath>/Users/i519418/software/u3d/2021.3.16f1c1/Unity.app/Contents/Managed/UnityEngine/UnityEngine.dll</HintPath>
     </Reference>

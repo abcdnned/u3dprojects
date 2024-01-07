@@ -55,6 +55,7 @@
      <Compile Include="Assets/Follow.cs" />
      <Compile Include="Assets/Script/Move/HipAirMove.cs" />
      <Compile Include="Assets/Script/Utils/EnhanceCharacterJoint.cs" />
+     <Compile Include="Assets/Script/Move/Pose/PreJumpPoseArguments.cs" />
      <Compile Include="Assets/Script/Rotater.cs" />
      <Compile Include="Assets/Script/Utils/StatelliteRotater.cs" />
      <Compile Include="Assets/Script/Move/MainHoldWeapon.cs" />

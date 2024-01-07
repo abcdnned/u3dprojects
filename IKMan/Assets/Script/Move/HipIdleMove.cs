@@ -5,7 +5,7 @@ public class HipIdleMove : HipMove
     float initTime;
     private float h;
     private float speed;
-    private GameObject ph;
+    // private GameObject ph;
 
 
     public HipIdleMove() : base(MoveNameConstants.HipIdle) {
@@ -29,10 +29,10 @@ public class HipIdleMove : HipMove
 
         // controller.hic.spin2.position = ph.transform.position;
         // controller.hic.spin2.rotation = ph.transform.rotation;
-        Quaternion r = Quaternion.Slerp(controller.hic.spin2.rotation,
-                                        ph.transform.rotation,
-                                        1 - Mathf.Exp(-10 * Time.deltaTime));
-        controller.hic.spin2.rotation = r;
+        // Quaternion r = Quaternion.Slerp(controller.hic.spin2.rotation,
+        //                                 ph.transform.rotation,
+        //                                 1 - Mathf.Exp(-10 * Time.deltaTime));
+        // controller.hic.spin2.rotation = r;
         return this;
     }
     // public override Move transfer() {
@@ -80,7 +80,7 @@ public class HipIdleMove : HipMove
     
     public override void init() {
         base.init();
-        ph = attachIdleJoint();
+        // ph = attachIdleJoint();
     }
 
     private float calculateRealTimeHeight() {

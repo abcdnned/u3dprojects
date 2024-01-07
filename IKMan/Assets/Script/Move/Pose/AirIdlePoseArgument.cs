@@ -44,8 +44,8 @@ public class AirIdlePoseArgument : PoseArgument
             // int hitLayer = 1 << 9;
             // bool hitGround = isAirRayHit(hic.spin1.transform, hic.gravityUp, hitLayer, hic.ap.standHeight + hic.ap.airRayCast);
             // hitGround |= isAirRayHit(leftLegController.transform, hic.gravityUp, hitLayer);
-            bool fall = Vector3.Dot(hic.currentStatus.moveController.getVelocity(), hic.gravityUp) <= 0;
-            bool hitGround = hic.currentStatus.moveController.onGround() > 0;
+            bool fall = Vector3.Dot(hic.moveController.getVelocity(), hic.gravityUp) <= 0;
+            bool hitGround = hic.moveController.onGround() > 0;
             if (hitGround && fall) {
                 return true;
             }

@@ -75,6 +75,7 @@ public class Utils {
         Vector3 delta = target - origin.position;
         origin.position += delta;
     }
+
     public static void deltaRotate(Transform origin, Quaternion target) {
         Quaternion diff = origin.rotation.Diff(target);
         origin.rotation *= diff;

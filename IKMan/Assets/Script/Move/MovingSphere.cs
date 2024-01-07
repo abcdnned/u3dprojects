@@ -48,7 +48,7 @@ public class MovingSphere : MonoBehaviour
 	internal Transform direction;
 
 	internal float turnSpeedBuff = -1;
-	internal bool initJump = false;
+	internal SphereMoveController controller;
 
 
 
@@ -82,7 +82,6 @@ public class MovingSphere : MonoBehaviour
 		float speed = getSpeed == null ? maxSpeed : getSpeed();
 		desiredVelocity = 
 			(forward * playerInput.y + right * playerInput.x)  * speed;
-        //Jump
         desiredJump |= jumpFlag;
 		// GetComponent<Renderer>().material.SetColor(
 		// 	"_Color", OnGround ? Color.black : Color.white
@@ -91,8 +90,9 @@ public class MovingSphere : MonoBehaviour
 
 	
 	void Jump() {
+		Debug.Log(" Jump Jump ");
 		Vector3 jumpDirection;
-		if (initJump || OnGround) {
+		if (OnGround) {
 			jumpDirection = contactNormal;
 		}
 		else if (OnSteep) {
@@ -107,9 +107,6 @@ public class MovingSphere : MonoBehaviour
 		}
 		else {
 			return;
-		}
-		if (initJump) {
-			initJump = false;
 		}
 		stepsSinceLastJump = 0;
 		jumpPhase += 1;
@@ -136,6 +133,7 @@ public class MovingSphere : MonoBehaviour
 		// 	Mathf.MoveTowards(currentZ, desiredVelocity.z, maxSpeedChange);
 		Vector3 curV = new Vector3(currentX, 0, currentZ);
 		Vector3 desV = new Vector3(desiredVelocity.x, 0, desiredVelocity.z);
+		// Utils.flog("desiredVelocity " + desiredVelocity);
 		Vector3 newV = Vector3.MoveTowards(curV, desV, maxSpeedChange);
 		float newX = newV.x;
 		float newZ = newV.z;
@@ -146,6 +144,7 @@ public class MovingSphere : MonoBehaviour
         velocity += a;
         // velocity = desiredVelocity;
 		if (desiredJump) {
+			Debug.Log(" desired Jump true ");
 			desiredJump = false;
 			Jump();
 		}

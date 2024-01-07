@@ -117,7 +117,7 @@ public class HipMove : Move
     }
 
     protected void rotateByMovingController() {
-        Vector3 m = hic.currentStatus.moveController.getVelocity();
+        Vector3 m = hic.moveController.getVelocity();
         m.y = 0;
         if (m.magnitude > 0) {
             controller.justRotateHip(m, 0, controller.hic.ap.hipTrackCameraSpeed);

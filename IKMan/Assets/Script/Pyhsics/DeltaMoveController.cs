@@ -10,6 +10,14 @@ public class DeltaMoveController
 
     internal InputArgument ia;
 
+    protected Queue<int> signalQueue = new Queue<int>();
+
+    internal void update() {
+        deltaMove();
+        signalQueue.Clear();
+    }
+    internal virtual void handleSignal(int s) {
+    }
     internal virtual void deltaMove() {
     }
 
@@ -24,6 +32,10 @@ public class DeltaMoveController
 
     internal virtual int onGround() {
         return -1;
+    }
+
+    internal void addInputSignal(int sig) {
+        signalQueue.Enqueue(sig);
     }
 
 }

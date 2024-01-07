@@ -8,6 +8,7 @@ public class LocomotionState : AnyState {
     public const string STATE_TRANSFER = "transferState";
     public const string STATE_JUMP = "jumpState";
     public const string STATE_LAND = "landState";
+    public const string STATE_PREPAREJUMP = "prepareJumpState";
     // Banner transferBanner = new Banner(Banner.WALKING_TO_TRANSFER);
 
     private States moveState;
@@ -15,6 +16,7 @@ public class LocomotionState : AnyState {
     private States transferState;
     private States jumpState;
     private States landState;
+    private States preJumpState;
 
 
     private Vector3 offset;
@@ -29,22 +31,17 @@ public class LocomotionState : AnyState {
         transferState = new States(STATE_TRANSFER, Transfer);
         jumpState = new States(STATE_JUMP, Jump);
         landState = new States(STATE_LAND, Land);
+        preJumpState = new States(STATE_PREPAREJUMP, PrepareJump);
         cs = moveState;
     }
     private (States, ActionStateMachine) Move(Event e)
     {
         if (e.eventId != null && e.eventId.Equals(HumanIKController.EVENT_JUMP)) {
-            changePose(new AirIdlePoseArgument(hic));
-            SphereMoveController sphereMoveController = new SphereMoveController();
-            sphereMoveController.initJump = true;
-            changeMoveController(sphereMoveController);
-            return (jumpState, this);
+            return (preJumpState, this);
         }
         else if (e.eventId != null && e.eventId.Equals(HumanIKController.EVENT_KEEP_WALKING)) {
                 changePose(new RunPoseArgument(hic));
-                changeMoveController(new SphereMoveController());
         } else if (hic.inputArgument.movement.magnitude <= 0) {
-            changeMoveController(null);
             return (null, new IdleStatus(hic));
         }
         return (moveState, this);
@@ -105,6 +102,7 @@ public class LocomotionState : AnyState {
 
     private (States, ActionStateMachine) Jump(Event e)
     {
+        changePose(new AirIdlePoseArgument(hic));
         if (((AirIdlePoseArgument)pose).landed) {
             return (landState, this);
         }
@@ -118,5 +116,15 @@ public class LocomotionState : AnyState {
             return (moveState, this);
         }
         return (landState, this);
+    }
+
+    private (States, ActionStateMachine) PrepareJump(Event e)
+    {
+        changePose(new PreJumpPoseArgument(hic));
+        if (((PreJumpPoseArgument)pose).prepared) {
+            hic.moveController.addInputSignal(1);
+            return (jumpState, this);
+        }
+        return (preJumpState, this);
     }
 }

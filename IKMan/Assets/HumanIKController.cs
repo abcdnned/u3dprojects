@@ -69,6 +69,7 @@ public class HumanIKController : MonoBehaviour
   public Vector3[] idleAnchorPoints = new Vector3[10];
 
   internal ActionStateMachine currentStatus;
+  internal DeltaMoveController moveController;
 
   private ReadTrigger TriggerR = new ReadTrigger(false);
   private ReadTrigger TriggerLeftClick = new ReadTrigger(false);
@@ -132,6 +133,7 @@ public class HumanIKController : MonoBehaviour
 
   public void initStatus() {
     currentStatus = new IdleStatus(this);
+    changeMoveController(new SphereMoveController());
   }
 
   public void updateAnchorPoints() {
@@ -212,15 +214,13 @@ public class HumanIKController : MonoBehaviour
       sprintFlag = true;
     }
 
-    // if (eva != null) {
     currentStatus = currentStatus.handleEvent(ikEvent);
     if (oldStatus.GetType() != currentStatus.GetType()) {
       oldStatus.pose?.exit();
     }
-    // }
 
-    if (currentStatus.moveController != null) {
-      currentStatus.moveController.deltaMove();
+    if (moveController != null) {
+      moveController.update();
     }
     walkPointer.update();
 
@@ -312,5 +312,26 @@ public class HumanIKController : MonoBehaviour
       sprintFlag =false;
       inputArgument.reset();
       relativeMovment = Vector3.zero;
+  }
+  public DeltaMoveController changeMoveController(DeltaMoveController argument, bool refresh = false) {
+      if (argument == null) {
+          if (moveController != null) {
+              moveController.exit();
+          }
+          return null;
+      }
+      if (moveController != null && (moveController.GetType() == argument.GetType()) && !refresh)  {
+          // Keep
+      } else {
+          if (moveController != null) {
+              moveController.exit();
+          }
+          moveController = argument;
+          moveController.hic = this;
+          moveController.target = this.rootGameObject;
+          moveController.ia = this.inputArgument;
+          moveController.init();
+      }
+      return moveController;
   }
 }

@@ -76,6 +76,7 @@ public class HipMove : Move
             Vector3 dir = Utils.forwardFlat(controller.cam) * m.y + Utils.right(controller.cam) * m.x;
             controller.justRotateHip(dir, 0, controller.hic.ap.hipTrackCameraSpeed);
         }
+        // reconsider face locomotion
     }
 
     protected (GameObject, GameObject) attachRunJoint() {

@@ -18,6 +18,8 @@ public class AirIdlePoseArgument : PoseArgument
             initTime = Time.time;
         }
         if (state == 1) {
+            legUpdate(leftLegController, ref llh, ref leftStopSignal);
+            legUpdate(rightLegController, ref rlh, ref rightStopSignal);
             if (land()) {
                 landed = true;
                 state++;

@@ -19,14 +19,14 @@ public class PreJumpPoseArgument : PoseArgument
         if (state == 1) {
             legUpdate(leftLegController, ref llh, ref leftStopSignal);
             legUpdate(rightLegController, ref rlh, ref rightStopSignal);
-            if (Time.time - initTime > hic.ap.transferSpeedFast) {
+            if (Time.time - initTime > 0.08f) {
                 prepared = true;
             }
         }
     }
 
     public override void run() {
-        float d = hic.ap.transferSpeedSmall;
+        float d = .22f;
         hic.leftHand.TrySync(d, IKSampleNames.HAND_LAND, MoveNameConstants.HandPrepareJump);
         hic.rightHand.TrySync(d, IKSampleNames.HAND_LAND, MoveNameConstants.HandPrepareJump);
         hic.frontLeftLegStepper.TrySync(d, IKSampleNames.LEG_IDLE, MoveNameConstants.LegPrepareJump);

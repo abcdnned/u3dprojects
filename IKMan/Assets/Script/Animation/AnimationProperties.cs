@@ -18,8 +18,8 @@ public class AnimationProperties : MonoBehaviour {
 
     [Header("--- Animation Speed ---")]
     public float transferSpeedSmall = .5f;
-
     public float transferSpeedFast = 0.2f;
+    public float transferSpeedVeryFast = 0.02f;
     public float transferSpeedLong = 2f;
     public float hipTrackCameraSpeed = 5f;
     public float smallLandDuration = .1f;

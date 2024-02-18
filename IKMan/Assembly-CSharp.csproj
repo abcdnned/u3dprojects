@@ -64,6 +64,7 @@
      <Compile Include="Assets/Script/Utils/States.cs" />
      <Compile Include="Assets/Script/Move/LegRotateMove.cs" />
      <Compile Include="Assets/Script/LocomotionState.cs" />
+     <Compile Include="Assets/Script/Move/HipSwingRotateMove.cs" />
      <Compile Include="Assets/Script/Move/LegHandMove.cs" />
      <Compile Include="Assets/Script/LegIdleMove.cs" />
      <Compile Include="Assets/Script/Timer.cs" />

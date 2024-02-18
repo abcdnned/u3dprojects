@@ -34,4 +34,6 @@ public class MoveNameConstants
     public static string LegHandMove = "leg_hand";
     public static string HandPrepareJump = "hand_prepare_jump";
     public static string LegPrepareJump = "leg_prepare_jump";
+
+    public static string HipSwingRotateMove = "hip_swing_rotate";
 }

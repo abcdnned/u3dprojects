@@ -261,7 +261,7 @@ public class HandController : TwoNodeController
         HandSwingMove move = (HandSwingMove)moveManager.ChangeMove(MoveNameConstants.HandSwingMove);
         move.init(hic.poleJoint,
                   hic.attchment_rightHand.GetComponent<CharacterJoint>(),
-                  transform, hic.walkPointer.transform.forward, 2f);
+                  transform, hic.walkPointer.transform.forward);
     }
 
     public void TryRun(float offset, float initTime) {

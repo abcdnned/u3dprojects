@@ -84,7 +84,7 @@ public class WalkBalance : TargetController
             moveManager.ChangeMove(MoveNameConstants.HipDamp);
             keepBalanceWhenWalking();
         } else if (hic.currentStatus.legIdleChecker()) {
-            moveManager.ChangeMove(MoveNameConstants.HipIdle);
+            // moveManager.ChangeMove(MoveNameConstants.HipIdle);
             // ReturnToCenter();
         }
         // Move.
@@ -92,6 +92,7 @@ public class WalkBalance : TargetController
             // && move.name != MoveNameConstants.HipIdle
             // && move.name != MoveNameConstants.HipDamp) {
             move = move.move(Time.deltaTime);
+            // Debug.Log(" hip update move " + move.name);
         }
         // Update rotation based on camera.
         // if (hic.currentStatus.getName() == LocomotionState.NAME
@@ -119,6 +120,7 @@ public class WalkBalance : TargetController
         moveManager.addMove(new HipHeightChangeMove());
         moveManager.addMove(new HipRunMove());
         moveManager.addMove(new HipAirMove());
+        moveManager.addMove(new HipSwingRotateMove());
         moveManager.ChangeMove(MoveNameConstants.HipIdle);
     }
     
@@ -408,5 +410,10 @@ public class WalkBalance : TargetController
     internal void TryChangeHeight(float h, float duration) {
         HipHeightChangeMove move = (HipHeightChangeMove)moveManager.ChangeMove(MoveNameConstants.HipHeightChangeMove);
         move.initBasics(h, duration);
+    }
+
+    internal void TrySwingRotate(HandSwingMove handSwingMove) {
+        HipSwingRotateMove m = (HipSwingRotateMove)moveManager.ChangeMove(MoveNameConstants.HipSwingRotateMove);
+        handSwingMove.AcceptHipSwingRotate += m.rotateAngelChange;
     }
 }

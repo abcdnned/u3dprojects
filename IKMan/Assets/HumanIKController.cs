@@ -296,6 +296,8 @@ public class HumanIKController : MonoBehaviour
   }
 
   private void LeftClick(float value) {
+    Debug.Log(" left click ");
+    inputArgument.leftHold = !inputArgument.leftHold;
     TriggerLeftClick.set();
   }
 

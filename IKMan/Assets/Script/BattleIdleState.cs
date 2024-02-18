@@ -49,6 +49,7 @@ public class BattleIdleState : AnyState
         else if (e.bgA == EVENT_LEFT_CLICK)
         {
             hic.rightHand.TryLeftSwing();
+            hic.walkBalance.TrySwingRotate((HandSwingMove)hic.rightHand.move);
             return (occupyState, this);
         }
         return (battleIdleState, this);

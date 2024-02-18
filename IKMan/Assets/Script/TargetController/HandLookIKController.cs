@@ -211,8 +211,8 @@ public class HandLookIKController : MonoBehaviour
         float v = Vector3.Angle(hdl_p, hdl_v);
         hdl.horizonAngel = h * (Vector3.Dot(normal, Vector3.Cross(hdl.direction.forward, hdl_p)) > 0 ? 1 : -1);
         hdl.verticalAngel = v * (Vector3.Dot(normal_v, Vector3.Cross(hdl_p, hdl_v)) > 0 ? 1 : -1);
-        Debug.Log(" hor " + hdl.horizonAngel);
-        Debug.Log(" hov " + hdl.verticalAngel);
+        // Debug.Log(" hor " + hdl.horizonAngel);
+        // Debug.Log(" hov " + hdl.verticalAngel);
     }
 
     private void updateBicepTargetAngel()

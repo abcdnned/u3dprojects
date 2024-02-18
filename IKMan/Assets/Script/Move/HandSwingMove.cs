@@ -13,6 +13,8 @@ public class HandSwingMove : HandMove
 
     internal Quaternion midDirectionOffset;
 
+    internal delegate void acceptHipSwingRotate(Vector3 foward);
+    internal acceptHipSwingRotate AcceptHipSwingRotate;
 
     public HandSwingMove() : base(MoveNameConstants.HandSwingMove)
     {
@@ -20,8 +22,8 @@ public class HandSwingMove : HandMove
 
     public void init(CharacterJoint joint,
                      CharacterJoint handJoint,
-                     Transform handTransform, Vector3 midDirection, float duration) {
-        this.duration = duration;
+                     Transform handTransform, Vector3 midDirection) {
+        this.duration = HipSwingRotateMove.DURATION;
         this.joint = joint;
         this.handJoint = handJoint;
         this.handTransform = handTransform;
@@ -41,7 +43,8 @@ public class HandSwingMove : HandMove
             normalizedTime = 0;
         } 
         if (state == 1) {
-            if (normalizedTime > duration) {
+            if (normalizedTime > duration && !hic.inputArgument.leftHold) {
+                Debug.Log(" state ++ ");
                 state++;
             } else {
                 handController.handLookIKController.init(Time.deltaTime,
@@ -56,6 +59,9 @@ public class HandSwingMove : HandMove
                 Vector3 swingTorque = new Vector3(0, -hic.swingStrength, 0);
                 rigidbody.AddTorque(swingTorque, ForceMode.Acceleration);
                 handJoint.GetComponent<Rigidbody>().AddTorque(swingTorque / 2, ForceMode.Acceleration);
+                Vector3 dir = handJoint.transform.position - joint.transform.position;
+                Debug.DrawRay(hic.spin1.transform.position, dir, Color.gray, 0.1f);
+                AcceptHipSwingRotate?.Invoke(dir);
             }
         }
         if (state == 2) {

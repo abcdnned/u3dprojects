@@ -9,7 +9,7 @@ public class InputArgument : MonoBehaviour
     internal bool jumpFlag;
 
     internal bool leftClick;
-
+    internal bool leftHold = false;
     internal void reset() {
         jumpFlag = false;
         leftClick = false;

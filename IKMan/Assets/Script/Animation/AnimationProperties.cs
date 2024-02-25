@@ -31,4 +31,7 @@ public class AnimationProperties : MonoBehaviour {
 
     public float idleBreathTime = 2f;
 
+    [Header("--- Hip ---")]
+    public float hipSwingRotateDuration = 1.4f;
+
 }

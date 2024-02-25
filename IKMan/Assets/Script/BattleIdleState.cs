@@ -9,11 +9,14 @@ public class BattleIdleState : AnyState
     public const string STATE_BATTLE = "battleState";
     public const string STATE_TO_IDLE = "toIdleTransfer";
     public const string STATE_OCCUPY = "occupyState";
+    public const string STATE_RECOVERY = "Recovery";
     private States battleIdleState;
 
     private States toIdleTransfer;
 
     private States occupyState;
+
+    private States recovery;
 
     public BattleIdleState(HumanIKController humanIKController) : base(humanIKController)
     {
@@ -24,6 +27,7 @@ public class BattleIdleState : AnyState
         battleIdleState = new States(STATE_BATTLE, BattleIdle);
         toIdleTransfer = new States(STATE_TO_IDLE, ToIdleTransfer);
         occupyState = new States(STATE_OCCUPY, Occupy);
+        recovery = new States(STATE_RECOVERY, Recovery);
         cs = battleIdleState; ;
     }
 
@@ -63,6 +67,13 @@ public class BattleIdleState : AnyState
         return currentLeft + (rightPoint - leftPoint);
     }
 
+    private (States, ActionStateMachine) Recovery(Event e) {
+        if (hic.walkBalance.move is HipBattleIdleMove) {
+            return (battleIdleState, this);
+        }
+        return (recovery, this);
+    }
+
     private (States, ActionStateMachine) ToIdleTransfer(Event e)
     {
         if (allIdleCheck())
@@ -74,10 +85,20 @@ public class BattleIdleState : AnyState
 
     private (States, ActionStateMachine) Occupy(Event e)
     {
-        if (allIdleCheck())
+        if (hic.rightHand.move.state > 2) 
         {
             Debug.Log(" exit occupy ");
-            return (null, this);
+            hic.walkPointer.lookCamera();
+            hic.headController.setMode(0);
+            hic.TwoFootAssign(hic.frontRightLegStepper.shortStepDuration,
+                                            HumanIKController.RIGHT_FOOT,
+                                            .7f,
+                                            6,
+                                            45f,
+                                            90f);
+            WalkBalance wb = hic.walkBalance;
+            wb.TryBattleIdle();
+            return (recovery, this);
         }
         return (occupyState, this);
     }

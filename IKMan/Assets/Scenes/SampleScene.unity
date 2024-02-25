@@ -6501,6 +6501,7 @@ MonoBehaviour:
   standHeight: 0.7
   idleDownHeight: 0.6
   idleBreathTime: 2
+  hipSwingRotateDuration: 2
 --- !u!1 &1320383227 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8539669551902912349, guid: 1714f1f97dfb64f20ba43984b8b7d297, type: 3}
@@ -7866,6 +7867,7 @@ MonoBehaviour:
   standHeight: 0.75
   idleDownHeight: 0.73
   idleBreathTime: 2
+  hipSwingRotateDuration: 1.4
 --- !u!114 &1491158330
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -8,7 +8,6 @@ public class HipSwingRotateMove : HipMove
     private Vector3 origin_forward;
     private Vector3 origin_vert;
     private Vector3 start_dir;
-    public const float DURATION = 2;
 
     public const float ANGEL = 360;
     public HipSwingRotateMove() : base(MoveNameConstants.HipSwingRotateMove)
@@ -20,6 +19,7 @@ public class HipSwingRotateMove : HipMove
         if (state == 0) {
             origin_forward = hic.spin1.transform.forward;
             origin_vert = hic.spin1.transform.up;
+            duration = hic.ap.hipSwingRotateDuration;
             state++;
         } else if (state == 1) {
             if (normalizedTime > duration) {

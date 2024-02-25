@@ -1,5 +1,22 @@
 using UnityEngine;
 
+/*
+[Future Target] All hand foot hip head controllers should be conbine into a one big HumanController
+Here is what HumanController should offer
+1. one center face api for launch complex moves
+2. inside HumanController, different controller move can corrodinate
+3. center state api check
+4. natrual moves should provider a general recovery method
+5. all geomatory change should be warped into a move
+*/
+
+/*
+state 0 = init
+state 1 = prestart
+state 2 = active
+state 3 = recover
+state 4 = finish
+*/
 public class Move
 {
     public static int RUNING = 0;

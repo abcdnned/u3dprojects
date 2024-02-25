@@ -258,6 +258,7 @@ public class HandController : TwoNodeController
     }
 
     public void TryLeftSwing() {
+        // TODO Move imdenpodent
         HandSwingMove move = (HandSwingMove)moveManager.ChangeMove(MoveNameConstants.HandSwingMove);
         move.init(hic.poleJoint,
                   hic.attchment_rightHand.GetComponent<CharacterJoint>(),
